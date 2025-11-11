@@ -18,6 +18,7 @@ import '../theme/synth_theme.dart';
 import '../../providers/ui_state_provider.dart';
 import '../../providers/visual_provider.dart';
 import '../../providers/audio_provider.dart';
+import '../../providers/tilt_sensor_provider.dart';
 
 class TopBezel extends StatefulWidget {
   final SystemColors systemColors;
@@ -282,6 +283,8 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
     VisualProvider visualProvider,
     AudioProvider audioProvider,
   ) {
+    final tiltSensor = Provider.of<TiltSensorProvider>(context);
+
     return Padding(
       padding: const EdgeInsets.all(SynthTheme.spacingMedium),
       child: Column(
@@ -300,7 +303,14 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
               _buildQuickToggle(
                 'Tilt',
                 uiState.tiltEnabled,
-                (value) => uiState.setTiltEnabled(value),
+                (value) {
+                  uiState.setTiltEnabled(value);
+                  if (value) {
+                    tiltSensor.enable();
+                  } else {
+                    tiltSensor.disable();
+                  }
+                },
                 Icons.screen_rotation,
               ),
               const SizedBox(width: SynthTheme.spacingSmall),

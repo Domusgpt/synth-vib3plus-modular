@@ -27,6 +27,7 @@ import '../components/collapsible_bezel.dart';
 import '../../providers/ui_state_provider.dart';
 import '../../providers/visual_provider.dart';
 import '../../providers/audio_provider.dart';
+import '../../providers/tilt_sensor_provider.dart';
 
 class SynthMainScreen extends StatefulWidget {
   const SynthMainScreen({Key? key}) : super(key: key);
@@ -64,6 +65,7 @@ class _SynthMainScreenState extends State<SynthMainScreen> {
         ChangeNotifierProvider(create: (_) => UIStateProvider()),
         ChangeNotifierProvider(create: (_) => VisualProvider()),
         ChangeNotifierProvider(create: (_) => AudioProvider()),
+        ChangeNotifierProvider(create: (_) => TiltSensorProvider()),
       ],
       child: const _SynthMainContent(),
     );

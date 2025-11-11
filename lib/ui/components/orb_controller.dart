@@ -19,6 +19,7 @@ import 'dart:math' as math;
 import '../theme/synth_theme.dart';
 import '../../providers/ui_state_provider.dart';
 import '../../providers/audio_provider.dart';
+import '../../providers/tilt_sensor_provider.dart';
 
 class OrbController extends StatefulWidget {
   final SystemColors systemColors;
@@ -135,10 +136,12 @@ class _OrbControllerState extends State<OrbController>
   Widget build(BuildContext context) {
     final uiState = Provider.of<UIStateProvider>(context);
     final audioProvider = Provider.of<AudioProvider>(context);
+    final tiltSensor = Provider.of<TiltSensorProvider>(context);
 
     // Sync with tilt if enabled
-    if (uiState.tiltEnabled) {
-      _updateFromTilt(uiState.orbControllerPosition, uiState, audioProvider);
+    if (uiState.tiltEnabled && tiltSensor.isEnabled) {
+      final orientation = MediaQuery.of(context).orientation;
+      _updateFromTilt(tiltSensor.getTiltPositionForOrientation(orientation), uiState, audioProvider);
     }
 
     final screenSize = MediaQuery.of(context).size;

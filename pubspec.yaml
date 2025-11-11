@@ -62,6 +62,7 @@ dependencies:
   uuid: ^3.0.7                        # Unique IDs
   path_provider: ^2.1.0               # File system paths
   webview_flutter: ^4.4.2             # WebView for VIB34D systems
+  sensors_plus: ^6.0.1                # Accelerometer/gyroscope for tilt control
 
 dev_dependencies:
   flutter_test:
