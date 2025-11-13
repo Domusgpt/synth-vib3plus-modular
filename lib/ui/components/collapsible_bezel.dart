@@ -19,6 +19,7 @@ import '../../providers/ui_state_provider.dart';
 import '../panels/unified_parameter_panel.dart';
 import '../panels/geometry_panel.dart';
 import '../panels/visualization_panel.dart';
+import '../panels/advanced_settings_panel.dart';
 
 class CollapsibleBezel extends StatefulWidget {
   final String panelId;
@@ -256,6 +257,13 @@ class BottomBezelContainer extends StatelessWidget {
                     Icons.graphic_eq,
                     uiState,
                   ),
+                  _buildTabButton(
+                    context,
+                    'settings',
+                    'Settings',
+                    Icons.settings,
+                    uiState,
+                  ),
                 ],
               ),
             ),
@@ -317,6 +325,7 @@ class BottomBezelContainer extends StatelessWidget {
     if (uiState.isPanelExpanded('parameters')) return 'parameters';
     if (uiState.isPanelExpanded('geometry')) return 'geometry';
     if (uiState.isPanelExpanded('visualization')) return 'visualization';
+    if (uiState.isPanelExpanded('settings')) return 'settings';
     return 'parameters';
   }
 
@@ -329,6 +338,8 @@ class BottomBezelContainer extends StatelessWidget {
         return 'Geometry';
       case 'visualization':
         return 'Visualizer';
+      case 'settings':
+        return 'Settings';
       default:
         return 'Parameters';
     }
@@ -343,6 +354,8 @@ class BottomBezelContainer extends StatelessWidget {
         return Icons.category;
       case 'visualization':
         return Icons.graphic_eq;
+      case 'settings':
+        return Icons.settings;
       default:
         return Icons.tune;
     }
@@ -357,6 +370,8 @@ class BottomBezelContainer extends StatelessWidget {
         return const GeometryPanelContent();
       case 'visualization':
         return const VisualizationPanel();
+      case 'settings':
+        return const AdvancedSettingsPanel();
       default:
         return const UnifiedParameterPanel();
     }
