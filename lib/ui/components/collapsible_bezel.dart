@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import '../../providers/ui_state_provider.dart';
 import '../panels/unified_parameter_panel.dart';
 import '../panels/geometry_panel.dart';
+import '../panels/visualization_panel.dart';
 
 class CollapsibleBezel extends StatefulWidget {
   final String panelId;
@@ -248,6 +249,13 @@ class BottomBezelContainer extends StatelessWidget {
                     Icons.category,
                     uiState,
                   ),
+                  _buildTabButton(
+                    context,
+                    'visualization',
+                    'Visualizer',
+                    Icons.graphic_eq,
+                    uiState,
+                  ),
                 ],
               ),
             ),
@@ -308,12 +316,22 @@ class BottomBezelContainer extends StatelessWidget {
   String _getExpandedPanelId(UIStateProvider uiState) {
     if (uiState.isPanelExpanded('parameters')) return 'parameters';
     if (uiState.isPanelExpanded('geometry')) return 'geometry';
+    if (uiState.isPanelExpanded('visualization')) return 'visualization';
     return 'parameters';
   }
 
   String _getExpandedPanelLabel(UIStateProvider uiState) {
     final id = _getExpandedPanelId(uiState);
-    return id[0].toUpperCase() + id.substring(1);
+    switch (id) {
+      case 'parameters':
+        return 'Parameters';
+      case 'geometry':
+        return 'Geometry';
+      case 'visualization':
+        return 'Visualizer';
+      default:
+        return 'Parameters';
+    }
   }
 
   IconData _getExpandedPanelIcon(UIStateProvider uiState) {
@@ -323,6 +341,8 @@ class BottomBezelContainer extends StatelessWidget {
         return Icons.tune;
       case 'geometry':
         return Icons.category;
+      case 'visualization':
+        return Icons.graphic_eq;
       default:
         return Icons.tune;
     }
@@ -335,6 +355,8 @@ class BottomBezelContainer extends StatelessWidget {
         return const UnifiedParameterPanel();
       case 'geometry':
         return const GeometryPanelContent();
+      case 'visualization':
+        return const VisualizationPanel();
       default:
         return const UnifiedParameterPanel();
     }
