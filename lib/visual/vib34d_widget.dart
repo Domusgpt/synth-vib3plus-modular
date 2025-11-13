@@ -14,6 +14,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 import '../providers/visual_provider.dart';
 import '../providers/audio_provider.dart';
 
@@ -78,20 +79,178 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
         ),
       );
 
-    // Load VIB3+ from GitHub Pages
-    await _webViewController.loadRequest(
-      Uri.parse('https://domusgpt.github.io/vib3-plus-engine/')
-    );
+    // CRITICAL: Enable file access from file:// URLs (needed for Vite bundled assets)
+    // This allows the HTML file to load CSS/JS from relative file:// paths
+    if (_webViewController.platform is AndroidWebViewController) {
+      AndroidWebViewController.enableDebugging(true);
+      (_webViewController.platform as AndroidWebViewController)
+        .setMediaPlaybackRequiresUserGesture(false);
+    }
+
+    // Enable universal file access for Android WebView to load bundled CSS/JS
+    await _webViewController.runJavaScript('''
+      // This runs before page load to configure WebView settings
+      console.log('🔧 Configuring WebView for local file access');
+    ''');
+
+    // Load VIB3+ from bundled local assets (Vite build with relative paths)
+    await _webViewController.loadFlutterAsset('assets/vib3_dist/index.html');
 
     // Attach controller to visual provider
     widget.visualProvider.setWebViewController(_webViewController);
   }
 
-  /// Inject helper functions to batch parameter updates and handle errors
+  /// Inject CSS to hide VIB3+ standalone UI and helper functions for parameter updates
   Future<void> _injectHelperFunctions() async {
     try {
       await _webViewController.runJavaScript('''
-        // Helper to batch parameter updates for better performance
+        // STEP 1: Hide VIB3+ standalone UI controls (synthesizer has its own)
+        const hideVIB3UI = () => {
+          const style = document.createElement('style');
+          style.id = 'synth-vib3-ui-override';
+          style.textContent = \`
+            /* Hide top bar logo and action buttons, but KEEP system selector visible */
+            .top-bar .logo-section,
+            .top-bar .action-section {
+              display: none !important;
+              visibility: hidden !important;
+              opacity: 0 !important;
+              pointer-events: none !important;
+            }
+
+            /* Keep top-bar and system-selector visible and functional */
+            .top-bar {
+              display: flex !important;
+              justify-content: center !important;
+              align-items: center !important;
+              padding: 8px 0 !important;
+              background: rgba(0, 0, 0, 0.8) !important;
+            }
+
+            .system-selector {
+              display: flex !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+              pointer-events: all !important;
+            }
+
+            /* Hide control panel and all bezel UI */
+            .control-panel,
+            #controlPanel,
+            .bezel-header,
+            .bezel-tabs,
+            .bezel-tab,
+            .bezel-content {
+              display: none !important;
+              visibility: hidden !important;
+              opacity: 0 !important;
+              pointer-events: none !important;
+            }
+
+            /* Hide diagnostics panel */
+            .diagnostics-panel,
+            #diagnosticsPanel,
+            .system-diagnostics {
+              display: none !important;
+              visibility: hidden !important;
+              opacity: 0 !important;
+              pointer-events: none !important;
+            }
+
+            /* Ensure canvas container takes full space */
+            .canvas-container,
+            #canvasContainer {
+              position: absolute !important;
+              top: 0 !important;
+              left: 0 !important;
+              width: 100% !important;
+              height: 100% !important;
+              z-index: 1 !important;
+            }
+
+            /* Ensure holographic layers take full space */
+            .holographic-layers {
+              position: absolute !important;
+              top: 0 !important;
+              left: 0 !important;
+              width: 100% !important;
+              height: 100% !important;
+            }
+
+            /* Hide all buttons that aren't from Flutter */
+            body > button,
+            .top-bar button,
+            .control-panel button {
+              display: none !important;
+            }
+
+            /* CRITICAL: Disable ALL VIB3+ touch/mouse event handling */
+            .canvas-container,
+            #canvasContainer,
+            .holographic-layers,
+            canvas {
+              pointer-events: none !important;
+              touch-action: none !important;
+            }
+          \`;
+          document.head.appendChild(style);
+
+          // Also directly hide elements and disable touch events after DOM loads
+          setTimeout(() => {
+            // Hide ONLY logo and action buttons, keep system-selector visible
+            const elementsToHide = [
+              '.top-bar .logo-section', '.top-bar .action-section',
+              '.control-panel', '#controlPanel',
+              '.diagnostics-panel', '#diagnosticsPanel',
+              '.bezel-header'
+            ];
+            elementsToHide.forEach(selector => {
+              const elements = document.querySelectorAll(selector);
+              elements.forEach(el => {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+                el.style.opacity = '0';
+                el.style.pointerEvents = 'none';
+              });
+            });
+
+            // Ensure system-selector stays visible
+            const systemSelector = document.querySelector('.system-selector');
+            if (systemSelector) {
+              systemSelector.style.display = 'flex';
+              systemSelector.style.visibility = 'visible';
+              systemSelector.style.opacity = '1';
+              systemSelector.style.pointerEvents = 'all';
+            }
+
+            // CRITICAL: Disable ALL VIB3+ event listeners on canvas/layers
+            const disableTouchElements = [
+              '.canvas-container', '#canvasContainer',
+              '.holographic-layers', 'canvas'
+            ];
+            disableTouchElements.forEach(selector => {
+              const elements = document.querySelectorAll(selector);
+              elements.forEach(el => {
+                el.style.pointerEvents = 'none';
+                el.style.touchAction = 'none';
+                // Remove all event listeners (clone and replace)
+                const clone = el.cloneNode(true);
+                el.parentNode.replaceChild(clone, el);
+              });
+            });
+
+            FlutterBridge.postMessage('INFO: VIB3+ UI hidden + ALL touch events disabled');
+          }, 100);
+        };
+
+        // Apply immediately and after DOM loads
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', hideVIB3UI);
+        } else {
+          hideVIB3UI();
+        }
+
+        // STEP 2: Helper to batch parameter updates for better performance
         window.flutterUpdateParameters = function(params) {
           if (!window.updateParameter) {
             FlutterBridge.postMessage('ERROR: VIB3+ not ready yet');
@@ -108,12 +267,12 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
           });
         };
 
-        // Error handler
+        // STEP 3: Error handler
         window.addEventListener('error', function(e) {
           FlutterBridge.postMessage('ERROR: ' + e.message);
         });
 
-        // Notify Flutter when VIB3+ is ready
+        // STEP 4: Notify Flutter when VIB3+ is ready
         if (window.switchSystem) {
           FlutterBridge.postMessage('READY: VIB3+ systems loaded');
         } else {
@@ -134,7 +293,7 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
           }, 10000);
         }
       ''');
-      debugPrint('✅ Injected helper functions into VIB3+ WebView');
+      debugPrint('✅ Injected CSS UI override + helper functions into VIB3+ WebView');
     } catch (e) {
       debugPrint('❌ Error injecting helper functions: $e');
     }

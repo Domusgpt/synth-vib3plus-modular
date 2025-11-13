@@ -39,6 +39,16 @@ class AudioAnalyzer {
   late final Float64List _windowedBuffer;
   late final Float64List _magnitudes;
 
+  // Previous frame data for spectral flux
+  Float64List? _previousMagnitudes;
+
+  // Previous RMS for transient detection
+  double _previousRMS = 0.0;
+
+  // Transient history for density calculation
+  final List<int> _transientTimestamps = [];
+  static const int transientWindowMs = 1000; // 1 second window
+
   AudioAnalyzer({
     this.fftSize = 2048,
     this.sampleRate = 44100.0,
@@ -102,14 +112,22 @@ class AudioAnalyzer {
   /// Extract all frequency band energies at once
   AudioFeatures extractFeatures(Float32List audioBuffer) {
     final magnitudes = computeFFT(audioBuffer);
+    final rms = computeRMS(audioBuffer);
+
+    // Detect transients
+    final isTransient = detectTransient(rms);
 
     return AudioFeatures(
       bassEnergy: getBandEnergy(magnitudes, bassMin, bassMax),
       midEnergy: getBandEnergy(magnitudes, midMin, midMax),
       highEnergy: getBandEnergy(magnitudes, highMin, highMax),
       spectralCentroid: computeSpectralCentroid(magnitudes),
-      rms: computeRMS(audioBuffer),
+      spectralFlux: computeSpectralFlux(magnitudes),
+      fundamentalFreq: detectPitch(audioBuffer),
+      rms: rms,
       stereoWidth: 0.5, // Placeholder - requires stereo buffer
+      transientDensity: getTransientDensity(),
+      noiseContent: computeNoiseContent(magnitudes),
     );
   }
 
@@ -156,6 +174,117 @@ class AudioAnalyzer {
     return sumSum > 0.0 ? diffSum / sumSum : 0.0;
   }
 
+  /// Compute spectral flux (rate of timbre change)
+  double computeSpectralFlux(Float64List magnitudes) {
+    if (_previousMagnitudes == null) {
+      _previousMagnitudes = Float64List.fromList(magnitudes);
+      return 0.0;
+    }
+
+    double flux = 0.0;
+    final length = math.min(magnitudes.length, _previousMagnitudes!.length);
+
+    for (int i = 0; i < length; i++) {
+      final diff = magnitudes[i] - _previousMagnitudes![i];
+      // Only count positive changes (increases in energy)
+      if (diff > 0) {
+        flux += diff * diff;
+      }
+    }
+
+    // Update previous magnitudes for next frame
+    _previousMagnitudes = Float64List.fromList(magnitudes);
+
+    return math.sqrt(flux / length);
+  }
+
+  /// Detect fundamental frequency using autocorrelation
+  double detectPitch(Float32List audioBuffer) {
+    // Autocorrelation method for pitch detection
+    final minPeriod = (sampleRate / 1000.0).round(); // 1000 Hz max
+    final maxPeriod = (sampleRate / 60.0).round();   // 60 Hz min
+
+    double maxCorrelation = 0.0;
+    int bestPeriod = minPeriod;
+
+    for (int period = minPeriod; period <= maxPeriod; period++) {
+      double correlation = 0.0;
+      int count = 0;
+
+      for (int i = 0; i < audioBuffer.length - period; i++) {
+        correlation += audioBuffer[i] * audioBuffer[i + period];
+        count++;
+      }
+
+      if (count > 0) {
+        correlation /= count;
+        if (correlation > maxCorrelation) {
+          maxCorrelation = correlation;
+          bestPeriod = period;
+        }
+      }
+    }
+
+    // Convert period to frequency
+    return maxCorrelation > 0.01 ? sampleRate / bestPeriod : 0.0;
+  }
+
+  /// Detect transients (attack onsets)
+  bool detectTransient(double currentRMS, {double threshold = 1.5}) {
+    final ratio = _previousRMS > 0.0 ? currentRMS / _previousRMS : 1.0;
+    final isTransient = ratio > threshold;
+
+    _previousRMS = currentRMS;
+
+    if (isTransient) {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      _transientTimestamps.add(now);
+
+      // Clean up old timestamps (older than 1 second)
+      _transientTimestamps.removeWhere((timestamp) =>
+          now - timestamp > transientWindowMs);
+    }
+
+    return isTransient;
+  }
+
+  /// Get transient density (number of transients per second)
+  double getTransientDensity() {
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    // Clean up old timestamps
+    _transientTimestamps.removeWhere((timestamp) =>
+        now - timestamp > transientWindowMs);
+
+    return _transientTimestamps.length.toDouble();
+  }
+
+  /// Compute harmonic-to-noise ratio (HNR)
+  double computeNoiseContent(Float64List magnitudes) {
+    // Simple HNR estimation: compare spectral peaks to overall energy
+    // Lower HNR = more noise content
+
+    // Find spectral peaks (harmonics)
+    double peakEnergy = 0.0;
+    double totalEnergy = 0.0;
+
+    for (int i = 1; i < magnitudes.length - 1; i++) {
+      totalEnergy += magnitudes[i];
+
+      // Peak detection: local maximum
+      if (magnitudes[i] > magnitudes[i - 1] &&
+          magnitudes[i] > magnitudes[i + 1]) {
+        peakEnergy += magnitudes[i];
+      }
+    }
+
+    if (totalEnergy == 0.0) return 1.0; // All noise if no signal
+
+    final hnr = peakEnergy / totalEnergy;
+    // Return noise content (inverse of HNR)
+    return 1.0 - hnr.clamp(0.0, 1.0);
+  }
+
   /// Convert frequency to FFT bin index
   int _freqToBin(double freq) {
     return (freq * fftSize / sampleRate).round().clamp(0, _magnitudes.length - 1);
@@ -175,20 +304,28 @@ class AudioAnalyzer {
 
 /// Audio features extracted from analysis
 class AudioFeatures {
-  final double bassEnergy;      // 20-250 Hz
-  final double midEnergy;       // 250-2000 Hz
-  final double highEnergy;      // 2000-8000 Hz
-  final double spectralCentroid; // Brightness (Hz)
-  final double rms;             // Amplitude
-  final double stereoWidth;     // Stereo spread (0-1)
+  final double bassEnergy;        // 20-250 Hz
+  final double midEnergy;         // 250-2000 Hz
+  final double highEnergy;        // 2000-8000 Hz
+  final double spectralCentroid;  // Brightness (Hz)
+  final double spectralFlux;      // Rate of timbre change
+  final double fundamentalFreq;   // Pitch (Hz)
+  final double rms;               // Amplitude
+  final double stereoWidth;       // Stereo spread (0-1)
+  final double transientDensity;  // Transients per second
+  final double noiseContent;      // 0=harmonic, 1=noisy
 
   const AudioFeatures({
     required this.bassEnergy,
     required this.midEnergy,
     required this.highEnergy,
     required this.spectralCentroid,
+    required this.spectralFlux,
+    required this.fundamentalFreq,
     required this.rms,
     required this.stereoWidth,
+    required this.transientDensity,
+    required this.noiseContent,
   });
 
   /// Compute overall energy (weighted average)
@@ -201,25 +338,37 @@ class AudioFeatures {
     double midMax = 1.5,
     double highMax = 1.0,
     double centroidMax = 8000.0,
+    double fluxMax = 0.5,
+    double pitchMax = 1000.0,
     double rmsMax = 0.5,
+    double transientMax = 10.0,
   }) {
     return AudioFeatures(
       bassEnergy: (bassEnergy / bassMax).clamp(0.0, 1.0),
       midEnergy: (midEnergy / midMax).clamp(0.0, 1.0),
       highEnergy: (highEnergy / highMax).clamp(0.0, 1.0),
       spectralCentroid: (spectralCentroid / centroidMax).clamp(0.0, 1.0),
+      spectralFlux: (spectralFlux / fluxMax).clamp(0.0, 1.0),
+      fundamentalFreq: (fundamentalFreq / pitchMax).clamp(0.0, 1.0),
       rms: (rms / rmsMax).clamp(0.0, 1.0),
       stereoWidth: stereoWidth.clamp(0.0, 1.0),
+      transientDensity: (transientDensity / transientMax).clamp(0.0, 1.0),
+      noiseContent: noiseContent.clamp(0.0, 1.0),
     );
   }
 
   @override
   String toString() {
-    return 'AudioFeatures(bass: ${bassEnergy.toStringAsFixed(3)}, '
+    return 'AudioFeatures('
+           'bass: ${bassEnergy.toStringAsFixed(3)}, '
            'mid: ${midEnergy.toStringAsFixed(3)}, '
            'high: ${highEnergy.toStringAsFixed(3)}, '
            'centroid: ${spectralCentroid.toStringAsFixed(1)} Hz, '
+           'flux: ${spectralFlux.toStringAsFixed(3)}, '
+           'pitch: ${fundamentalFreq.toStringAsFixed(1)} Hz, '
            'rms: ${rms.toStringAsFixed(3)}, '
-           'width: ${stereoWidth.toStringAsFixed(3)})';
+           'width: ${stereoWidth.toStringAsFixed(3)}, '
+           'transients: ${transientDensity.toStringAsFixed(1)}/s, '
+           'noise: ${noiseContent.toStringAsFixed(3)})';
   }
 }

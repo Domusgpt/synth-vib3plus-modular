@@ -12,6 +12,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../ui/theme/synth_theme.dart';
 
 /// Device type detection
 enum DeviceType {
@@ -31,12 +32,15 @@ enum XYAxisParameter {
   pitch,
   filterCutoff,
   resonance,
+  oscillatorMix,
   fmDepth,
   ringModMix,
+  morphParameter,
   morph,
   chaos,
   brightness,
   reverb,
+  rotationSpeed,
 }
 
 /// Parameter range configuration
@@ -510,4 +514,72 @@ class UIStateProvider with ChangeNotifier {
     notifyListeners();
     debugPrint('✅ UI configuration loaded from JSON');
   }
+
+  // Panel management methods
+  bool isPanelExpanded(String panelId) => _panelStates[panelId] ?? false;
+
+  void expandPanel(String panelId) {
+    _panelStates[panelId] = true;
+    notifyListeners();
+  }
+
+  void collapsePanel(String panelId) {
+    _panelStates[panelId] = false;
+    notifyListeners();
+  }
+
+  void collapseAllPanels() {
+    _panelStates.updateAll((key, value) => false);
+    notifyListeners();
+  }
+
+  bool isAnyPanelExpanded() => _panelStates.values.any((expanded) => expanded);
+
+  // XY Pad configuration
+  bool get xyPadShowGrid => _showNoteGrid;
+
+  void setXYPadShowGrid(bool value) {
+    _showNoteGrid = value;
+    notifyListeners();
+  }
+
+  // Orb controller methods
+  bool get orbControllerVisible => _orbVisible;
+
+  void setOrbControllerVisible(bool value) {
+    _orbVisible = value;
+    notifyListeners();
+  }
+
+  Offset get orbControllerPosition => _orbPosition;
+
+  void setOrbControllerPosition(Offset position) {
+    _orbPosition = position;
+    notifyListeners();
+  }
+
+  void setOrbControllerActive(bool active) {
+    // Track orb drag state for visual feedback
+    notifyListeners();
+  }
+
+  // Pitch configuration methods
+  void setPitchRangeStart(int value) {
+    _pitchRangeStart = value.clamp(0, 127);
+    notifyListeners();
+  }
+
+  void setPitchRangeEnd(int value) {
+    _pitchRangeEnd = value.clamp(0, 127);
+    notifyListeners();
+  }
+
+  // Tilt control methods
+  void setTiltEnabled(bool enabled) {
+    _tiltEnabled = enabled;
+    notifyListeners();
+  }
+
+  // System colors (derived from current visual system)
+  SystemColors get currentSystemColors => SystemColors.quantum; // Placeholder - should get from VisualProvider
 }

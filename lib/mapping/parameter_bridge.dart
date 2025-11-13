@@ -12,7 +12,6 @@
  */
 
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 
 import 'audio_to_visual.dart';
@@ -76,6 +75,10 @@ class ParameterBridge with ChangeNotifier {
       const Duration(milliseconds: 16), // ~60 Hz
       (_) => _update(),
     );
+
+    debugPrint('🌉 ParameterBridge started (60 FPS)');
+    debugPrint('   Audio→Visual: ${_currentPreset.audioReactiveEnabled ? "ENABLED" : "disabled"}');
+    debugPrint('   Visual→Audio: ${_currentPreset.visualReactiveEnabled ? "ENABLED" : "disabled"}');
 
     notifyListeners();
   }

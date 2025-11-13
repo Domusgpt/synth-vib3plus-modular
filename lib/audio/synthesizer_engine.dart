@@ -1,13 +1,15 @@
 /**
- * Synthesizer Engine
+ * Synthesizer Engine - Professional Audio Implementation
  *
- * Core audio synthesis system with bidirectional parameter coupling
- * to VIB34D visual parameters. Supports:
- * - Dual oscillator system with frequency modulation
- * - Multi-mode filter (lowpass, highpass, bandpass)
- * - Wavetable oscillators with morphing capability
- * - Effects processor (reverb, delay)
- * - Real-time parameter modulation from visual system
+ * Core audio synthesis system with:
+ * - ADSR envelope system for natural note articulation
+ * - 8-voice polyphony with voice stealing
+ * - Stereo output with panning and width control
+ * - Noise generator for textural content
+ * - Bidirectional parameter coupling to VIB34D visual system
+ * - Multi-mode filter with resonance
+ * - Dual oscillators with FM and ring modulation
+ * - Effects: reverb, delay with adjustable mix
  *
  * A Paul Phillips Manifestation
  */
@@ -32,15 +34,224 @@ enum FilterType {
   notch,
 }
 
-/// Main synthesizer engine
+/// ADSR Envelope for natural note articulation
+class ADSREnvelope {
+  double attack = 0.01;   // 10ms
+  double decay = 0.1;     // 100ms
+  double sustain = 0.7;   // 70% level
+  double release = 0.3;   // 300ms
+
+  double _level = 0.0;
+  double _time = 0.0;
+  bool _isActive = false;
+  bool _isReleasing = false;
+  double _releaseLevel = 0.0;
+  final double sampleRate;
+
+  ADSREnvelope({required this.sampleRate});
+
+  /// Trigger note on
+  void noteOn() {
+    _isActive = true;
+    _isReleasing = false;
+    _time = 0.0;
+  }
+
+  /// Trigger note off (start release phase)
+  void noteOff() {
+    if (_isActive && !_isReleasing) {
+      _isReleasing = true;
+      _releaseLevel = _level;
+      _time = 0.0;
+    }
+  }
+
+  /// Process next sample and return envelope level (0-1)
+  double process() {
+    if (!_isActive) return 0.0;
+
+    if (_isReleasing) {
+      // Release phase
+      _time += 1.0 / sampleRate;
+      _level = _releaseLevel * (1.0 - (_time / release).clamp(0.0, 1.0));
+
+      if (_time >= release) {
+        _isActive = false;
+        _level = 0.0;
+      }
+    } else {
+      // Attack → Decay → Sustain phases
+      _time += 1.0 / sampleRate;
+
+      if (_time < attack) {
+        // Attack phase
+        _level = _time / attack;
+      } else if (_time < attack + decay) {
+        // Decay phase
+        final decayTime = _time - attack;
+        _level = 1.0 - ((1.0 - sustain) * (decayTime / decay));
+      } else {
+        // Sustain phase
+        _level = sustain;
+      }
+    }
+
+    return _level.clamp(0.0, 1.0);
+  }
+
+  bool get isActive => _isActive;
+}
+
+/// Voice for polyphonic synthesis
+class Voice {
+  late final Oscillator oscillator1;
+  late final Oscillator oscillator2;
+  late final ADSREnvelope envelope;
+
+  int midiNote = 60;
+  bool isActive = false;
+  double pan = 0.0; // -1 (left) to 1 (right)
+
+  Voice({required double sampleRate}) {
+    oscillator1 = Oscillator(
+      sampleRate: sampleRate,
+      waveform: Waveform.sawtooth,
+    );
+    oscillator2 = Oscillator(
+      sampleRate: sampleRate,
+      waveform: Waveform.square,
+    );
+    envelope = ADSREnvelope(sampleRate: sampleRate);
+  }
+
+  /// Set note frequency
+  void setNote(int note, double baseFrequency) {
+    midiNote = note;
+    oscillator1.baseFrequency = baseFrequency;
+    oscillator2.baseFrequency = baseFrequency;
+  }
+
+  /// Trigger note on
+  void noteOn(int note, double baseFrequency) {
+    setNote(note, baseFrequency);
+    envelope.noteOn();
+    isActive = true;
+  }
+
+  /// Trigger note off
+  void noteOff() {
+    envelope.noteOff();
+  }
+
+  /// Generate next sample (mono)
+  double nextSample(double mixBalance) {
+    if (!isActive) return 0.0;
+
+    final env = envelope.process();
+    if (!envelope.isActive) {
+      isActive = false;
+      return 0.0;
+    }
+
+    final osc1Sample = oscillator1.nextSample();
+    final osc2Sample = oscillator2.nextSample();
+    final mixed = (osc1Sample * (1.0 - mixBalance)) + (osc2Sample * mixBalance);
+
+    return mixed * env;
+  }
+}
+
+/// Voice manager for polyphonic synthesis
+class VoiceManager {
+  final List<Voice> voices;
+  final double sampleRate;
+  final int maxVoices;
+
+  VoiceManager({
+    required this.sampleRate,
+    this.maxVoices = 8,
+  }) : voices = List.generate(
+          maxVoices,
+          (_) => Voice(sampleRate: sampleRate),
+        );
+
+  /// Allocate voice for new note
+  Voice? allocateVoice(int midiNote, double frequency) {
+    // First, try to find an inactive voice
+    for (final voice in voices) {
+      if (!voice.isActive) {
+        voice.noteOn(midiNote, frequency);
+        return voice;
+      }
+    }
+
+    // If all voices active, steal oldest (voice 0)
+    voices[0].noteOn(midiNote, frequency);
+    return voices[0];
+  }
+
+  /// Release voice for note
+  void releaseVoice(int midiNote) {
+    for (final voice in voices) {
+      if (voice.isActive && voice.midiNote == midiNote) {
+        voice.noteOff();
+      }
+    }
+  }
+
+  /// Release all voices
+  void releaseAll() {
+    for (final voice in voices) {
+      if (voice.isActive) {
+        voice.noteOff();
+      }
+    }
+  }
+
+  /// Get active voice count
+  int getActiveCount() {
+    return voices.where((v) => v.isActive).length;
+  }
+
+  /// Mix all voices (mono)
+  double mixVoices(double mixBalance) {
+    double sum = 0.0;
+    int activeCount = 0;
+
+    for (final voice in voices) {
+      if (voice.isActive) {
+        sum += voice.nextSample(mixBalance);
+        activeCount++;
+      }
+    }
+
+    // Normalize by active voice count to prevent clipping
+    return activeCount > 0 ? sum / math.sqrt(activeCount) : 0.0;
+  }
+}
+
+/// Noise generator
+class NoiseGenerator {
+  double amount = 0.0; // 0-1
+  final math.Random _random = math.Random();
+
+  /// Generate next noise sample
+  double nextSample() {
+    return (_random.nextDouble() * 2.0 - 1.0) * amount;
+  }
+}
+
+/// Main synthesizer engine with polyphony and stereo output
 class SynthesizerEngine {
   // Audio configuration
   final double sampleRate;
   final int bufferSize;
 
-  // Oscillators
-  late final Oscillator oscillator1;
-  late final Oscillator oscillator2;
+  // Voice management
+  late final VoiceManager voiceManager;
+
+  // Noise generator
+  late final NoiseGenerator noiseGenerator;
 
   // Filter
   late final Filter filter;
@@ -52,27 +263,23 @@ class SynthesizerEngine {
   // Master parameters
   double masterVolume = 0.7;
   double mixBalance = 0.5; // 0 = osc1 only, 1 = osc2 only
+  double stereoWidth = 1.0; // 0 = mono, 1 = full stereo
 
   // Modulation inputs (from visual system)
   double _osc1FreqModulation = 0.0;  // ±2 semitones
   double _osc2FreqModulation = 0.0;  // ±2 semitones
   double _filterCutoffModulation = 0.0; // ±40%
   double _wavetablePositionModulation = 0.0; // 0-1
-  int voiceCount = 1; // Make public instead of private
+
+  // Legacy single-note tracking (for compatibility)
+  int _currentNote = 60;
 
   SynthesizerEngine({
     this.sampleRate = 44100.0,
     this.bufferSize = 512,
   }) {
-    oscillator1 = Oscillator(
-      sampleRate: sampleRate,
-      waveform: Waveform.sawtooth,
-    );
-
-    oscillator2 = Oscillator(
-      sampleRate: sampleRate,
-      waveform: Waveform.square,
-    );
+    voiceManager = VoiceManager(sampleRate: sampleRate, maxVoices: 8);
+    noiseGenerator = NoiseGenerator();
 
     filter = Filter(
       sampleRate: sampleRate,
@@ -83,25 +290,40 @@ class SynthesizerEngine {
     delay = Delay(sampleRate: sampleRate);
   }
 
-  /// Generate audio buffer
+  // Legacy oscillator access for compatibility
+  Oscillator get oscillator1 => voiceManager.voices[0].oscillator1;
+  Oscillator get oscillator2 => voiceManager.voices[0].oscillator2;
+
+  /// Get active voice count
+  int get voiceCount => voiceManager.getActiveCount();
+
+  /// Set voice count (no-op for compatibility, polyphony is automatic)
+  void setVoiceCount(int count) {
+    // Voice allocation is automatic, this is for UI compatibility
+  }
+
+  /// Generate audio buffer (mono for compatibility)
   Float32List generateBuffer(int frames) {
     final buffer = Float32List(frames);
 
     for (int i = 0; i < frames; i++) {
-      // Apply frequency modulation from visual system
-      oscillator1.frequencyModulation = _osc1FreqModulation;
-      oscillator2.frequencyModulation = _osc2FreqModulation;
+      // Apply frequency modulation to all voices
+      for (final voice in voiceManager.voices) {
+        voice.oscillator1.frequencyModulation = _osc1FreqModulation;
+        voice.oscillator2.frequencyModulation = _osc2FreqModulation;
+        voice.oscillator1.wavetablePosition = _wavetablePositionModulation;
+        voice.oscillator2.wavetablePosition = _wavetablePositionModulation;
+      }
 
-      // Generate oscillator outputs
-      final osc1Sample = oscillator1.nextSample();
-      final osc2Sample = oscillator2.nextSample();
+      // Mix all voices
+      final mixed = voiceManager.mixVoices(mixBalance);
 
-      // Mix oscillators
-      final mixed = (osc1Sample * (1.0 - mixBalance)) + (osc2Sample * mixBalance);
+      // Add noise
+      final withNoise = mixed + noiseGenerator.nextSample();
 
       // Apply filter with modulation
       filter.cutoffModulation = _filterCutoffModulation;
-      final filtered = filter.process(mixed);
+      final filtered = filter.process(withNoise);
 
       // Apply effects
       final delayed = delay.process(filtered);
@@ -114,11 +336,90 @@ class SynthesizerEngine {
     return buffer;
   }
 
-  /// Set base note (MIDI note number)
+  /// Generate stereo audio buffers
+  (Float32List, Float32List) generateStereoBuffer(int frames) {
+    final left = Float32List(frames);
+    final right = Float32List(frames);
+
+    for (int i = 0; i < frames; i++) {
+      // Apply frequency modulation to all voices
+      for (final voice in voiceManager.voices) {
+        voice.oscillator1.frequencyModulation = _osc1FreqModulation;
+        voice.oscillator2.frequencyModulation = _osc2FreqModulation;
+        voice.oscillator1.wavetablePosition = _wavetablePositionModulation;
+        voice.oscillator2.wavetablePosition = _wavetablePositionModulation;
+      }
+
+      // Mix all voices with stereo panning
+      double leftSum = 0.0;
+      double rightSum = 0.0;
+      int activeCount = 0;
+
+      for (final voice in voiceManager.voices) {
+        if (voice.isActive) {
+          final sample = voice.nextSample(mixBalance);
+
+          // Apply stereo panning
+          final pan = voice.pan * stereoWidth;
+          final leftGain = math.sqrt(0.5 * (1.0 - pan));
+          final rightGain = math.sqrt(0.5 * (1.0 + pan));
+
+          leftSum += sample * leftGain;
+          rightSum += sample * rightGain;
+          activeCount++;
+        }
+      }
+
+      // Normalize by active voice count
+      final normFactor = activeCount > 0 ? 1.0 / math.sqrt(activeCount) : 0.0;
+      final leftMixed = leftSum * normFactor;
+      final rightMixed = rightSum * normFactor;
+
+      // Add noise (mono noise to both channels)
+      final noise = noiseGenerator.nextSample();
+      final leftWithNoise = leftMixed + noise;
+      final rightWithNoise = rightMixed + noise;
+
+      // Apply filter (same settings to both channels)
+      filter.cutoffModulation = _filterCutoffModulation;
+      final leftFiltered = filter.process(leftWithNoise);
+      final rightFiltered = filter.process(rightWithNoise);
+
+      // Apply effects (shared reverb/delay for coherence)
+      final leftDelayed = delay.process(leftFiltered);
+      final rightDelayed = delay.process(rightFiltered);
+      final leftReverb = reverb.process(leftDelayed);
+      final rightReverb = reverb.process(rightDelayed);
+
+      // Master output
+      left[i] = (leftReverb * masterVolume).clamp(-1.0, 1.0);
+      right[i] = (rightReverb * masterVolume).clamp(-1.0, 1.0);
+    }
+
+    return (left, right);
+  }
+
+  /// Set base note (MIDI note number) - allocates a new voice
   void setNote(int midiNote) {
+    _currentNote = midiNote;
     final freq = _midiToFrequency(midiNote);
-    oscillator1.baseFrequency = freq;
-    oscillator2.baseFrequency = freq;
+    voiceManager.allocateVoice(midiNote, freq);
+  }
+
+  /// Note on (polyphonic)
+  void noteOn(int midiNote) {
+    final freq = _midiToFrequency(midiNote);
+    voiceManager.allocateVoice(midiNote, freq);
+  }
+
+  /// Note off (polyphonic)
+  void noteOff(int midiNote) {
+    voiceManager.releaseVoice(midiNote);
+  }
+
+  /// All notes off
+  void allNotesOff() {
+    voiceManager.releaseAll();
   }
 
   /// Modulate oscillator 1 frequency (±2 semitones from visual system)
@@ -139,13 +440,6 @@ class SynthesizerEngine {
   /// Set wavetable position (from visual morph parameter)
   void setWavetablePosition(double position) {
     _wavetablePositionModulation = position.clamp(0.0, 1.0);
-    oscillator1.wavetablePosition = _wavetablePositionModulation;
-    oscillator2.wavetablePosition = _wavetablePositionModulation;
-  }
-
-  /// Set voice count (from visual vertex count)
-  void setVoiceCount(int count) {
-    voiceCount = count.clamp(1, 16);
   }
 
   /// Set reverb mix (from visual projection distance)
@@ -156,6 +450,41 @@ class SynthesizerEngine {
   /// Set delay time (from visual layer depth)
   void setDelayTime(double milliseconds) {
     delay.delayTime = milliseconds.clamp(0.0, 1000.0);
+  }
+
+  /// Set noise amount (from visual chaos parameter)
+  void setNoiseAmount(double amount) {
+    noiseGenerator.amount = amount.clamp(0.0, 1.0);
+  }
+
+  /// Set stereo width
+  void setStereoWidth(double width) {
+    stereoWidth = width.clamp(0.0, 1.0);
+  }
+
+  /// Set envelope parameters
+  void setEnvelopeAttack(double seconds) {
+    for (final voice in voiceManager.voices) {
+      voice.envelope.attack = seconds.clamp(0.001, 5.0);
+    }
+  }
+
+  void setEnvelopeDecay(double seconds) {
+    for (final voice in voiceManager.voices) {
+      voice.envelope.decay = seconds.clamp(0.001, 5.0);
+    }
+  }
+
+  void setEnvelopeSustain(double level) {
+    for (final voice in voiceManager.voices) {
+      voice.envelope.sustain = level.clamp(0.0, 1.0);
+    }
+  }
+
+  void setEnvelopeRelease(double seconds) {
+    for (final voice in voiceManager.voices) {
+      voice.envelope.release = seconds.clamp(0.001, 10.0);
+    }
   }
 
   /// Convert MIDI note to frequency
@@ -282,11 +611,11 @@ class Filter {
   }
 }
 
-/// Simple reverb effect
+/// Reverb effect with adjustable mix
 class Reverb {
   final double sampleRate;
 
-  double mix = 0.3; // Wet/dry mix (0-1)
+  double mix = 0.3; // Wet/dry mix (0-1) - NOW SETTABLE!
   double roomSize = 0.7;
   double damping = 0.5;
 
@@ -319,13 +648,13 @@ class Reverb {
   }
 }
 
-/// Simple delay effect
+/// Delay effect with adjustable mix
 class Delay {
   final double sampleRate;
 
   double delayTime = 250.0; // milliseconds
   double feedback = 0.4;
-  double mix = 0.3;
+  double mix = 0.3; // NOW SETTABLE!
 
   late final List<double> _buffer;
   final int _maxBufferSize;

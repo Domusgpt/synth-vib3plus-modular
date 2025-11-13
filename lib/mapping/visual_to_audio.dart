@@ -13,6 +13,7 @@
  * A Paul Phillips Manifestation
  */
 
+import 'package:flutter/foundation.dart';
 import 'dart:math' as math;
 import '../providers/audio_provider.dart';
 import '../providers/visual_provider.dart';
@@ -80,8 +81,21 @@ class VisualToAudioModulator {
     };
   }
 
+  // Debug logging state (only log significant changes to avoid spam)
+  double _lastLoggedRotXW = -999.0;
+  double _lastLoggedRotYW = -999.0;
+  double _lastLoggedRotZW = -999.0;
+  int _updateCounter = 0;
+  bool _firstUpdateLogged = false;
+
   /// Main update function called at 60 FPS
   void updateFromVisuals() {
+    // First update verification
+    if (!_firstUpdateLogged) {
+      debugPrint('🔊 Visual→Audio modulator: First update called');
+      _firstUpdateLogged = true;
+    }
+
     // Read current visual state
     final visualState = _getVisualState();
 
@@ -104,6 +118,47 @@ class VisualToAudioModulator {
 
     // **NEW**: Sync visual system to sound family
     _syncVisualSystemToAudio();
+
+    // Debug logging: Log every 60 frames (1 second at 60 FPS) OR when significant change
+    _updateCounter++;
+    if (_updateCounter >= 60 || _hasSignificantChange(visualState)) {
+      _logModulationState(visualState);
+      _updateCounter = 0;
+    }
+  }
+
+  /// Check if visual parameters changed significantly (>5%)
+  bool _hasSignificantChange(Map<String, double> visualState) {
+    final rotXW = visualState['rotationXW'] ?? 0.0;
+    final rotYW = visualState['rotationYW'] ?? 0.0;
+    final rotZW = visualState['rotationZW'] ?? 0.0;
+
+    return (rotXW - _lastLoggedRotXW).abs() > 0.05 ||
+           (rotYW - _lastLoggedRotYW).abs() > 0.05 ||
+           (rotZW - _lastLoggedRotZW).abs() > 0.05;
+  }
+
+  /// Log current modulation state for debugging
+  void _logModulationState(Map<String, double> visualState) {
+    final rotXW = visualState['rotationXW'] ?? 0.0;
+    final rotYW = visualState['rotationYW'] ?? 0.0;
+    final rotZW = visualState['rotationZW'] ?? 0.0;
+    final morph = visualState['morphParameter'] ?? 0.0;
+
+    // Get mapped audio values
+    final osc1Mod = _mappings['rotationXW_to_osc1Freq']?.map(rotXW) ?? 0.0;
+    final osc2Mod = _mappings['rotationYW_to_osc2Freq']?.map(rotYW) ?? 0.0;
+    final filterMod = _mappings['rotationZW_to_filterCutoff']?.map(rotZW) ?? 0.0;
+
+    debugPrint('🔊 Visual→Audio: '
+      'rotXW=${rotXW.toStringAsFixed(2)}→osc1=${osc1Mod.toStringAsFixed(2)}st | '
+      'rotYW=${rotYW.toStringAsFixed(2)}→osc2=${osc2Mod.toStringAsFixed(2)}st | '
+      'rotZW=${rotZW.toStringAsFixed(2)}→filter=${(filterMod * 100).toStringAsFixed(0)}% | '
+      'morph=${morph.toStringAsFixed(2)}');
+
+    _lastLoggedRotXW = rotXW;
+    _lastLoggedRotYW = rotYW;
+    _lastLoggedRotZW = rotZW;
   }
 
   /// Sync geometry changes to audio provider

@@ -12,6 +12,7 @@
  * A Paul Phillips Manifestation
  */
 
+import 'package:flutter/foundation.dart';
 import 'dart:typed_data';
 import 'dart:math' as math;
 import '../providers/audio_provider.dart';
@@ -28,6 +29,12 @@ class AudioToVisualModulator {
 
   // Mapping configuration
   Map<String, ParameterMapping> _mappings = {};
+
+  // Debug logging state (only log significant changes)
+  double _lastLoggedBass = -999.0;
+  double _lastLoggedMid = -999.0;
+  double _lastLoggedHigh = -999.0;
+  int _updateCounter = 0;
 
   AudioToVisualModulator({
     required this.audioProvider,
@@ -99,6 +106,51 @@ class AudioToVisualModulator {
       // Update corresponding visual parameter
       _updateVisualParameter(mapping.targetParam, mappedValue);
     });
+
+    // Debug logging: Log every 60 frames (1 second) OR when significant change
+    _updateCounter++;
+    if (_updateCounter >= 60 || _hasSignificantChange(features)) {
+      _logModulationState(features);
+      _updateCounter = 0;
+    }
+  }
+
+  /// Check if audio features changed significantly (>10% energy change)
+  bool _hasSignificantChange(Map<String, double> features) {
+    final bass = features['bassEnergy'] ?? 0.0;
+    final mid = features['midEnergy'] ?? 0.0;
+    final high = features['highEnergy'] ?? 0.0;
+
+    return (bass - _lastLoggedBass).abs() > 0.1 ||
+           (mid - _lastLoggedMid).abs() > 0.1 ||
+           (high - _lastLoggedHigh).abs() > 0.1;
+  }
+
+  /// Log current modulation state for debugging
+  void _logModulationState(Map<String, double> features) {
+    final bass = features['bassEnergy'] ?? 0.0;
+    final mid = features['midEnergy'] ?? 0.0;
+    final high = features['highEnergy'] ?? 0.0;
+    final centroid = features['spectralCentroid'] ?? 0.0;
+    final rms = features['rms'] ?? 0.0;
+
+    // Get mapped visual values
+    final rotSpeed = _mappings['bassEnergy_to_rotationSpeed']?.map(bass) ?? 0.0;
+    final tessellation = _mappings['midEnergy_to_tessellationDensity']?.map(mid) ?? 0.0;
+    final brightness = _mappings['highEnergy_to_vertexBrightness']?.map(high) ?? 0.0;
+    final hue = _mappings['spectralCentroid_to_hueShift']?.map(centroid) ?? 0.0;
+    final glow = _mappings['rms_to_glowIntensity']?.map(rms) ?? 0.0;
+
+    debugPrint('🎨 Audio→Visual: '
+      'bass=${(bass * 100).toStringAsFixed(0)}%→speed=${rotSpeed.toStringAsFixed(2)}x | '
+      'mid=${(mid * 100).toStringAsFixed(0)}%→tess=${tessellation.toStringAsFixed(0)} | '
+      'high=${(high * 100).toStringAsFixed(0)}%→bright=${brightness.toStringAsFixed(2)} | '
+      'centroid=${centroid.toStringAsFixed(0)}Hz→hue=${hue.toStringAsFixed(0)}° | '
+      'rms=${(rms * 100).toStringAsFixed(0)}%→glow=${glow.toStringAsFixed(2)}');
+
+    _lastLoggedBass = bass;
+    _lastLoggedMid = mid;
+    _lastLoggedHigh = high;
   }
 
   void _updateVisualParameter(String paramName, double value) {

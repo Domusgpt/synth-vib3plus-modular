@@ -16,22 +16,20 @@
  */
 
 import 'dart:async';
-import 'dart:math' as dart;
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:flutter_pcm_sound/flutter_pcm_sound.dart';
 import '../audio/audio_analyzer.dart';
 import '../audio/synthesizer_engine.dart';
 import '../synthesis/synthesis_branch_manager.dart';
+import '../ui/theme/synth_theme.dart';
 
 class AudioProvider with ChangeNotifier {
   // Core audio systems
   late final SynthesizerEngine synthesizerEngine;
   late final AudioAnalyzer audioAnalyzer;
   late final SynthesisBranchManager synthesisBranchManager;
-
-  // Audio I/O
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   // Audio buffer management
   Float32List? _currentBuffer;
@@ -46,9 +44,6 @@ class AudioProvider with ChangeNotifier {
   bool _isPlaying = false;
   double _masterVolume = 0.7;
 
-  // Audio generation timer
-  Timer? _audioGenerationTimer;
-
   // Performance metrics
   int _buffersGenerated = 0;
   DateTime _lastMetricsCheck = DateTime.now();
@@ -57,7 +52,7 @@ class AudioProvider with ChangeNotifier {
     _initialize();
   }
 
-  void _initialize() {
+  Future<void> _initialize() async {
     synthesizerEngine = SynthesizerEngine(
       sampleRate: sampleRate,
       bufferSize: bufferSize,
@@ -72,7 +67,21 @@ class AudioProvider with ChangeNotifier {
       sampleRate: sampleRate,
     );
 
-    debugPrint('✅ AudioProvider initialized with SynthesisBranchManager');
+    // Setup PCM audio output (static method)
+    await FlutterPcmSound.setup(
+      sampleRate: sampleRate.toInt(),
+      channelCount: 1,  // Mono
+    );
+
+    // Set feed callback to handle buffer requests
+    FlutterPcmSound.setFeedCallback((int remainingFrames) {
+      _feedAudioCallback(remainingFrames);
+    });
+
+    // Set threshold for callback (trigger when less than 2048 frames remain)
+    await FlutterPcmSound.setFeedThreshold(2048);
+
+    debugPrint('✅ AudioProvider initialized with PCM audio output');
   }
 
   // Getters
@@ -103,21 +112,28 @@ class AudioProvider with ChangeNotifier {
     _lastMetricsCheck = DateTime.now();
     _buffersGenerated = 0;
 
-    // Generate audio buffers at regular intervals
-    _audioGenerationTimer = Timer.periodic(
-      Duration(milliseconds: (bufferSize * 1000 / sampleRate).round()),
-      (_) => _generateAudioBuffer(),
-    );
+    // Start the PCM audio feed
+    FlutterPcmSound.start();
 
     notifyListeners();
     debugPrint('▶️  Audio started');
   }
 
+  /// Callback when PCM buffer needs more data
+  void _feedAudioCallback(int remainingFrames) {
+    if (!_isPlaying) return;
+
+    // Generate multiple buffers to keep ahead of playback
+    const buffersToGenerate = 4;
+    for (int i = 0; i < buffersToGenerate; i++) {
+      _generateAudioBuffer();
+    }
+  }
+
   /// Stop audio generation and playback
   Future<void> stopAudio() async {
-    _audioGenerationTimer?.cancel();
     _isPlaying = false;
-    await _audioPlayer.stop();
+    // PCM audio will stop when no more data is fed
     notifyListeners();
     debugPrint('⏸️  Audio stopped');
   }
@@ -125,23 +141,30 @@ class AudioProvider with ChangeNotifier {
   /// Generate next audio buffer
   void _generateAudioBuffer() {
     try {
-      // Calculate frequency from MIDI note
-      final frequency = _midiNoteToFrequency(_currentNote);
-
-      // Generate buffer from synthesis branch manager (uses current geometry/system)
-      _currentBuffer = synthesisBranchManager.generateBuffer(bufferSize, frequency);
+      // Generate buffer from FULL synthesis engine (includes filter, effects, envelopes)
+      // This properly applies all parameter changes!
+      _currentBuffer = synthesizerEngine.generateBuffer(bufferSize);
 
       // Analyze the buffer
       if (_currentBuffer != null && _currentBuffer!.isNotEmpty) {
         _currentFeatures = audioAnalyzer.extractFeatures(_currentBuffer!);
+
+        // Convert Float32List to Int16List for PCM output
+        // PCM 16-bit signed format: -32768 to 32767
+        final int16Buffer = Int16List(_currentBuffer!.length);
+        for (int i = 0; i < _currentBuffer!.length; i++) {
+          // Clamp to -1.0 to 1.0 and scale to int16 range
+          final sample = _currentBuffer![i].clamp(-1.0, 1.0);
+          int16Buffer[i] = (sample * 32767).round();
+        }
+
+        // Feed buffer to PCM audio output (static method)
+        FlutterPcmSound.feed(
+          PcmArrayInt16.fromList(int16Buffer.toList()),
+        );
       }
 
       _buffersGenerated++;
-
-      // TODO: Send buffer to audio output
-      // This requires platform-specific audio API integration
-      // For now, just store the buffer for analysis
-
       notifyListeners();
     } catch (e) {
       debugPrint('❌ Error generating audio buffer: $e');
@@ -152,7 +175,7 @@ class AudioProvider with ChangeNotifier {
   double _midiNoteToFrequency(int midiNote) {
     // A4 (MIDI 69) = 440 Hz
     // Each semitone is 2^(1/12) ratio
-    return 440.0 * dart.math.pow(2.0, (midiNote - 69) / 12.0);
+    return 440.0 * pow(2.0, (midiNote - 69) / 12.0);
   }
 
   /// Play a note (MIDI note number)
@@ -197,6 +220,7 @@ class AudioProvider with ChangeNotifier {
       default:
         system = VisualSystem.quantum;
     }
+    _currentVisualSystem = system;
     synthesisBranchManager.setVisualSystem(system);
     debugPrint('🎨 Visual system set to: ${system.name}');
     notifyListeners();
@@ -304,10 +328,178 @@ class AudioProvider with ChangeNotifier {
     };
   }
 
+  // ============================================================================
+  // MISSING METHODS ADDED FOR UI INTEGRATION
+  // ============================================================================
+
+  // Note control (polyphonic)
+  final List<int> _activeNotes = [];
+
+  List<int> get activeNotes => List.unmodifiable(_activeNotes);
+
+  void noteOn(int midiNote) {
+    if (!_activeNotes.contains(midiNote)) {
+      _activeNotes.add(midiNote);
+      playNote(midiNote);
+    }
+  }
+
+  void noteOff(int midiNote) {
+    _activeNotes.remove(midiNote);
+    if (_activeNotes.isEmpty) {
+      stopNote();
+    } else {
+      // Switch to last active note
+      playNote(_activeNotes.last);
+    }
+  }
+
+  // Modulation control
+  double _pitchBendSemitones = 0.0;
+  double _vibratoDepth = 0.0;
+
+  void setPitchBend(double semitones) {
+    _pitchBendSemitones = semitones.clamp(-12.0, 12.0);
+    // Apply to synthesis engine
+    // TODO: Implement pitch bend in SynthesizerEngine
+    notifyListeners();
+  }
+
+  void setVibratoDepth(double depth) {
+    _vibratoDepth = depth.clamp(0.0, 1.0);
+    // Apply to synthesis engine
+    // TODO: Implement vibrato in SynthesizerEngine
+    notifyListeners();
+  }
+
+  // Oscillator mix and detuning
+  double _mixBalance = 0.5; // 0.0 = Osc1 only, 1.0 = Osc2 only
+  double _oscillator1Detune = 0.0;
+  double _oscillator2Detune = 0.0;
+
+  double get mixBalance => _mixBalance;
+  double get oscillator1Detune => _oscillator1Detune;
+  double get oscillator2Detune => _oscillator2Detune;
+
+  void setMixBalance(double balance) {
+    _mixBalance = balance.clamp(0.0, 1.0);
+    // TODO: Implement oscillatorMix property in SynthesizerEngine
+    // synthesizerEngine.oscillatorMix = _mixBalance;
+    notifyListeners();
+  }
+
+  void setOscillator1Detune(double cents) {
+    _oscillator1Detune = cents.clamp(-100.0, 100.0);
+    // TODO: Implement detune property in Oscillator
+    // synthesizerEngine.oscillator1.detune = _oscillator1Detune;
+    notifyListeners();
+  }
+
+  void setOscillator2Detune(double cents) {
+    _oscillator2Detune = cents.clamp(-100.0, 100.0);
+    // TODO: Implement detune property in Oscillator
+    // synthesizerEngine.oscillator2.detune = _oscillator2Detune;
+    notifyListeners();
+  }
+
+  // Envelope parameters (using local state until engine implementation)
+  double _envelopeAttack = 0.01;
+  double _envelopeDecay = 0.1;
+  double _envelopeSustain = 0.7;
+  double _envelopeRelease = 0.3;
+
+  double get envelopeAttack => _envelopeAttack;
+  double get envelopeDecay => _envelopeDecay;
+  double get envelopeSustain => _envelopeSustain;
+  double get envelopeRelease => _envelopeRelease;
+
+  void setEnvelopeAttack(double seconds) {
+    _envelopeAttack = seconds.clamp(0.001, 5.0);
+    synthesizerEngine.setEnvelopeAttack(_envelopeAttack);
+    notifyListeners();
+  }
+
+  void setEnvelopeDecay(double seconds) {
+    _envelopeDecay = seconds.clamp(0.001, 5.0);
+    synthesizerEngine.setEnvelopeDecay(_envelopeDecay);
+    notifyListeners();
+  }
+
+  void setEnvelopeSustain(double level) {
+    _envelopeSustain = level.clamp(0.0, 1.0);
+    synthesizerEngine.setEnvelopeSustain(_envelopeSustain);
+    notifyListeners();
+  }
+
+  void setEnvelopeRelease(double seconds) {
+    _envelopeRelease = seconds.clamp(0.001, 10.0);
+    synthesizerEngine.setEnvelopeRelease(_envelopeRelease);
+    notifyListeners();
+  }
+
+  // Filter parameters (additional getters)
+  double get filterCutoff => synthesizerEngine.filter.baseCutoff;
+  double get filterResonance => synthesizerEngine.filter.resonance;
+  double _filterEnvelopeAmount = 0.0;
+
+  double get filterEnvelopeAmount => _filterEnvelopeAmount;
+
+  void setFilterEnvelopeAmount(double amount) {
+    _filterEnvelopeAmount = amount.clamp(0.0, 1.0);
+    // TODO: Implement filter envelope modulation in SynthesizerEngine
+    notifyListeners();
+  }
+
+  // Reverb parameters (additional getters)
+  double get reverbMix => synthesizerEngine.reverb.mix;
+  double get reverbRoomSize => synthesizerEngine.reverb.roomSize;
+  double get reverbDamping => synthesizerEngine.reverb.damping;
+
+  void setReverbMix(double mix) {
+    synthesizerEngine.reverb.mix = mix.clamp(0.0, 1.0);
+    notifyListeners();
+  }
+
+  // Delay parameters (additional getters)
+  double get delayTime => synthesizerEngine.delay.delayTime;
+  double get delayFeedback => synthesizerEngine.delay.feedback;
+  double get delayMix => synthesizerEngine.delay.mix;
+
+  void setDelayTime(double seconds) {
+    synthesizerEngine.delay.delayTime = seconds.clamp(0.001, 2.0);
+    notifyListeners();
+  }
+
+  // Synthesis branch information
+  String get currentSynthesisBranch {
+    return synthesisBranchManager.configString;
+  }
+
+  void setSynthesisBranch(int branch) {
+    // Branch is encoded as geometry index (0-23)
+    setGeometry(branch);
+  }
+
+  // System colors (derived from visual system)
+  VisualSystem _currentVisualSystem = VisualSystem.quantum;
+
+  SystemColors get systemColors {
+    switch (_currentVisualSystem) {
+      case VisualSystem.quantum:
+        return SystemColors.quantum;
+      case VisualSystem.faceted:
+        return SystemColors.faceted;
+      case VisualSystem.holographic:
+        return SystemColors.holographic;
+      default:
+        return SystemColors.quantum;
+    }
+  }
+
   @override
   void dispose() {
     stopAudio();
-    _audioPlayer.dispose();
+    FlutterPcmSound.release();
     super.dispose();
   }
 }

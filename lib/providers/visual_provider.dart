@@ -18,10 +18,16 @@
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../ui/theme/synth_theme.dart';
 
 class VisualProvider with ChangeNotifier {
   // Current VIB34D system
   String _currentSystem = 'quantum'; // 'quantum', 'holographic', 'faceted'
+
+  // 3D Rotation angles (radians, 0-2π)
+  double _rotationXY = 0.0;
+  double _rotationXZ = 0.0;
+  double _rotationYZ = 0.0;
 
   // 4D Rotation angles (radians, 0-2π)
   double _rotationXW = 0.0;
@@ -64,6 +70,9 @@ class VisualProvider with ChangeNotifier {
 
   // Getters
   String get currentSystem => _currentSystem;
+  double get rotationXY => _rotationXY;
+  double get rotationXZ => _rotationXZ;
+  double get rotationYZ => _rotationYZ;
   double get rotationXW => _rotationXW;
   double get rotationYW => _rotationYW;
   double get rotationZW => _rotationZW;
@@ -90,14 +99,24 @@ class VisualProvider with ChangeNotifier {
   Future<void> switchSystem(String systemName) async {
     if (_currentSystem == systemName) return;
 
+    final previousSystem = _currentSystem;
     _currentSystem = systemName;
+
+    debugPrint('🔄 System Switching: $previousSystem → $systemName');
 
     // Update JavaScript system via WebView
     // VIB3+ uses window.switchSystem(), not window.vib34d.switchSystem()
     if (_webViewController != null) {
-      await _webViewController!.runJavaScript(
-        'if (window.switchSystem) { window.switchSystem("$systemName"); }'
-      );
+      try {
+        await _webViewController!.runJavaScript(
+          'if (window.switchSystem) { window.switchSystem("$systemName"); }'
+        );
+        debugPrint('✅ VIB3+ system switched to $systemName');
+      } catch (e) {
+        debugPrint('❌ Error switching VIB3+ system: $e');
+      }
+    } else {
+      debugPrint('⚠️  WebView controller not initialized - system switch deferred');
     }
 
     // Update vertex count based on system
@@ -105,14 +124,17 @@ class VisualProvider with ChangeNotifier {
       case 'quantum':
         _activeVertexCount = 120; // Tesseract has 120 cells
         _geometryComplexity = 0.8;
+        debugPrint('   Quantum: vertices=120, complexity=0.8 (Pure harmonic synthesis)');
         break;
       case 'holographic':
         _activeVertexCount = 500; // 5 layers × 100 vertices
         _geometryComplexity = 0.9;
+        debugPrint('   Holographic: vertices=500, complexity=0.9 (Spectral rich synthesis)');
         break;
       case 'faceted':
         _activeVertexCount = 50; // Simpler geometry
         _geometryComplexity = 0.3;
+        debugPrint('   Faceted: vertices=50, complexity=0.3 (Geometric hybrid synthesis)');
         break;
     }
 
@@ -272,11 +294,22 @@ class VisualProvider with ChangeNotifier {
 
   /// Set current geometry
   void setGeometry(int geometryIndex) {
+    final previousGeometry = _currentGeometry;
     _currentGeometry = geometryIndex.clamp(0, 7);
+
+    if (previousGeometry != _currentGeometry) {
+      debugPrint('🔷 Geometry Switching: $previousGeometry → $_currentGeometry');
+    }
+
     _updateJavaScriptParameter('geometry', _currentGeometry);
 
     // Update vertex count based on geometry
+    final previousVertexCount = _activeVertexCount;
     _activeVertexCount = _getVertexCountForGeometry(_currentGeometry);
+
+    if (previousVertexCount != _activeVertexCount) {
+      debugPrint('   Vertex count: $previousVertexCount → $_activeVertexCount');
+    }
 
     notifyListeners();
   }
@@ -344,6 +377,138 @@ class VisualProvider with ChangeNotifier {
       'layerSeparation': _layerSeparation,
       'isAnimating': _isAnimating,
     };
+  }
+
+  // ============================================================================
+  // MISSING METHODS ADDED FOR UI INTEGRATION
+  // ============================================================================
+
+  // FPS tracking
+  double _currentFPS = 60.0;
+  int _frameCount = 0;
+  DateTime _fpsLastCheck = DateTime.now();
+
+  double get currentFPS => _currentFPS;
+
+  void updateFPS() {
+    _frameCount++;
+    final now = DateTime.now();
+    final elapsed = now.difference(_fpsLastCheck).inMilliseconds;
+
+    if (elapsed >= 1000) {
+      _currentFPS = (_frameCount * 1000.0) / elapsed;
+      _frameCount = 0;
+      _fpsLastCheck = now;
+      notifyListeners();
+    }
+  }
+
+  // System colors (based on current visual system)
+  SystemColors get systemColors {
+    switch (_currentSystem.toLowerCase()) {
+      case 'quantum':
+        return SystemColors.quantum;
+      case 'faceted':
+        return SystemColors.faceted;
+      case 'holographic':
+        return SystemColors.holographic;
+      default:
+        return SystemColors.quantum;
+    }
+  }
+
+  // System setter (alternative to switchSystem)
+  void setSystem(String systemName) {
+    switchSystem(systemName);
+  }
+
+  // 3D rotation setters
+  void setRotationXY(double angle) {
+    _rotationXY = angle % (2.0 * math.pi);
+    _updateJavaScriptParameter('rot3dXY', _rotationXY);
+    notifyListeners();
+  }
+
+  void setRotationXZ(double angle) {
+    _rotationXZ = angle % (2.0 * math.pi);
+    _updateJavaScriptParameter('rot3dXZ', _rotationXZ);
+    notifyListeners();
+  }
+
+  void setRotationYZ(double angle) {
+    _rotationYZ = angle % (2.0 * math.pi);
+    _updateJavaScriptParameter('rot3dYZ', _rotationYZ);
+    notifyListeners();
+  }
+
+  // 4D rotation setters
+  void setRotationXW(double angle) {
+    _rotationXW = angle % (2.0 * math.pi);
+    _updateJavaScriptParameter('rot4dXW', _rotationXW);
+    notifyListeners();
+  }
+
+  void setRotationYW(double angle) {
+    _rotationYW = angle % (2.0 * math.pi);
+    _updateJavaScriptParameter('rot4dYW', _rotationYW);
+    notifyListeners();
+  }
+
+  void setRotationZW(double angle) {
+    _rotationZW = angle % (2.0 * math.pi);
+    _updateJavaScriptParameter('rot4dZW', _rotationZW);
+    notifyListeners();
+  }
+
+  // Additional parameter setters for ParameterBridge integration
+
+  /// Set overall scale (from audio modulation)
+  void setScale(double scale) {
+    final clampedScale = scale.clamp(0.5, 2.0);
+    _updateJavaScriptParameter('scale', clampedScale);
+    notifyListeners();
+  }
+
+  /// Set edge thickness (from audio modulation)
+  void setEdgeThickness(double thickness) {
+    final clampedThickness = thickness.clamp(0.1, 1.0);
+    _updateJavaScriptParameter('edgeThickness', clampedThickness);
+    notifyListeners();
+  }
+
+  /// Set particle density (from audio modulation)
+  void setParticleDensity(double density) {
+    final clampedDensity = density.clamp(0.0, 1000.0);
+    _updateJavaScriptParameter('particleDensity', clampedDensity);
+    notifyListeners();
+  }
+
+  /// Set warp amount (geometric distortion from audio)
+  void setWarpAmount(double warp) {
+    final clampedWarp = warp.clamp(0.0, 1.0);
+    _updateJavaScriptParameter('warpAmount', clampedWarp);
+    notifyListeners();
+  }
+
+  /// Set shimmer speed (vertex animation speed from audio)
+  void setShimmerSpeed(double speed) {
+    final clampedSpeed = speed.clamp(0.0, 10.0);
+    _updateJavaScriptParameter('shimmerSpeed', clampedSpeed);
+    notifyListeners();
+  }
+
+  /// Set chaos amount (vertex randomization from audio)
+  void setChaosAmount(double chaos) {
+    final clampedChaos = chaos.clamp(0.0, 1.0);
+    _updateJavaScriptParameter('chaosAmount', clampedChaos);
+    notifyListeners();
+  }
+
+  /// Set layer depth (holographic layer separation from audio)
+  void setLayerDepth(double depth) {
+    _layerSeparation = depth.clamp(0.0, 5.0);
+    _updateJavaScriptParameter('layerDepth', _layerSeparation);
+    notifyListeners();
   }
 
   @override

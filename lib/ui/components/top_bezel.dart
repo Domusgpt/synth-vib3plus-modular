@@ -138,8 +138,8 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
 
             const SizedBox(width: SynthTheme.spacingMedium),
 
-            // Current geometry
-            _buildGeometryIndicator(visualProvider),
+            // Current system name badge
+            _buildSystemBadge(visualProvider),
 
             const SizedBox(width: SynthTheme.spacingMedium),
 
@@ -233,44 +233,53 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
     );
   }
 
-  Widget _buildGeometryIndicator(VisualProvider visualProvider) {
-    final geometries = [
-      'Hypercube',
-      'Tesseract',
-      'Hypersphere',
-      'Torus',
-      '24-Cell',
-      '120-Cell',
-      'Klein Bottle',
-      'Fractal',
-    ];
+  Widget _buildSystemBadge(VisualProvider visualProvider) {
+    // Display current system name (Quantum/Faceted/Holographic)
+    // Geometry selection is now ONLY in bottom Geometry panel
+    final currentSystem = visualProvider.currentSystem;
 
-    final currentGeometry = geometries[visualProvider.currentGeometry];
+    // System icons
+    final systemIcons = {
+      'Quantum': Icons.blur_circular,
+      'Faceted': Icons.change_history,
+      'Holographic': Icons.lens_blur,
+    };
 
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
+        horizontal: 10,
+        vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: SynthTheme.cardBackground,
-        borderRadius: BorderRadius.circular(SynthTheme.radiusSmall),
+        color: widget.systemColors.primary.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
         border: Border.all(
-          color: widget.systemColors.primary.withOpacity(0.5),
+          color: widget.systemColors.primary.withOpacity(0.6),
+          width: 1.5,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: widget.systemColors.primary.withOpacity(0.3),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.category,
+            systemIcons[currentSystem] ?? Icons.blur_on,
             color: widget.systemColors.primary,
-            size: 14,
+            size: 16,
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Text(
-            currentGeometry,
-            style: SynthTheme.textStyleCaption.copyWith(
+            currentSystem,
+            style: SynthTheme.textStyleBody.copyWith(
               color: widget.systemColors.primary,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
             ),
           ),
         ],

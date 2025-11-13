@@ -15,7 +15,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
 import '../theme/synth_theme.dart';
 import '../../providers/ui_state_provider.dart';
 import '../../providers/audio_provider.dart';
@@ -341,7 +340,7 @@ class ConnectionLinePainter extends CustomPainter {
 
 /// Range indicator painter (shows pitch bend range as circle)
 class RangeIndicatorPainter extends CustomPainter {
-  final int pitchBendRange;
+  final double pitchBendRange;
   final Color color;
 
   RangeIndicatorPainter({

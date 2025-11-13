@@ -8,14 +8,22 @@
  */
 
 import 'package:flutter/material.dart';
+import 'core/synth_app_initializer.dart';
 import 'ui/screens/synth_main_screen.dart';
 
-void main() {
-  runApp(const SynthVIB3App());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize modular architecture
+  final modules = await initializeSynthModules();
+
+  runApp(SynthVIB3App(modules: modules));
 }
 
 class SynthVIB3App extends StatelessWidget {
-  const SynthVIB3App({Key? key}) : super(key: key);
+  final SynthModules modules;
+
+  const SynthVIB3App({Key? key, required this.modules}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +39,7 @@ class SynthVIB3App extends StatelessWidget {
           surface: Color(0xFF1A1A2E),
         ),
       ),
-      home: const SynthMainScreen(),
+      home: SynthMainScreen(modules: modules),
     );
   }
 }

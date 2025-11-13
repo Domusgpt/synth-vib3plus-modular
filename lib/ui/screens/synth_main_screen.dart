@@ -28,9 +28,13 @@ import '../../providers/ui_state_provider.dart';
 import '../../providers/visual_provider.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/tilt_sensor_provider.dart';
+import '../../visual/vib34d_widget.dart';
+import '../../core/synth_app_initializer.dart';
 
 class SynthMainScreen extends StatefulWidget {
-  const SynthMainScreen({Key? key}) : super(key: key);
+  final SynthModules modules;
+
+  const SynthMainScreen({Key? key, required this.modules}) : super(key: key);
 
   @override
   State<SynthMainScreen> createState() => _SynthMainScreenState();
@@ -63,8 +67,8 @@ class _SynthMainScreenState extends State<SynthMainScreen> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UIStateProvider()),
-        ChangeNotifierProvider(create: (_) => VisualProvider()),
-        ChangeNotifierProvider(create: (_) => AudioProvider()),
+        ChangeNotifierProvider.value(value: widget.modules.visual.provider),
+        ChangeNotifierProvider.value(value: widget.modules.audio.provider),
         ChangeNotifierProvider(create: (_) => TiltSensorProvider()),
       ],
       child: const _SynthMainContent(),
@@ -72,8 +76,21 @@ class _SynthMainScreenState extends State<SynthMainScreen> {
   }
 }
 
-class _SynthMainContent extends StatelessWidget {
+class _SynthMainContent extends StatefulWidget {
   const _SynthMainContent({Key? key}) : super(key: key);
+
+  @override
+  State<_SynthMainContent> createState() => _SynthMainContentState();
+}
+
+class _SynthMainContentState extends State<_SynthMainContent> {
+  // Parameter coupling is now handled by ParameterCouplingModule
+  // No need to create ParameterBridge here - it's already running at 60 FPS
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,19 +98,20 @@ class _SynthMainContent extends StatelessWidget {
     final visualProvider = Provider.of<VisualProvider>(context);
     final systemColors = visualProvider.systemColors;
 
+    // Modules are initialized before app starts - no loading state needed
     return Scaffold(
       backgroundColor: SynthTheme.backgroundColor,
       body: Stack(
         children: [
-          // Layer 1: Background visualization (VIB3+ WebGL)
-          _buildVisualizationLayer(context),
-
-          // Layer 2: XY Performance Pad (touch overlay)
+          // Layer 1: XY Performance Pad with VIB3+ visualization background
           Positioned.fill(
             child: XYPerformancePad(
               systemColors: systemColors,
               showGrid: uiState.xyPadShowGrid,
-              backgroundVisualization: null, // Visualization rendered separately
+              backgroundVisualization: VIB34DWidget(
+                visualProvider: visualProvider,
+                audioProvider: Provider.of<AudioProvider>(context, listen: false),
+              ),
             ),
           ),
 
@@ -132,18 +150,13 @@ class _SynthMainContent extends StatelessWidget {
   }
 
   Widget _buildVisualizationLayer(BuildContext context) {
+    final visualProvider = Provider.of<VisualProvider>(context);
+    final audioProvider = Provider.of<AudioProvider>(context);
+
     return Positioned.fill(
-      child: Container(
-        color: SynthTheme.backgroundColor,
-        child: Center(
-          child: Text(
-            'VIB3+ Visualization\n(WebGL View)',
-            textAlign: TextAlign.center,
-            style: SynthTheme.textStyleBody.copyWith(
-              color: SynthTheme.textDim,
-            ),
-          ),
-        ),
+      child: VIB34DWidget(
+        visualProvider: visualProvider,
+        audioProvider: audioProvider,
       ),
     );
   }

@@ -36,9 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # Audio Synthesis & Analysis
-  just_audio: ^0.9.35                 # Audio playback
+  just_audio: ^0.9.40                 # Audio playback (updated)
   fftea: ^1.0.0                       # FFT analysis
-  audio_session: ^0.1.16              # Audio session management
+  audio_session: ^0.1.21              # Audio session management (updated)
   flutter_pcm_sound: ^3.3.3           # Real-time PCM audio output
 
   # Visual Rendering (WebView for VIB34D)
@@ -49,20 +49,20 @@ dependencies:
 
   # UI Components
   glassmorphism: ^3.0.0               # Glassmorphic effects
-  flutter_colorpicker: ^1.0.3        # Color picker widget
+  flutter_colorpicker: ^1.1.0         # Color picker widget (updated)
 
-  # Firebase (preset cloud sync)
-  firebase_core: ^2.15.0
-  cloud_firestore: ^4.8.4
-  firebase_auth: ^4.7.2
-  firebase_storage: ^11.2.5
+  # Firebase (preset cloud sync) - Updated to latest versions
+  firebase_core: ^3.6.0
+  cloud_firestore: ^5.4.4
+  firebase_auth: ^5.3.1
+  firebase_storage: ^12.3.4
 
   # Utilities
-  shared_preferences: ^2.2.0          # Local storage
-  uuid: ^3.0.7                        # Unique IDs
-  path_provider: ^2.1.0               # File system paths
-  webview_flutter: ^4.4.2             # WebView for VIB34D systems
-  sensors_plus: ^6.0.1                # Accelerometer/gyroscope for tilt control
+  shared_preferences: ^2.3.3          # Local storage (updated)
+  uuid: ^4.5.1                        # Unique IDs (updated - breaking change)
+  path_provider: ^2.1.5               # File system paths (updated)
+  webview_flutter: ^4.10.0            # WebView for VIB34D systems (updated)
+  sensors_plus: ^6.1.1                # Accelerometer/gyroscope for tilt control (updated)
 
 dev_dependencies:
   flutter_test:
@@ -94,6 +94,7 @@ flutter:
     - assets/js/  # VIB34D JavaScript visualization systems
     - assets/src/  # VIB3+ engine source files
     - assets/styles/  # VIB3+ CSS styles
+    - assets/vib3_dist/  # VIB3+ Bundled (Vite build for Android WebView)
     - assets/vib34d_viewer.html  # VIB34D WebView HTML file
     - assets/vib3plus_viewer.html  # VIB3+ Working System
 
