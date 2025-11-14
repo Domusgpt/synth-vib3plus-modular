@@ -512,12 +512,7 @@ enum AudioState {
   clipping,   // Over threshold
 }
 
-/// Visual system type (maps to synthesis system)
-enum VisualSystemType {
-  quantum,      // Cyan - pure harmonic
-  faceted,      // Magenta - geometric hybrid
-  holographic,  // Amber - spectral rich
-}
+// Note: VisualSystem enum moved to lib/models/visual_system.dart for centralized definition
 
 // ============================================================================
 // GLASSMORPHIC LAYER CONFIGURATION

@@ -23,6 +23,7 @@ import 'package:flutter_pcm_sound/flutter_pcm_sound.dart';
 import '../audio/audio_analyzer.dart';
 import '../audio/synthesizer_engine.dart';
 import '../synthesis/synthesis_branch_manager.dart';
+import '../models/visual_system.dart';
 import '../ui/theme/synth_theme.dart';
 
 class AudioProvider with ChangeNotifier {
@@ -233,23 +234,10 @@ class AudioProvider with ChangeNotifier {
 
   /// Set visual system (updates sound family)
   void setVisualSystem(String systemName) {
-    VisualSystem system;
-    switch (systemName.toLowerCase()) {
-      case 'quantum':
-        system = VisualSystem.quantum;
-        break;
-      case 'faceted':
-        system = VisualSystem.faceted;
-        break;
-      case 'holographic':
-        system = VisualSystem.holographic;
-        break;
-      default:
-        system = VisualSystem.quantum;
-    }
+    final system = VisualSystemExtension.fromString(systemName);
     _currentVisualSystem = system;
     synthesisBranchManager.setVisualSystem(system);
-    debugPrint('🎨 Visual system set to: ${system.name}');
+    debugPrint('🎨 Visual system set to: ${system.displayName}');
     notifyListeners();
   }
 

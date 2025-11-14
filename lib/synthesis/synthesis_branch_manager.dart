@@ -21,13 +21,7 @@
 
 import 'dart:math' as math;
 import 'dart:typed_data';
-
-/// Visual system types (from VIB3+)
-enum VisualSystem {
-  quantum,      // Pure harmonic synthesis
-  faceted,      // Geometric hybrid synthesis
-  holographic,  // Spectral rich synthesis
-}
+import '../models/visual_system.dart';
 
 /// Polytope core types (determines synthesis branch)
 enum PolytopeCor {
