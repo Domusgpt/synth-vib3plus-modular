@@ -85,6 +85,11 @@ class AudioProvider with ChangeNotifier {
     await FlutterPcmSound.setFeedThreshold(AudioConstants.fftSize);
 
     Log.info('AudioProvider', 'Initialized with PCM audio output (${sampleRate.toInt()}Hz, ${AudioConstants.channels}ch, ${bufferSize}samples)');
+
+    // Auto-start audio generation for continuous audio reactivity
+    // Even when no notes are playing, buffers are generated for FFT analysis
+    await startAudio();
+    Log.info('AudioProvider', 'Audio reactivity enabled (continuous buffer generation)');
   }
 
   // Getters
@@ -124,7 +129,9 @@ class AudioProvider with ChangeNotifier {
 
   /// Callback when PCM buffer needs more data
   void _feedAudioCallback(int remainingFrames) {
-    if (!_isPlaying) return;
+    // CRITICAL: Always generate buffers for audio reactivity (even when not playing notes)
+    // The synthesizer will naturally output silence when no voices are active
+    // This ensures FFT analysis continues for visual modulation
 
     // Generate multiple buffers to keep ahead of playback
     const buffersToGenerate = 4;
