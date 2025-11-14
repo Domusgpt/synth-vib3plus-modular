@@ -355,6 +355,74 @@ class VisualProvider with ChangeNotifier {
     }
   }
 
+  /// Batch update multiple parameters with a single JavaScript call
+  /// Reduces async overhead from 300 calls/sec (5 params × 60 FPS) to 60 calls/sec
+  Future<void> updateParametersBatch(Map<String, dynamic> parameters) async {
+    if (_webViewController == null || parameters.isEmpty) return;
+
+    try {
+      // Build JavaScript code to update all parameters at once
+      final jsCode = StringBuffer('if (window.updateParameter) {');
+      for (final entry in parameters.entries) {
+        jsCode.write('window.updateParameter("${entry.key}", ${entry.value});');
+      }
+      jsCode.write('}');
+
+      await _webViewController!.runJavaScript(jsCode.toString());
+    } catch (e) {
+      debugPrint('⚠️  Error batch updating ${parameters.length} JS parameters: $e');
+    }
+  }
+
+  /// Batch update visual parameters from audio modulation
+  /// Updates internal state and sends single WebView call
+  Future<void> updateVisualParametersBatch({
+    double? rotationSpeed,
+    int? tessellationDensity,
+    double? vertexBrightness,
+    double? hueShift,
+    double? glowIntensity,
+    double? rgbSplit,
+  }) async {
+    final batch = <String, dynamic>{};
+
+    if (rotationSpeed != null) {
+      _rotationSpeed = rotationSpeed.clamp(0.1, 5.0);
+      batch['rotationSpeed'] = _rotationSpeed;
+    }
+
+    if (tessellationDensity != null) {
+      _tessellationDensity = tessellationDensity.clamp(3, 10);
+      batch['tessellationDensity'] = _tessellationDensity;
+    }
+
+    if (vertexBrightness != null) {
+      _vertexBrightness = vertexBrightness.clamp(0.0, 1.0);
+      batch['vertexBrightness'] = _vertexBrightness;
+    }
+
+    if (hueShift != null) {
+      _hueShift = hueShift % 360.0;
+      batch['hueShift'] = _hueShift;
+    }
+
+    if (glowIntensity != null) {
+      _glowIntensity = glowIntensity.clamp(0.0, 3.0);
+      batch['glowIntensity'] = _glowIntensity;
+    }
+
+    if (rgbSplit != null) {
+      _rgbSplitAmount = rgbSplit.clamp(0.0, 10.0);
+      batch['rgbSplitAmount'] = _rgbSplitAmount;
+    }
+
+    // Send batch update to WebView
+    await updateParametersBatch(batch);
+
+    // Notify listeners once for all changes
+    notifyListeners();
+  }
+
   /// Start animation loop
   void startAnimation() {
     _isAnimating = true;

@@ -187,12 +187,15 @@ class AudioToVisualModulator {
     rgbSplitParam.setModulation(widthModulation * rgbSplitParam.modulationDepth);
 
     // Update visual provider with FINAL values (base + modulation)
-    visualProvider.setRotationSpeed(rotationSpeedParam.finalValue);
-    visualProvider.setTessellationDensity(tessellationParam.finalValueInt);
-    visualProvider.setVertexBrightness(brightnessParam.finalValue);
-    visualProvider.setHueShift(hueShiftParam.finalValue);
-    visualProvider.setGlowIntensity(glowIntensityParam.finalValue);
-    visualProvider.setRGBSplitAmount(rgbSplitParam.finalValue);
+    // Use batch update to reduce 360 async calls/sec to 60 calls/sec (6 params × 60 FPS)
+    await visualProvider.updateVisualParametersBatch(
+      rotationSpeed: rotationSpeedParam.finalValue,
+      tessellationDensity: tessellationParam.finalValueInt,
+      vertexBrightness: brightnessParam.finalValue,
+      hueShift: hueShiftParam.finalValue,
+      glowIntensity: glowIntensityParam.finalValue,
+      rgbSplit: rgbSplitParam.finalValue,
+    );
 
     // Debug logging: Log every 60 frames (1 second) OR when significant change
     _updateCounter++;
