@@ -232,9 +232,9 @@ class VisualToAudioModulator {
     audioProvider.synthesizerEngine.setNoiseAmount(noiseAmountParam.finalValue);
     audioProvider.synthesizerEngine.setEnvelopeAttack(attackTimeParam.finalValue);
 
-    // Special case: vertex count to voice count (discrete mapping)
-    final vertexCount = visualProvider.getActiveVertexCount();
-    final voiceCount = _mapVertexCountToVoices(vertexCount);
+    // Tessellation Density → Polyphony mapping (1-8 voices)
+    final tessellationDensity = _audioToVisual?.tessellationParam.finalValueInt ?? 5;
+    final voiceCount = _mapTessellationToVoices(tessellationDensity);
     audioProvider.setVoiceCount(voiceCount);
 
     // Sync geometry to synthesis branch manager
@@ -389,16 +389,13 @@ class VisualToAudioModulator {
     return (depth / 5.0).clamp(0.0, 1.0);
   }
 
-  /// Map vertex count to voice count (logarithmic scaling)
-  int _mapVertexCountToVoices(int vertexCount) {
-    // Map 10-10000 vertices to 1-16 voices logarithmically
-    if (vertexCount < 10) return 1;
-    if (vertexCount > 10000) return 16;
-
-    final normalized = (math.log(vertexCount) - math.log(10)) /
-                       (math.log(10000) - math.log(10));
-
-    return (1 + normalized * 15).round().clamp(1, 16);
+  /// Map tessellation density to voice count (linear scaling)
+  /// Tessellation density: 3-10 (from AudioToVisualModulator)
+  /// Voice count: 1-8 voices (per CLAUDE.md spec)
+  int _mapTessellationToVoices(int tessellationDensity) {
+    // Linear map: 3→1 voice, 10→8 voices
+    final normalized = (tessellationDensity - 3) / 7.0;  // 0-1 range
+    return (1 + normalized * 7).round().clamp(1, 8);
   }
 
   void applyPreset(MappingPreset preset) {
