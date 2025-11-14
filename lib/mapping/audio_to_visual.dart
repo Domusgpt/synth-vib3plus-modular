@@ -165,7 +165,10 @@ class AudioToVisualModulator {
     final highEnergy = analyzer.getBandEnergy(fftData, 2000.0, 8000.0);
     final spectralCentroid = analyzer.computeSpectralCentroid(fftData);
     final rms = analyzer.computeRMS(audioBuffer);
-    final stereoWidth = 0.5; // Placeholder - requires stereo buffer
+
+    // Pseudo-stereo-width from spectral spread (until true stereo is implemented)
+    // Higher spectral spread = wider perceived soundstage
+    final stereoWidth = _computePseudoStereoWidth(fftData);
 
     // Calculate modulation amounts (centered at 0, range -1 to +1)
     final bassModulation = (bassEnergy - 0.5) * 2.0;  // -1 to +1
@@ -247,6 +250,32 @@ class AudioToVisualModulator {
     hueShiftParam.setModulationEnabled(enabled);
     glowIntensityParam.setModulationEnabled(enabled);
     rgbSplitParam.setModulationEnabled(enabled);
+  }
+
+  /// Compute pseudo-stereo-width from spectral spread
+  /// Until true stereo audio is implemented, estimate width from frequency distribution
+  /// Higher spectral variance = wider perceived soundstage
+  double _computePseudoStereoWidth(Float64List magnitudes) {
+    // Calculate spectral centroid (mean frequency)
+    double weightedSum = 0.0;
+    double sum = 0.0;
+    for (int i = 0; i < magnitudes.length; i++) {
+      weightedSum += magnitudes[i] * i;
+      sum += magnitudes[i];
+    }
+    final centroid = sum > 0.0 ? weightedSum / sum : 0.0;
+
+    // Calculate spectral spread (variance)
+    double variance = 0.0;
+    for (int i = 0; i < magnitudes.length; i++) {
+      final diff = i - centroid;
+      variance += magnitudes[i] * diff * diff;
+    }
+    final spread = sum > 0.0 ? math.sqrt(variance / sum) : 0.0;
+
+    // Normalize to 0-1 range (empirically tuned)
+    final normalized = (spread / 512.0).clamp(0.0, 1.0);
+    return normalized;
   }
 
   /// Check if audio features changed significantly (>10% energy change)
