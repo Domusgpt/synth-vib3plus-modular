@@ -36,6 +36,7 @@ class VisualToAudioModulator {
   late final ParameterState wavetableParam;
   late final ParameterState reverbMixParam;
   late final ParameterState delayTimeParam;
+  late final ParameterState noiseAmountParam;  // Controlled by chaos
 
   // Mapping configuration
   Map<String, ParameterMapping> _mappings = {};
@@ -102,6 +103,15 @@ class VisualToAudioModulator {
       maxValue: 500.0,
       modulationDepth: 250.0,
     );
+
+    // Noise Amount: base 0.0, ±0.3 (30%) modulation from chaos
+    noiseAmountParam = ParameterState(
+      name: 'noiseAmount',
+      initialValue: 0.0,
+      minValue: 0.0,
+      maxValue: 0.3,
+      modulationDepth: 0.3,
+    );
   }
 
   void _initializeDefaultMappings() {
@@ -151,6 +161,9 @@ class VisualToAudioModulator {
     };
   }
 
+  // Chaos tracking (user-controlled parameter)
+  double _chaosAmount = 0.0;
+
   // Debug logging state (only log significant changes to avoid spam)
   double _lastLoggedRotXW = -999.0;
   double _lastLoggedRotYW = -999.0;
@@ -174,6 +187,7 @@ class VisualToAudioModulator {
     final morphMod = (morph - 0.5) * 2.0;
     final projMod = (projectionDist - 0.5) * 2.0;
     final layerMod = (layerDepth - 0.5) * 2.0;
+    final chaosMod = (_chaosAmount - 0.5) * 2.0;  // Chaos controls noise
 
     // Apply modulation to parameter states
     osc1DetuneParam.setModulation(rotXWMod * osc1DetuneParam.modulationDepth);
@@ -182,6 +196,7 @@ class VisualToAudioModulator {
     wavetableParam.setModulation(morphMod * wavetableParam.modulationDepth);
     reverbMixParam.setModulation(projMod * reverbMixParam.modulationDepth);
     delayTimeParam.setModulation(layerMod * delayTimeParam.modulationDepth);
+    noiseAmountParam.setModulation(chaosMod * noiseAmountParam.modulationDepth);
 
     // Update audio provider with FINAL values (base + modulation)
     audioProvider.synthesizerEngine.modulateOscillator1Frequency(osc1DetuneParam.finalValue);
@@ -190,6 +205,7 @@ class VisualToAudioModulator {
     audioProvider.synthesizerEngine.setWavetablePosition(wavetableParam.finalValue);
     audioProvider.synthesizerEngine.setReverbMix(reverbMixParam.finalValue);
     audioProvider.synthesizerEngine.setDelayTime(delayTimeParam.finalValue);
+    audioProvider.synthesizerEngine.setNoiseAmount(noiseAmountParam.finalValue);
 
     // Special case: vertex count to voice count (discrete mapping)
     final vertexCount = visualProvider.getActiveVertexCount();
@@ -278,6 +294,7 @@ class VisualToAudioModulator {
       'wavetablePosition': wavetableParam,
       'reverbMix': reverbMixParam,
       'delayTime': delayTimeParam,
+      'noiseAmount': noiseAmountParam,
     };
   }
 
@@ -302,8 +319,19 @@ class VisualToAudioModulator {
       case 'delayTime':
         delayTimeParam.setBaseValue(value);
         break;
+      case 'noiseAmount':
+        noiseAmountParam.setBaseValue(value);
+        break;
     }
   }
+
+  /// Set chaos amount (user-controlled, 0-1)
+  void setChaosAmount(double chaos) {
+    _chaosAmount = chaos.clamp(0.0, 1.0);
+  }
+
+  /// Get current chaos amount
+  double get chaosAmount => _chaosAmount;
 
   /// Enable/disable modulation globally
   void setModulationEnabled(bool enabled) {
@@ -313,6 +341,7 @@ class VisualToAudioModulator {
     wavetableParam.setModulationEnabled(enabled);
     reverbMixParam.setModulationEnabled(enabled);
     delayTimeParam.setModulationEnabled(enabled);
+    noiseAmountParam.setModulationEnabled(enabled);
   }
 
   /// Normalize rotation angle (0-2π) to (0-1)
