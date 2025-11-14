@@ -29,6 +29,9 @@ class VisualToAudioModulator {
   final AudioProvider audioProvider;
   final VisualProvider visualProvider;
 
+  // Cross-reference to Audio→Visual modulator for glow intensity feedback
+  AudioToVisualModulator? _audioToVisual;
+
   // Parameter states (base + modulation architecture)
   late final ParameterState osc1DetuneParam;
   late final ParameterState osc2DetuneParam;
@@ -37,6 +40,7 @@ class VisualToAudioModulator {
   late final ParameterState reverbMixParam;
   late final ParameterState delayTimeParam;
   late final ParameterState noiseAmountParam;  // Controlled by chaos
+  late final ParameterState attackTimeParam;   // Modulated by glow intensity
 
   // Mapping configuration
   Map<String, ParameterMapping> _mappings = {};
@@ -112,6 +116,20 @@ class VisualToAudioModulator {
       maxValue: 0.3,
       modulationDepth: 0.3,
     );
+
+    // Attack Time: base 0.01s (10ms), range 0.001-0.1s (1-100ms), modulated by glow
+    attackTimeParam = ParameterState(
+      name: 'attackTime',
+      initialValue: 0.01,
+      minValue: 0.001,
+      maxValue: 0.1,
+      modulationDepth: 0.05,  // ±50ms modulation
+    );
+  }
+
+  /// Set cross-reference to AudioToVisualModulator for glow intensity feedback
+  void setAudioToVisualModulator(AudioToVisualModulator audioToVisual) {
+    _audioToVisual = audioToVisual;
   }
 
   void _initializeDefaultMappings() {
@@ -180,6 +198,10 @@ class VisualToAudioModulator {
     final projectionDist = _normalizeProjectionDistance(visualProvider.getProjectionDistance());
     final layerDepth = _normalizeLayerDepth(visualProvider.getLayerSeparation());
 
+    // Get glow intensity from Audio→Visual modulator (if available)
+    final glowIntensity = _audioToVisual?.glowIntensityParam.finalValue ?? 1.0;
+    final glowNormalized = (glowIntensity - 1.0) / 2.0;  // Normalize from 0-3 to 0-1
+
     // Calculate modulation amounts (centered at 0, range -1 to +1)
     final rotXWMod = (rotXW - 0.5) * 2.0;  // -1 to +1
     final rotYWMod = (rotYW - 0.5) * 2.0;
@@ -188,15 +210,17 @@ class VisualToAudioModulator {
     final projMod = (projectionDist - 0.5) * 2.0;
     final layerMod = (layerDepth - 0.5) * 2.0;
     final chaosMod = (_chaosAmount - 0.5) * 2.0;  // Chaos controls noise
+    final glowMod = (glowNormalized - 0.5) * 2.0;  // Glow controls reverb + attack
 
     // Apply modulation to parameter states
     osc1DetuneParam.setModulation(rotXWMod * osc1DetuneParam.modulationDepth);
     osc2DetuneParam.setModulation(rotYWMod * osc2DetuneParam.modulationDepth);
     filterCutoffParam.setModulation(rotZWMod * filterCutoffParam.modulationDepth);
     wavetableParam.setModulation(morphMod * wavetableParam.modulationDepth);
-    reverbMixParam.setModulation(projMod * reverbMixParam.modulationDepth);
+    reverbMixParam.setModulation(glowMod * reverbMixParam.modulationDepth);  // Glow → Reverb
     delayTimeParam.setModulation(layerMod * delayTimeParam.modulationDepth);
     noiseAmountParam.setModulation(chaosMod * noiseAmountParam.modulationDepth);
+    attackTimeParam.setModulation(glowMod * attackTimeParam.modulationDepth);  // Glow → Attack
 
     // Update audio provider with FINAL values (base + modulation)
     audioProvider.synthesizerEngine.modulateOscillator1Frequency(osc1DetuneParam.finalValue);
@@ -206,6 +230,7 @@ class VisualToAudioModulator {
     audioProvider.synthesizerEngine.setReverbMix(reverbMixParam.finalValue);
     audioProvider.synthesizerEngine.setDelayTime(delayTimeParam.finalValue);
     audioProvider.synthesizerEngine.setNoiseAmount(noiseAmountParam.finalValue);
+    audioProvider.synthesizerEngine.setEnvelopeAttack(attackTimeParam.finalValue);
 
     // Special case: vertex count to voice count (discrete mapping)
     final vertexCount = visualProvider.getActiveVertexCount();
@@ -295,6 +320,7 @@ class VisualToAudioModulator {
       'reverbMix': reverbMixParam,
       'delayTime': delayTimeParam,
       'noiseAmount': noiseAmountParam,
+      'attackTime': attackTimeParam,
     };
   }
 
@@ -322,6 +348,9 @@ class VisualToAudioModulator {
       case 'noiseAmount':
         noiseAmountParam.setBaseValue(value);
         break;
+      case 'attackTime':
+        attackTimeParam.setBaseValue(value);
+        break;
     }
   }
 
@@ -342,6 +371,7 @@ class VisualToAudioModulator {
     reverbMixParam.setModulationEnabled(enabled);
     delayTimeParam.setModulationEnabled(enabled);
     noiseAmountParam.setModulationEnabled(enabled);
+    attackTimeParam.setModulationEnabled(enabled);
   }
 
   /// Normalize rotation angle (0-2π) to (0-1)

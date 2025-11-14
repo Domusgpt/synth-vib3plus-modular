@@ -74,6 +74,9 @@ class ParameterBridge with ChangeNotifier {
       audioProvider: audioProvider,
       visualProvider: visualProvider,
     );
+
+    // Connect modulators for cross-parameter feedback (e.g., glow → attack/reverb)
+    visualToAudio.setAudioToVisualModulator(audioToVisual);
   }
 
   // Getters
