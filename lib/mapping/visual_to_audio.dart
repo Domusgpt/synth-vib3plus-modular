@@ -1,14 +1,18 @@
 /**
- * Visual → Audio Modulation System
+ * Visual → Audio Modulation System (Base + Modulation Architecture)
  *
- * Maps visual parameter state to audio synthesis parameters:
- * - 4D Rotation XW Plane → Oscillator 1 Frequency (±2 semitones)
- * - 4D Rotation YW Plane → Oscillator 2 Frequency (±2 semitones)
- * - 4D Rotation ZW Plane → Filter Cutoff Frequency (±40%)
- * - Polytope Vertex Count → Voice Count
- * - Geometry Morph Parameter → Wavetable Position
- * - Projection Distance → Reverb Wet/Dry Mix
- * - Holographic Layer Depth → Delay Time
+ * Maps visual parameter state to audio synthesis parameters using base + modulation:
+ * - User/synthesis engine sets BASE values
+ * - Visual state provides ±MODULATION over the base
+ * - Final value = base + modulation (sent to synthesis engine)
+ *
+ * Mappings:
+ * - XW Rotation → Oscillator 1 Detune (base 0.0, ±2.0 semitones)
+ * - YW Rotation → Oscillator 2 Detune (base 0.0, ±2.0 semitones)
+ * - ZW Rotation → Filter Cutoff Mod (base 0.0, ±40%)
+ * - Morph → Wavetable Position (base 0.5, ±0.5)
+ * - Projection Distance → Reverb Mix (base from visual system, ±30%)
+ * - Layer Depth → Delay Time (base 250ms, ±250ms)
  *
  * A Paul Phillips Manifestation
  */
@@ -18,11 +22,20 @@ import 'dart:math' as math;
 import '../providers/audio_provider.dart';
 import '../providers/visual_provider.dart';
 import '../models/mapping_preset.dart';
+import '../models/parameter_state.dart';
 import 'audio_to_visual.dart'; // For ParameterMapping and MappingCurve
 
 class VisualToAudioModulator {
   final AudioProvider audioProvider;
   final VisualProvider visualProvider;
+
+  // Parameter states (base + modulation architecture)
+  late final ParameterState osc1DetuneParam;
+  late final ParameterState osc2DetuneParam;
+  late final ParameterState filterCutoffParam;
+  late final ParameterState wavetableParam;
+  late final ParameterState reverbMixParam;
+  late final ParameterState delayTimeParam;
 
   // Mapping configuration
   Map<String, ParameterMapping> _mappings = {};
@@ -31,7 +44,64 @@ class VisualToAudioModulator {
     required this.audioProvider,
     required this.visualProvider,
   }) {
+    _initializeParameterStates();
     _initializeDefaultMappings();
+  }
+
+  void _initializeParameterStates() {
+    // Oscillator 1 Detune: base 0.0 semitones, ±2.0 semitones modulation
+    osc1DetuneParam = ParameterState(
+      name: 'osc1Detune',
+      initialValue: 0.0,
+      minValue: -2.0,
+      maxValue: 2.0,
+      modulationDepth: 2.0,
+    );
+
+    // Oscillator 2 Detune: base 0.0 semitones, ±2.0 semitones modulation
+    osc2DetuneParam = ParameterState(
+      name: 'osc2Detune',
+      initialValue: 0.0,
+      minValue: -2.0,
+      maxValue: 2.0,
+      modulationDepth: 2.0,
+    );
+
+    // Filter Cutoff Modulation: base 0.0, ±0.4 (40%) modulation
+    filterCutoffParam = ParameterState(
+      name: 'filterCutoffMod',
+      initialValue: 0.0,
+      minValue: 0.0,
+      maxValue: 0.8,
+      modulationDepth: 0.4,
+    );
+
+    // Wavetable Position: base 0.5, ±0.5 modulation
+    wavetableParam = ParameterState(
+      name: 'wavetablePosition',
+      initialValue: 0.5,
+      minValue: 0.0,
+      maxValue: 1.0,
+      modulationDepth: 0.5,
+    );
+
+    // Reverb Mix: base 0.3, ±0.3 modulation
+    reverbMixParam = ParameterState(
+      name: 'reverbMix',
+      initialValue: 0.3,
+      minValue: 0.0,
+      maxValue: 1.0,
+      modulationDepth: 0.3,
+    );
+
+    // Delay Time: base 250ms, ±250ms modulation
+    delayTimeParam = ParameterState(
+      name: 'delayTime',
+      initialValue: 250.0,
+      minValue: 0.0,
+      maxValue: 500.0,
+      modulationDepth: 250.0,
+    );
   }
 
   void _initializeDefaultMappings() {
@@ -86,75 +156,74 @@ class VisualToAudioModulator {
   double _lastLoggedRotYW = -999.0;
   double _lastLoggedRotZW = -999.0;
   int _updateCounter = 0;
-  bool _firstUpdateLogged = false;
 
-  /// Main update function called at 60 FPS
+  /// Main update function called at 60 FPS (Base + Modulation Architecture)
   void updateFromVisuals() {
-    // First update verification
-    if (!_firstUpdateLogged) {
-      debugPrint('🔊 Visual→Audio modulator: First update called');
-      _firstUpdateLogged = true;
-    }
+    // Extract visual state as normalized values (0-1)
+    final rotXW = _normalizeRotation(visualProvider.getRotationAngle('XW'));
+    final rotYW = _normalizeRotation(visualProvider.getRotationAngle('YW'));
+    final rotZW = _normalizeRotation(visualProvider.getRotationAngle('ZW'));
+    final morph = visualProvider.getMorphParameter();
+    final projectionDist = _normalizeProjectionDistance(visualProvider.getProjectionDistance());
+    final layerDepth = _normalizeLayerDepth(visualProvider.getLayerSeparation());
 
-    // Read current visual state
-    final visualState = _getVisualState();
+    // Calculate modulation amounts (centered at 0, range -1 to +1)
+    final rotXWMod = (rotXW - 0.5) * 2.0;  // -1 to +1
+    final rotYWMod = (rotYW - 0.5) * 2.0;
+    final rotZWMod = (rotZW - 0.5) * 2.0;
+    final morphMod = (morph - 0.5) * 2.0;
+    final projMod = (projectionDist - 0.5) * 2.0;
+    final layerMod = (layerDepth - 0.5) * 2.0;
 
-    // Apply each mapping
-    _mappings.forEach((key, mapping) {
-      final sourceValue = visualState[mapping.sourceParam] ?? 0.0;
-      final mappedValue = mapping.map(sourceValue);
+    // Apply modulation to parameter states
+    osc1DetuneParam.setModulation(rotXWMod * osc1DetuneParam.modulationDepth);
+    osc2DetuneParam.setModulation(rotYWMod * osc2DetuneParam.modulationDepth);
+    filterCutoffParam.setModulation(rotZWMod * filterCutoffParam.modulationDepth);
+    wavetableParam.setModulation(morphMod * wavetableParam.modulationDepth);
+    reverbMixParam.setModulation(projMod * reverbMixParam.modulationDepth);
+    delayTimeParam.setModulation(layerMod * delayTimeParam.modulationDepth);
 
-      // Update corresponding audio parameter
-      _updateAudioParameter(mapping.targetParam, mappedValue);
-    });
+    // Update audio provider with FINAL values (base + modulation)
+    audioProvider.synthesizerEngine.modulateOscillator1Frequency(osc1DetuneParam.finalValue);
+    audioProvider.synthesizerEngine.modulateOscillator2Frequency(osc2DetuneParam.finalValue);
+    audioProvider.synthesizerEngine.modulateFilterCutoff(filterCutoffParam.finalValue);
+    audioProvider.synthesizerEngine.setWavetablePosition(wavetableParam.finalValue);
+    audioProvider.synthesizerEngine.setReverbMix(reverbMixParam.finalValue);
+    audioProvider.synthesizerEngine.setDelayTime(delayTimeParam.finalValue);
 
     // Special case: vertex count to voice count (discrete mapping)
     final vertexCount = visualProvider.getActiveVertexCount();
     final voiceCount = _mapVertexCountToVoices(vertexCount);
     audioProvider.setVoiceCount(voiceCount);
 
-    // **NEW**: Sync geometry to synthesis branch manager
+    // Sync geometry to synthesis branch manager
     _syncGeometryToAudio();
 
-    // **NEW**: Sync visual system to sound family
+    // Sync visual system to sound family
     _syncVisualSystemToAudio();
 
-    // Debug logging: Log every 60 frames (1 second at 60 FPS) OR when significant change
+    // Debug logging: Log every 60 frames (1 second) OR when significant change
     _updateCounter++;
-    if (_updateCounter >= 60 || _hasSignificantChange(visualState)) {
-      _logModulationState(visualState);
+    if (_updateCounter >= 60 || _hasSignificantChange(rotXW, rotYW, rotZW)) {
+      _logModulationState(rotXW, rotYW, rotZW, morph);
       _updateCounter = 0;
     }
   }
 
   /// Check if visual parameters changed significantly (>5%)
-  bool _hasSignificantChange(Map<String, double> visualState) {
-    final rotXW = visualState['rotationXW'] ?? 0.0;
-    final rotYW = visualState['rotationYW'] ?? 0.0;
-    final rotZW = visualState['rotationZW'] ?? 0.0;
-
+  bool _hasSignificantChange(double rotXW, double rotYW, double rotZW) {
     return (rotXW - _lastLoggedRotXW).abs() > 0.05 ||
            (rotYW - _lastLoggedRotYW).abs() > 0.05 ||
            (rotZW - _lastLoggedRotZW).abs() > 0.05;
   }
 
-  /// Log current modulation state for debugging
-  void _logModulationState(Map<String, double> visualState) {
-    final rotXW = visualState['rotationXW'] ?? 0.0;
-    final rotYW = visualState['rotationYW'] ?? 0.0;
-    final rotZW = visualState['rotationZW'] ?? 0.0;
-    final morph = visualState['morphParameter'] ?? 0.0;
-
-    // Get mapped audio values
-    final osc1Mod = _mappings['rotationXW_to_osc1Freq']?.map(rotXW) ?? 0.0;
-    final osc2Mod = _mappings['rotationYW_to_osc2Freq']?.map(rotYW) ?? 0.0;
-    final filterMod = _mappings['rotationZW_to_filterCutoff']?.map(rotZW) ?? 0.0;
-
-    debugPrint('🔊 Visual→Audio: '
-      'rotXW=${rotXW.toStringAsFixed(2)}→osc1=${osc1Mod.toStringAsFixed(2)}st | '
-      'rotYW=${rotYW.toStringAsFixed(2)}→osc2=${osc2Mod.toStringAsFixed(2)}st | '
-      'rotZW=${rotZW.toStringAsFixed(2)}→filter=${(filterMod * 100).toStringAsFixed(0)}% | '
-      'morph=${morph.toStringAsFixed(2)}');
+  /// Log current modulation state for debugging (shows BASE + MODULATION)
+  void _logModulationState(double rotXW, double rotYW, double rotZW, double morph) {
+    debugPrint('🔊 Visual→Audio [Base+Mod]: '
+      'rotXW=${rotXW.toStringAsFixed(2)}→osc1=${osc1DetuneParam.baseValue.toStringAsFixed(1)}+${osc1DetuneParam.currentModulation.toStringAsFixed(2)}=${osc1DetuneParam.finalValue.toStringAsFixed(2)}st | '
+      'rotYW=${rotYW.toStringAsFixed(2)}→osc2=${osc2DetuneParam.baseValue.toStringAsFixed(1)}+${osc2DetuneParam.currentModulation.toStringAsFixed(2)}=${osc2DetuneParam.finalValue.toStringAsFixed(2)}st | '
+      'rotZW=${rotZW.toStringAsFixed(2)}→filter=${filterCutoffParam.baseValue.toStringAsFixed(2)}+${filterCutoffParam.currentModulation.toStringAsFixed(2)}=${filterCutoffParam.finalValue.toStringAsFixed(2)} | '
+      'morph=${morph.toStringAsFixed(2)}→wave=${wavetableParam.baseValue.toStringAsFixed(2)}+${wavetableParam.currentModulation.toStringAsFixed(2)}=${wavetableParam.finalValue.toStringAsFixed(2)}');
 
     _lastLoggedRotXW = rotXW;
     _lastLoggedRotYW = rotYW;
@@ -196,20 +265,54 @@ class VisualToAudioModulator {
     audioProvider.setVisualSystem(system);
   }
 
-  /// Extract current visual state as normalized values (0-1)
-  Map<String, double> _getVisualState() {
+  // ============================================================================
+  // PUBLIC API FOR UI ACCESS
+  // ============================================================================
+
+  /// Get all parameter states (for UI display)
+  Map<String, ParameterState> getAllParameters() {
     return {
-      'rotationXW': _normalizeRotation(visualProvider.getRotationAngle('XW')),
-      'rotationYW': _normalizeRotation(visualProvider.getRotationAngle('YW')),
-      'rotationZW': _normalizeRotation(visualProvider.getRotationAngle('ZW')),
-      'morphParameter': visualProvider.getMorphParameter(),
-      'projectionDistance': _normalizeProjectionDistance(
-        visualProvider.getProjectionDistance(),
-      ),
-      'layerDepth': _normalizeLayerDepth(
-        visualProvider.getLayerSeparation(),
-      ),
+      'osc1Detune': osc1DetuneParam,
+      'osc2Detune': osc2DetuneParam,
+      'filterCutoffMod': filterCutoffParam,
+      'wavetablePosition': wavetableParam,
+      'reverbMix': reverbMixParam,
+      'delayTime': delayTimeParam,
     };
+  }
+
+  /// Set base value for a parameter (from UI slider or synthesis engine)
+  void setParameterBase(String paramName, double value) {
+    switch (paramName) {
+      case 'osc1Detune':
+        osc1DetuneParam.setBaseValue(value);
+        break;
+      case 'osc2Detune':
+        osc2DetuneParam.setBaseValue(value);
+        break;
+      case 'filterCutoffMod':
+        filterCutoffParam.setBaseValue(value);
+        break;
+      case 'wavetablePosition':
+        wavetableParam.setBaseValue(value);
+        break;
+      case 'reverbMix':
+        reverbMixParam.setBaseValue(value);
+        break;
+      case 'delayTime':
+        delayTimeParam.setBaseValue(value);
+        break;
+    }
+  }
+
+  /// Enable/disable modulation globally
+  void setModulationEnabled(bool enabled) {
+    osc1DetuneParam.setModulationEnabled(enabled);
+    osc2DetuneParam.setModulationEnabled(enabled);
+    filterCutoffParam.setModulationEnabled(enabled);
+    wavetableParam.setModulationEnabled(enabled);
+    reverbMixParam.setModulationEnabled(enabled);
+    delayTimeParam.setModulationEnabled(enabled);
   }
 
   /// Normalize rotation angle (0-2π) to (0-1)
@@ -237,31 +340,6 @@ class VisualToAudioModulator {
                        (math.log(10000) - math.log(10));
 
     return (1 + normalized * 15).round().clamp(1, 16);
-  }
-
-  void _updateAudioParameter(String paramName, double value) {
-    final synth = audioProvider.synthesizerEngine;
-
-    switch (paramName) {
-      case 'oscillator1Frequency':
-        synth.modulateOscillator1Frequency(value);
-        break;
-      case 'oscillator2Frequency':
-        synth.modulateOscillator2Frequency(value);
-        break;
-      case 'filterCutoff':
-        synth.modulateFilterCutoff(value);
-        break;
-      case 'wavetablePosition':
-        synth.setWavetablePosition(value);
-        break;
-      case 'reverbMix':
-        synth.setReverbMix(value);
-        break;
-      case 'delayTime':
-        synth.setDelayTime(value);
-        break;
-    }
   }
 
   void applyPreset(MappingPreset preset) {
