@@ -1,0 +1,45 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.0'
+        channel: 'stable'
+
+    - name: Enable Flutter Web
+      run: flutter config --enable-web
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Build Web (Universal Version)
+      run: |
+        # Use universal main entry point that works on web
+        cp lib/main_universal.dart lib/main.dart
+        flutter build web --release --base-href "/synth-vib3plus-modular/"
+
+    - name: Add CNAME (if custom domain)
+      run: |
+        # Uncomment and set your custom domain if you have one
+        # echo "your-domain.com" > build/web/CNAME
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build/web
+        force_orphan: true
+        commit_message: "🚀 Deploy Web Demo"
