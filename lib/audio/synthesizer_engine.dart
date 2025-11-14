@@ -255,6 +255,8 @@ class SynthesizerEngine {
 
   // Filter
   late final Filter filter;
+  late final ADSREnvelope filterEnvelope;  // Envelope for filter modulation
+  double filterEnvelopeAmount = 0.0; // 0-1, how much envelope affects filter
 
   // Effects
   late final Reverb reverb;
@@ -285,6 +287,13 @@ class SynthesizerEngine {
       sampleRate: sampleRate,
       type: FilterType.lowpass,
     );
+
+    // Initialize filter envelope with fast attack for percussive modulation
+    filterEnvelope = ADSREnvelope(sampleRate: sampleRate)
+      ..attack = 0.01
+      ..decay = 0.2
+      ..sustain = 0.5
+      ..release = 0.3;
 
     reverb = Reverb(sampleRate: sampleRate);
     delay = Delay(sampleRate: sampleRate);
@@ -331,6 +340,38 @@ class SynthesizerEngine {
 
       // Master output
       buffer[i] = (reverberated * masterVolume).clamp(-1.0, 1.0);
+    }
+
+    return buffer;
+  }
+
+  /// Apply effects chain to external buffer (from SynthesisBranchManager)
+  /// Applies: noise, filter (with envelope), delay, reverb, and master volume
+  Float32List applyEffectsToBuffer(Float32List inputBuffer) {
+    final buffer = Float32List(inputBuffer.length);
+
+    for (int i = 0; i < inputBuffer.length; i++) {
+      // Start with input sample
+      double sample = inputBuffer[i];
+
+      // Add noise
+      sample += noiseGenerator.nextSample();
+
+      // Apply filter with modulation and envelope
+      // Envelope modulates cutoff: env * amount scales the cutoff up to 2x
+      final envValue = filterEnvelope.process();
+      final envelopeModulation = envValue * filterEnvelopeAmount;
+      filter.cutoffModulation = _filterCutoffModulation + envelopeModulation;
+      sample = filter.process(sample);
+
+      // Apply delay
+      sample = delay.process(sample);
+
+      // Apply reverb
+      sample = reverb.process(sample);
+
+      // Master output with volume
+      buffer[i] = (sample * masterVolume).clamp(-1.0, 1.0);
     }
 
     return buffer;
