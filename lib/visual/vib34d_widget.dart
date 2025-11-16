@@ -77,10 +77,7 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
           JavaScriptLogLevel.error: '❌',
         }[message.level] ?? 'ℹ️';
 
-        // Extract filename from source URL for cleaner logs
-        final source = message.sourceId.split('/').last;
-
-        debugPrint('$prefix VIB3+ [$source:${message.lineNumber}] ${message.message}');
+        debugPrint('$prefix VIB3+ ${message.message}');
       })
       ..setNavigationDelegate(
         NavigationDelegate(
