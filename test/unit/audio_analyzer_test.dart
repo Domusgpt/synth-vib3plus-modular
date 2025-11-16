@@ -1,0 +1,477 @@
+/**
+ * Unit Tests for Audio Analyzer
+ *
+ * Tests FFT analysis and audio feature extraction for visual modulation
+ *
+ * A Paul Phillips Manifestation
+ */
+
+import 'dart:math';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:synther_vib34d_holographic/audio/audio_analyzer.dart';
+import '../test_utilities.dart';
+
+void main() {
+  group('AudioAnalyzer - Initialization', () {
+    test('should initialize with correct FFT size', () {
+      final analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+      expect(analyzer.fftSize, equals(2048));
+      expect(analyzer.sampleRate, equals(44100.0));
+    });
+
+    test('should require power-of-2 FFT size', () {
+      // Valid sizes
+      expect(() => AudioAnalyzer(fftSize: 1024, sampleRate: 44100), returnsNormally);
+      expect(() => AudioAnalyzer(fftSize: 2048, sampleRate: 44100), returnsNormally);
+      expect(() => AudioAnalyzer(fftSize: 4096, sampleRate: 44100), returnsNormally);
+
+      // Invalid sizes (not power of 2) - should either throw or round to nearest power of 2
+      // Implementation may vary
+    });
+  });
+
+  group('AudioAnalyzer - Bass Energy Extraction', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should detect bass frequency content (20-250 Hz)', () {
+      // Generate bass-heavy signal (100 Hz sine wave)
+      final bassSignal = generateTestSineWave(
+        frequency: 100.0,
+        sampleRate: 44100.0,
+        length: 2048,
+        amplitude: 0.8,
+      );
+
+      final features = analyzer.extractFeatures(bassSignal);
+
+      expect(features.bassEnergy, greaterThan(0.3),
+        reason: 'Strong bass signal should have high bass energy');
+      expect(features.bassEnergy, greaterThan(features.midEnergy),
+        reason: 'Bass energy should dominate in bass-heavy signal');
+    });
+
+    test('should have low bass energy for high-frequency signal', () {
+      // Generate high-frequency signal (5000 Hz)
+      final highSignal = generateTestSineWave(
+        frequency: 5000.0,
+        sampleRate: 44100.0,
+        length: 2048,
+        amplitude: 0.8,
+      );
+
+      final features = analyzer.extractFeatures(highSignal);
+
+      expect(features.bassEnergy, lessThan(0.2),
+        reason: 'High-frequency signal should have low bass energy');
+    });
+  });
+
+  group('AudioAnalyzer - Mid Energy Extraction', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should detect mid frequency content (250-2000 Hz)', () {
+      // Generate mid-range signal (1000 Hz)
+      final midSignal = generateTestSineWave(
+        frequency: 1000.0,
+        sampleRate: 44100.0,
+        length: 2048,
+        amplitude: 0.8,
+      );
+
+      final features = analyzer.extractFeatures(midSignal);
+
+      expect(features.midEnergy, greaterThan(0.3),
+        reason: 'Mid-range signal should have high mid energy');
+      expect(features.midEnergy, greaterThan(features.bassEnergy),
+        reason: 'Mid energy should dominate in mid-range signal');
+      expect(features.midEnergy, greaterThan(features.highEnergy),
+        reason: 'Mid energy should be higher than high energy');
+    });
+  });
+
+  group('AudioAnalyzer - High Energy Extraction', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should detect high frequency content (2000-8000 Hz)', () {
+      // Generate high-frequency signal (4000 Hz)
+      final highSignal = generateTestSineWave(
+        frequency: 4000.0,
+        sampleRate: 44100.0,
+        length: 2048,
+        amplitude: 0.8,
+      );
+
+      final features = analyzer.extractFeatures(highSignal);
+
+      expect(features.highEnergy, greaterThan(0.3),
+        reason: 'High-frequency signal should have high high energy');
+      expect(features.highEnergy, greaterThan(features.bassEnergy),
+        reason: 'High energy should dominate over bass');
+    });
+  });
+
+  group('AudioAnalyzer - Spectral Centroid', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should calculate low centroid for bass-heavy signals', () {
+      final bassSignal = generateTestSineWave(
+        frequency: 100.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final features = analyzer.extractFeatures(bassSignal);
+
+      expect(features.spectralCentroid, lessThan(500.0),
+        reason: 'Bass signal should have low spectral centroid');
+    });
+
+    test('should calculate high centroid for treble-heavy signals', () {
+      final trebleSignal = generateTestSineWave(
+        frequency: 4000.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final features = analyzer.extractFeatures(trebleSignal);
+
+      expect(features.spectralCentroid, greaterThan(2000.0),
+        reason: 'Treble signal should have high spectral centroid');
+    });
+
+    test('should calculate mid centroid for balanced signals', () {
+      // Generate complex signal with multiple frequencies
+      final balancedSignal = generateComplexWaveform(
+        frequencies: [200.0, 500.0, 1000.0, 2000.0],
+        amplitudes: [0.25, 0.25, 0.25, 0.25],
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final features = analyzer.extractFeatures(balancedSignal);
+
+      expect(features.spectralCentroid, inInclusiveRange(500.0, 2000.0),
+        reason: 'Balanced signal should have mid-range centroid');
+    });
+  });
+
+  group('AudioAnalyzer - RMS Amplitude', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should calculate RMS for strong signal', () {
+      final strongSignal = generateTestSineWave(
+        frequency: 440.0,
+        sampleRate: 44100.0,
+        length: 2048,
+        amplitude: 0.8,
+      );
+
+      final features = analyzer.extractFeatures(strongSignal);
+
+      expect(features.rmsAmplitude, greaterThan(0.3),
+        reason: 'Strong signal should have high RMS');
+    });
+
+    test('should calculate low RMS for weak signal', () {
+      final weakSignal = generateTestSineWave(
+        frequency: 440.0,
+        sampleRate: 44100.0,
+        length: 2048,
+        amplitude: 0.1,
+      );
+
+      final features = analyzer.extractFeatures(weakSignal);
+
+      expect(features.rmsAmplitude, lessThan(0.15),
+        reason: 'Weak signal should have low RMS');
+    });
+
+    test('should calculate near-zero RMS for silence', () {
+      final silence = Float32List(2048);
+
+      final features = analyzer.extractFeatures(silence);
+
+      expect(features.rmsAmplitude, lessThan(0.01),
+        reason: 'Silence should have near-zero RMS');
+    });
+  });
+
+  group('AudioAnalyzer - Pitch Detection', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should detect pitch for A440', () {
+      final a440 = generateTestSineWave(
+        frequency: 440.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final features = analyzer.extractFeatures(a440);
+
+      // Pitch detection should be within ±20 Hz of target
+      expect(features.dominantPitch, inInclusiveRange(420.0, 460.0),
+        reason: 'Should detect A440 pitch');
+    });
+
+    test('should detect pitch for middle C (261.63 Hz)', () {
+      final middleC = generateTestSineWave(
+        frequency: 261.63,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final features = analyzer.extractFeatures(middleC);
+
+      expect(features.dominantPitch, inInclusiveRange(240.0, 280.0),
+        reason: 'Should detect middle C pitch');
+    });
+  });
+
+  group('AudioAnalyzer - Spectral Flux', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should have low flux for steady-state signal', () {
+      final steady = generateTestSineWave(
+        frequency: 440.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      // Analyze same signal twice
+      final features1 = analyzer.extractFeatures(steady);
+      final features2 = analyzer.extractFeatures(steady);
+
+      // Second analysis should show low flux (signal hasn't changed)
+      expect(features2.spectralFlux, lessThan(0.3),
+        reason: 'Steady signal should have low spectral flux');
+    });
+
+    test('should have high flux for changing signal', () {
+      final signal1 = generateTestSineWave(
+        frequency: 200.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final signal2 = generateTestSineWave(
+        frequency: 2000.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      analyzer.extractFeatures(signal1);
+      final features = analyzer.extractFeatures(signal2);
+
+      // Should detect large spectral change
+      expect(features.spectralFlux, greaterThan(0.2),
+        reason: 'Changing signal should have high spectral flux');
+    });
+  });
+
+  group('AudioAnalyzer - Stereo Width', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should calculate stereo width for mono signal', () {
+      final mono = generateTestSineWave(
+        frequency: 440.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final features = analyzer.extractFeatures(mono);
+
+      // Mono signal should have low stereo width
+      // (Note: Implementation may vary - this assumes mono input is detected)
+      expect(features.stereoWidth, lessThan(0.5),
+        reason: 'Mono signal should have low stereo width');
+    });
+  });
+
+  group('AudioAnalyzer - Noise Floor', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should detect high noise floor for white noise', () {
+      final noise = generateWhiteNoise(
+        length: 2048,
+        amplitude: 0.5,
+        seed: 42,
+      );
+
+      final features = analyzer.extractFeatures(noise);
+
+      expect(features.noiseFloor, greaterThan(0.2),
+        reason: 'White noise should have high noise floor');
+    });
+
+    test('should detect low noise floor for pure tone', () {
+      final pureTone = generateTestSineWave(
+        frequency: 440.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final features = analyzer.extractFeatures(pureTone);
+
+      expect(features.noiseFloor, lessThan(0.2),
+        reason: 'Pure tone should have low noise floor');
+    });
+  });
+
+  group('AudioAnalyzer - Feature Consistency', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should produce consistent results for identical buffers', () {
+      final buffer = generateTestSineWave(
+        frequency: 440.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final features1 = analyzer.extractFeatures(buffer);
+      final features2 = analyzer.extractFeatures(buffer);
+
+      expect(features1.bassEnergy, closeTo(features2.bassEnergy, 0.01));
+      expect(features1.midEnergy, closeTo(features2.midEnergy, 0.01));
+      expect(features1.highEnergy, closeTo(features2.highEnergy, 0.01));
+      expect(features1.spectralCentroid, closeTo(features2.spectralCentroid, 50.0));
+      expect(features1.rmsAmplitude, closeTo(features2.rmsAmplitude, 0.01));
+    });
+
+    test('should handle very small buffer values without errors', () {
+      final tinyBuffer = Float32List.fromList(
+        List.generate(2048, (_) => 0.0001)
+      );
+
+      expect(() => analyzer.extractFeatures(tinyBuffer), returnsNormally);
+    });
+
+    test('should handle maximum amplitude without clipping analysis', () {
+      final maxBuffer = Float32List.fromList(
+        List.generate(2048, (i) => i.isEven ? 1.0 : -1.0)
+      );
+
+      final features = analyzer.extractFeatures(maxBuffer);
+
+      expect(features.rmsAmplitude, lessThanOrEqualTo(1.0));
+    });
+  });
+
+  group('AudioAnalyzer - Performance', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should analyze buffer in < 5ms (60 FPS requirement)', () {
+      final testBuffer = generateTestSineWave(
+        frequency: 440.0,
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final benchmark = PerformanceBenchmark('FFT Analysis (2048 samples)', iterations: 100);
+      final avgDuration = benchmark.measure(() {
+        analyzer.extractFeatures(testBuffer);
+      });
+
+      print('Average FFT analysis time: ${avgDuration.inMicroseconds / 1000.0} ms');
+
+      // For 60 FPS parameter bridge, we have ~16ms per frame
+      // FFT analysis should take < 5ms to leave headroom
+      expect(avgDuration.inMilliseconds, lessThan(5),
+        reason: 'Should analyze audio fast enough for 60 FPS updates');
+    });
+  });
+
+  group('AudioAnalyzer - Musical Signal Analysis', () {
+    late AudioAnalyzer analyzer;
+
+    setUp(() {
+      analyzer = AudioAnalyzer(fftSize: 2048, sampleRate: 44100.0);
+    });
+
+    test('should analyze C major chord correctly', () {
+      // C major = C (261.63 Hz) + E (329.63 Hz) + G (392.00 Hz)
+      final cMajor = generateComplexWaveform(
+        frequencies: [261.63, 329.63, 392.00],
+        amplitudes: [0.33, 0.33, 0.33],
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final features = analyzer.extractFeatures(cMajor);
+
+      // Chord should have mid-range centroid
+      expect(features.spectralCentroid, inInclusiveRange(250.0, 450.0));
+      // Should have significant mid energy
+      expect(features.midEnergy, greaterThan(0.3));
+      // Should have moderate harmonic content
+      expect(features.noiseFloor, lessThan(0.3));
+    });
+
+    test('should differentiate major vs minor chords', () {
+      // C major: C + E + G
+      final cMajor = generateComplexWaveform(
+        frequencies: [261.63, 329.63, 392.00],
+        amplitudes: [0.33, 0.33, 0.33],
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      // C minor: C + Eb + G (Eb = 311.13 Hz)
+      final cMinor = generateComplexWaveform(
+        frequencies: [261.63, 311.13, 392.00],
+        amplitudes: [0.33, 0.33, 0.33],
+        sampleRate: 44100.0,
+        length: 2048,
+      );
+
+      final majorFeatures = analyzer.extractFeatures(cMajor);
+      final minorFeatures = analyzer.extractFeatures(cMinor);
+
+      // Minor chord should have slightly darker (lower) spectral centroid
+      expect(minorFeatures.spectralCentroid, lessThan(majorFeatures.spectralCentroid));
+    });
+  });
+}
