@@ -79,6 +79,11 @@ class SynthTheme {
   /// Current system colors
   final SystemColors systemColors;
 
+  /// System color shortcuts (for backward compatibility)
+  static const quantumCyan = Color(0xFF00FFFF);
+  static const facetedMagenta = Color(0xFFFF00FF);
+  static const holographicAmber = Color(0xFFFFAA00);
+
   /// Base dark background
   static const backgroundColor = Color(0xFF0A0A0A);
   static const panelBackground = Color(0xFF1A1A2E);

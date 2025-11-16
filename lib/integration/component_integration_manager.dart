@@ -31,6 +31,7 @@ import '../ui/layers/particle_system.dart';
 import '../ui/layers/modulation_visualizer.dart';
 import '../ui/effects/glassmorphic_container.dart';
 import '../ui/utils/haptic_feedback.dart';
+import '../ui/theme/design_tokens.dart';
 
 // ============================================================================
 // COMPONENT TYPE

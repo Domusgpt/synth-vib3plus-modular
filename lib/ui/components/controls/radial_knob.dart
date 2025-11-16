@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../base/reactive_component.dart';
 import 'enhanced_slider.dart';  // For ParameterType
+import '../../../audio/audio_analyzer.dart';  // For AudioFeatures
 
 // ============================================================================
 // KNOB CONFIGURATION

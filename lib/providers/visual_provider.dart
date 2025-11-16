@@ -70,6 +70,7 @@ class VisualProvider with ChangeNotifier {
 
   // Getters
   String get currentSystem => _currentSystem;
+  String get currentSystemName => _currentSystem; // Alias for backward compatibility
   double get rotationXY => _rotationXY;
   double get rotationXZ => _rotationXZ;
   double get rotationYZ => _rotationYZ;
@@ -88,6 +89,7 @@ class VisualProvider with ChangeNotifier {
   double get projectionDistance => _projectionDistance;
   double get layerSeparation => _layerSeparation;
   bool get isAnimating => _isAnimating;
+  Map<String, dynamic> get visualState => getVisualState(); // Property alias for method
 
   /// Initialize WebView controller for VIB34D systems
   void setWebViewController(WebViewController controller) {
