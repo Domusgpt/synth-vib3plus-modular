@@ -59,17 +59,13 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
               _errorMessage = message.message.substring(6);
             });
           }
-          // Handle system switch completion
-          else if (message.message.startsWith('SWITCH_COMPLETE:')) {
-            final systemName = message.message.substring(16);
-            debugPrint('✅ Canvas manager switch complete: $systemName');
-            widget.visualProvider.handleSystemSwitchComplete(systemName);
+          // Handle VIB3+ ready signal
+          else if (message.message.startsWith('READY:')) {
+            debugPrint('✅ ${message.message}');
           }
-          // Handle initial system init completion
-          else if (message.message.startsWith('INIT_COMPLETE:')) {
-            final systemName = message.message.substring(14);
-            debugPrint('✅ Canvas manager init complete: $systemName');
-            widget.visualProvider.handleSystemSwitchComplete(systemName);
+          // Handle other info messages
+          else if (message.message.startsWith('INFO:')) {
+            debugPrint('ℹ️ ${message.message}');
           }
         },
       )
@@ -294,95 +290,70 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
           });
         };
 
-        // STEP 2.5: WebGL Canvas Manager - Smart destroy/init to avoid context limits
-        window.canvasManager = {
-          activeSystem: null,
-          canvases: {},
+        // STEP 2.5: VIB3+ Native System Support
+        // NOTE: VIB3+ manages its own canvases - we just use window.switchSystem()
+        console.log('✅ Using VIB3+ native canvas management (window.switchSystem)');
 
-          // Destroy all canvases for a system
-          destroySystem: function(systemName) {
-            console.log('🗑️ Destroying ' + systemName + ' canvases');
-            const canvasArray = this.canvases[systemName] || [];
+        // STEP 2.6: Audio Reactivity Handler - Send FFT data to WebGL systems
+        window.updateAudioReactivity = function(audioData) {
+          // audioData: { bass, mid, high, brightness, amplitude, transients }
 
-            canvasArray.forEach(function(canvas) {
-              // Critical: Lose WebGL context properly
-              const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
-              if (gl) {
-                const loseContext = gl.getExtension('WEBGL_lose_context');
-                if (loseContext) {
-                  loseContext.loseContext();
-                  console.log('  ✅ Lost WebGL context for canvas');
-                }
-              }
+          // Send to active VIB3+ system for real-time reactivity
+          if (window.setAudioReactivity) {
+            window.setAudioReactivity(audioData);
+          }
 
-              // Remove from DOM
-              if (canvas.parentNode) {
-                canvas.parentNode.removeChild(canvas);
-                console.log('  ✅ Removed canvas from DOM');
-              }
-            });
-
-            this.canvases[systemName] = [];
-            console.log('✅ ' + systemName + ' destroyed (' + canvasArray.length + ' canvases)');
-          },
-
-          // Initialize canvases for a system
-          initSystem: function(systemName) {
-            console.log('🎨 Initializing ' + systemName + ' canvases');
-
-            // VIB3+ specific init based on system
-            if (window.switchSystem) {
-              window.switchSystem(systemName);
-              this.activeSystem = systemName;
-              console.log('✅ Switched to ' + systemName + ' system');
-
-              // Track canvases created by this system (query after brief delay for DOM update)
-              setTimeout(function() {
-                const canvases = Array.from(document.querySelectorAll('canvas'));
-                window.canvasManager.canvases[systemName] = canvases;
-                console.log('📊 Tracked ' + canvases.length + ' canvases for ' + systemName);
-
-                // Report WebGL context count
-                let contextCount = 0;
-                canvases.forEach(function(canvas) {
-                  const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
-                  if (gl) contextCount++;
-                });
-                console.log('🎮 Active WebGL contexts: ' + contextCount);
-              }, 50);
-            } else {
-              console.error('❌ window.switchSystem not available');
-              FlutterBridge.postMessage('ERROR: VIB3+ switchSystem function not found');
+          // Apply audio-reactive modulations to visual parameters
+          // Bass energy → rotation speed boost
+          if (audioData.bass > 0.5) {
+            const bassBoost = 1.0 + (audioData.bass - 0.5) * 2.0; // 1.0-2.0x
+            if (window.updateParameter) {
+              window.updateParameter('rotationSpeedMultiplier', bassBoost);
             }
-          },
+          }
 
-          // Smart switch: destroy old, init new
-          switchTo: function(newSystem) {
-            if (this.activeSystem === newSystem) {
-              console.log('ℹ️ Already on ' + newSystem);
-              return;
+          // Mid energy → tessellation density
+          if (audioData.mid > 0.3) {
+            const density = Math.floor(3 + audioData.mid * 5); // 3-8
+            if (window.updateParameter) {
+              window.updateParameter('tessellationDensity', density);
             }
+          }
 
-            const self = this;
+          // High energy → vertex brightness
+          if (audioData.high > 0.2) {
+            const brightness = 0.5 + audioData.high * 0.5; // 0.5-1.0
+            if (window.updateParameter) {
+              window.updateParameter('vertexBrightness', brightness);
+            }
+          }
 
-            // Destroy current system
-            if (this.activeSystem) {
-              this.destroySystem(this.activeSystem);
+          // Spectral brightness → hue shift
+          if (audioData.brightness !== undefined) {
+            const hue = audioData.brightness * 360.0; // 0-360°
+            if (window.updateParameter) {
+              window.updateParameter('hueShift', hue);
+            }
+          }
 
-              // Give browser time to release resources (100ms)
-              setTimeout(function() {
-                self.initSystem(newSystem);
-                FlutterBridge.postMessage('SWITCH_COMPLETE:' + newSystem);
-              }, 100);
-            } else {
-              // First init
-              this.initSystem(newSystem);
-              FlutterBridge.postMessage('INIT_COMPLETE:' + newSystem);
+          // Amplitude → glow intensity
+          if (audioData.amplitude > 0.1) {
+            const glow = audioData.amplitude * 3.0; // 0-3
+            if (window.updateParameter) {
+              window.updateParameter('glowIntensity', glow);
+            }
+          }
+
+          // Transients → RGB split for impact
+          if (audioData.transients > 0.5) {
+            const split = audioData.transients * 10.0; // 0-10
+            if (window.updateParameter) {
+              window.updateParameter('rgbSplitAmount', split);
             }
           }
         };
 
-        console.log('✅ Canvas Manager initialized');
+        console.log('✅ Audio reactivity handler initialized');
 
         // STEP 3: Error handler
         window.addEventListener('error', function(e) {

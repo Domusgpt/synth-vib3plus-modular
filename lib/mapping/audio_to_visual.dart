@@ -88,17 +88,35 @@ class AudioToVisualModulator {
     // Perform FFT analysis
     final fftData = analyzer.computeFFT(audioBuffer);
 
-    // Extract audio features
+    // Extract audio features (complete set for WebGL reactivity)
+    final bassEnergy = analyzer.getBandEnergy(fftData, 20.0, 250.0);
+    final midEnergy = analyzer.getBandEnergy(fftData, 250.0, 2000.0);
+    final highEnergy = analyzer.getBandEnergy(fftData, 2000.0, 8000.0);
+    final spectralCentroid = analyzer.computeSpectralCentroid(fftData);
+    final rms = analyzer.computeRMS(audioBuffer);
+    final transientDensity = analyzer.getTransientDensity();
+
     final features = {
-      'bassEnergy': analyzer.getBandEnergy(fftData, 20.0, 250.0),
-      'midEnergy': analyzer.getBandEnergy(fftData, 250.0, 2000.0),
-      'highEnergy': analyzer.getBandEnergy(fftData, 2000.0, 8000.0),
-      'spectralCentroid': analyzer.computeSpectralCentroid(fftData),
-      'rms': analyzer.computeRMS(audioBuffer),
+      'bassEnergy': bassEnergy,
+      'midEnergy': midEnergy,
+      'highEnergy': highEnergy,
+      'spectralCentroid': spectralCentroid,
+      'rms': rms,
       'stereoWidth': 0.5, // Placeholder - requires stereo buffer
+      'transientDensity': transientDensity,
     };
 
-    // Apply each mapping
+    // Send audio reactivity data to WebGL systems (60 FPS)
+    visualProvider.sendAudioReactivity(
+      bassEnergy: bassEnergy,
+      midEnergy: midEnergy,
+      highEnergy: highEnergy,
+      spectralCentroid: spectralCentroid,
+      rms: rms,
+      transientDensity: transientDensity,
+    );
+
+    // Apply each mapping to visual parameters
     _mappings.forEach((key, mapping) {
       final sourceValue = features[mapping.sourceParam] ?? 0.0;
       final mappedValue = mapping.map(sourceValue);

@@ -97,7 +97,7 @@ class VisualProvider with ChangeNotifier {
     debugPrint('✅ WebView controller attached to VisualProvider');
   }
 
-  /// Switch between VIB34D systems using smart canvas manager
+  /// Switch between VIB34D systems using VIB3+'s native switchSystem
   Future<void> switchSystem(String systemName) async {
     if (_currentSystem == systemName) return;
 
@@ -106,18 +106,20 @@ class VisualProvider with ChangeNotifier {
 
     debugPrint('🔄 System Switching: $previousSystem → $systemName');
 
-    // Use canvas manager for smart destroy/init to avoid WebGL context limits
+    // Use VIB3+'s native switchSystem function (it manages its own canvases)
     if (_webViewController != null) {
       try {
         await _webViewController!.runJavaScript(
-          'if (window.canvasManager) { window.canvasManager.switchTo("$systemName"); }'
+          'if (window.switchSystem) { window.switchSystem("$systemName"); } else { console.error("❌ window.switchSystem not available"); }'
         );
-        debugPrint('✅ Canvas manager switching to $systemName');
+        debugPrint('✅ Called VIB3+ native switchSystem("$systemName")');
 
-        // Parameter injection will happen when we receive SWITCH_COMPLETE message
-        // See _handleSystemSwitchComplete() below
+        // Re-inject parameters after brief delay to let system initialize
+        await Future.delayed(const Duration(milliseconds: 150));
+        await _injectAllParameters();
+        debugPrint('✅ Parameters re-injected after system switch');
       } catch (e) {
-        debugPrint('❌ Error switching via canvas manager: $e');
+        debugPrint('❌ Error switching system: $e');
       }
     } else {
       debugPrint('⚠️  WebView controller not initialized - system switch deferred');
@@ -200,6 +202,40 @@ class VisualProvider with ChangeNotifier {
     } catch (e) {
       debugPrint('❌ Error injecting parameters: $e');
     }
+  }
+
+  /// Send audio reactivity data to WebGL systems
+  /// Called by ParameterBridge at 60 FPS with FFT analysis results
+  void sendAudioReactivity({
+    required double bassEnergy,
+    required double midEnergy,
+    required double highEnergy,
+    required double spectralCentroid,
+    required double rms,
+    required double transientDensity,
+  }) {
+    if (_webViewController == null) return;
+
+    // Prepare audio reactivity data as JSON
+    final audioData = {
+      'bass': bassEnergy.clamp(0.0, 1.0),
+      'mid': midEnergy.clamp(0.0, 1.0),
+      'high': highEnergy.clamp(0.0, 1.0),
+      'brightness': (spectralCentroid / 8000.0).clamp(0.0, 1.0), // Normalize to 0-1
+      'amplitude': rms.clamp(0.0, 1.0),
+      'transients': transientDensity.clamp(0.0, 10.0) / 10.0, // Normalize to 0-1
+    };
+
+    final audioJson = audioData.entries
+        .map((e) => '"${e.key}": ${e.value.toStringAsFixed(3)}')
+        .join(', ');
+
+    // Send to WebGL (non-blocking, fire-and-forget for performance)
+    _webViewController!.runJavaScript(
+      'if (window.updateAudioReactivity) { window.updateAudioReactivity({$audioJson}); }'
+    ).catchError((e) {
+      // Silently ignore errors to avoid flooding logs at 60 FPS
+    });
   }
 
   /// Set rotation speed (from audio modulation)
