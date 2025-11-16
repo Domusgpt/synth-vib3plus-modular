@@ -243,7 +243,7 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
               systemSelector.style.pointerEvents = 'all';
             }
 
-            // CRITICAL: Disable ALL VIB3+ event listeners on canvas/layers
+            // CRITICAL: Disable VIB3+ touch events via CSS ONLY (no cloning - that destroys WebGL!)
             const disableTouchElements = [
               '.canvas-container', '#canvasContainer',
               '.holographic-layers', 'canvas'
@@ -253,9 +253,7 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
               elements.forEach(el => {
                 el.style.pointerEvents = 'none';
                 el.style.touchAction = 'none';
-                // Remove all event listeners (clone and replace)
-                const clone = el.cloneNode(true);
-                el.parentNode.replaceChild(clone, el);
+                // CSS-only approach - DO NOT clone canvas elements as it destroys WebGL context!
               });
             });
 
