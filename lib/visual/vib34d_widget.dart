@@ -12,6 +12,7 @@
  * A Paul Phillips Manifestation
  */
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
@@ -51,14 +52,40 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
         'FlutterBridge',
         onMessageReceived: (JavaScriptMessage message) {
           debugPrint('📨 VIB3+ Message: ${message.message}');
-          // Handle messages from VIB3+ (errors, events, etc.)
+
+          // Handle errors
           if (message.message.startsWith('ERROR:')) {
             setState(() {
               _errorMessage = message.message.substring(6);
             });
           }
+          // Handle system switch completion
+          else if (message.message.startsWith('SWITCH_COMPLETE:')) {
+            final systemName = message.message.substring(16);
+            debugPrint('✅ Canvas manager switch complete: $systemName');
+            widget.visualProvider.handleSystemSwitchComplete(systemName);
+          }
+          // Handle initial system init completion
+          else if (message.message.startsWith('INIT_COMPLETE:')) {
+            final systemName = message.message.substring(14);
+            debugPrint('✅ Canvas manager init complete: $systemName');
+            widget.visualProvider.handleSystemSwitchComplete(systemName);
+          }
         },
       )
+      ..setOnConsoleMessage((JavaScriptConsoleMessage message) {
+        // Map JavaScript console levels to Flutter debug output
+        final prefix = {
+          JavaScriptLogLevel.log: '📘',
+          JavaScriptLogLevel.warning: '⚠️',
+          JavaScriptLogLevel.error: '❌',
+        }[message.level] ?? 'ℹ️';
+
+        // Extract filename from source URL for cleaner logs
+        final source = message.sourceId.split('/').last;
+
+        debugPrint('$prefix VIB3+ [$source:${message.lineNumber}] ${message.message}');
+      })
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (String url) async {
@@ -266,6 +293,96 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
             }
           });
         };
+
+        // STEP 2.5: WebGL Canvas Manager - Smart destroy/init to avoid context limits
+        window.canvasManager = {
+          activeSystem: null,
+          canvases: {},
+
+          // Destroy all canvases for a system
+          destroySystem: function(systemName) {
+            console.log('🗑️ Destroying ' + systemName + ' canvases');
+            const canvasArray = this.canvases[systemName] || [];
+
+            canvasArray.forEach(function(canvas) {
+              // Critical: Lose WebGL context properly
+              const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
+              if (gl) {
+                const loseContext = gl.getExtension('WEBGL_lose_context');
+                if (loseContext) {
+                  loseContext.loseContext();
+                  console.log('  ✅ Lost WebGL context for canvas');
+                }
+              }
+
+              // Remove from DOM
+              if (canvas.parentNode) {
+                canvas.parentNode.removeChild(canvas);
+                console.log('  ✅ Removed canvas from DOM');
+              }
+            });
+
+            this.canvases[systemName] = [];
+            console.log('✅ ' + systemName + ' destroyed (' + canvasArray.length + ' canvases)');
+          },
+
+          // Initialize canvases for a system
+          initSystem: function(systemName) {
+            console.log('🎨 Initializing ' + systemName + ' canvases');
+
+            // VIB3+ specific init based on system
+            if (window.switchSystem) {
+              window.switchSystem(systemName);
+              this.activeSystem = systemName;
+              console.log('✅ Switched to ' + systemName + ' system');
+
+              // Track canvases created by this system (query after brief delay for DOM update)
+              setTimeout(function() {
+                const canvases = Array.from(document.querySelectorAll('canvas'));
+                window.canvasManager.canvases[systemName] = canvases;
+                console.log('📊 Tracked ' + canvases.length + ' canvases for ' + systemName);
+
+                // Report WebGL context count
+                let contextCount = 0;
+                canvases.forEach(function(canvas) {
+                  const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
+                  if (gl) contextCount++;
+                });
+                console.log('🎮 Active WebGL contexts: ' + contextCount);
+              }, 50);
+            } else {
+              console.error('❌ window.switchSystem not available');
+              FlutterBridge.postMessage('ERROR: VIB3+ switchSystem function not found');
+            }
+          },
+
+          // Smart switch: destroy old, init new
+          switchTo: function(newSystem) {
+            if (this.activeSystem === newSystem) {
+              console.log('ℹ️ Already on ' + newSystem);
+              return;
+            }
+
+            const self = this;
+
+            // Destroy current system
+            if (this.activeSystem) {
+              this.destroySystem(this.activeSystem);
+
+              // Give browser time to release resources (100ms)
+              setTimeout(function() {
+                self.initSystem(newSystem);
+                FlutterBridge.postMessage('SWITCH_COMPLETE:' + newSystem);
+              }, 100);
+            } else {
+              // First init
+              this.initSystem(newSystem);
+              FlutterBridge.postMessage('INIT_COMPLETE:' + newSystem);
+            }
+          }
+        };
+
+        console.log('✅ Canvas Manager initialized');
 
         // STEP 3: Error handler
         window.addEventListener('error', function(e) {

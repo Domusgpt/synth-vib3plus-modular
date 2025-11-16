@@ -97,7 +97,7 @@ class VisualProvider with ChangeNotifier {
     debugPrint('✅ WebView controller attached to VisualProvider');
   }
 
-  /// Switch between VIB34D systems
+  /// Switch between VIB34D systems using smart canvas manager
   Future<void> switchSystem(String systemName) async {
     if (_currentSystem == systemName) return;
 
@@ -106,16 +106,18 @@ class VisualProvider with ChangeNotifier {
 
     debugPrint('🔄 System Switching: $previousSystem → $systemName');
 
-    // Update JavaScript system via WebView
-    // VIB3+ uses window.switchSystem(), not window.vib34d.switchSystem()
+    // Use canvas manager for smart destroy/init to avoid WebGL context limits
     if (_webViewController != null) {
       try {
         await _webViewController!.runJavaScript(
-          'if (window.switchSystem) { window.switchSystem("$systemName"); }'
+          'if (window.canvasManager) { window.canvasManager.switchTo("$systemName"); }'
         );
-        debugPrint('✅ VIB3+ system switched to $systemName');
+        debugPrint('✅ Canvas manager switching to $systemName');
+
+        // Parameter injection will happen when we receive SWITCH_COMPLETE message
+        // See _handleSystemSwitchComplete() below
       } catch (e) {
-        debugPrint('❌ Error switching VIB3+ system: $e');
+        debugPrint('❌ Error switching via canvas manager: $e');
       }
     } else {
       debugPrint('⚠️  WebView controller not initialized - system switch deferred');
@@ -141,6 +143,63 @@ class VisualProvider with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  /// Called when canvas manager completes system switch
+  /// Re-injects all current parameters into the new system
+  Future<void> handleSystemSwitchComplete(String systemName) async {
+    debugPrint('✅ System switch complete to $systemName - injecting parameters');
+
+    // Give the new system a moment to fully initialize
+    await Future.delayed(const Duration(milliseconds: 50));
+
+    // Inject all current parameters into the new system
+    await _injectAllParameters();
+
+    debugPrint('✅ Parameters injected into $systemName');
+  }
+
+  /// Inject all current visual parameters into VIB3+ system
+  Future<void> _injectAllParameters() async {
+    if (_webViewController == null) return;
+
+    final params = {
+      // 4D rotation angles
+      'rot4dXW': _rotationXW,
+      'rot4dYW': _rotationYW,
+      'rot4dZW': _rotationZW,
+      // 3D rotation angles
+      'rot3dXY': _rotationXY,
+      'rot3dXZ': _rotationXZ,
+      'rot3dYZ': _rotationYZ,
+      // Visual parameters
+      'rotationSpeed': _rotationSpeed,
+      'tessellationDensity': _tessellationDensity,
+      'vertexBrightness': _vertexBrightness,
+      'hueShift': _hueShift,
+      'glowIntensity': _glowIntensity,
+      'rgbSplitAmount': _rgbSplitAmount,
+      // Geometry parameters
+      'geometry': _currentGeometry,
+      'morphParameter': _morphParameter,
+      'projectionDistance': _projectionDistance,
+      'layerSeparation': _layerSeparation,
+    };
+
+    try {
+      // Use batch update helper for better performance
+      final paramsJson = params.entries
+          .map((e) => '"${e.key}": ${e.value}')
+          .join(', ');
+
+      await _webViewController!.runJavaScript(
+        'if (window.flutterUpdateParameters) { window.flutterUpdateParameters({$paramsJson}); }'
+      );
+
+      debugPrint('✅ Injected ${params.length} parameters');
+    } catch (e) {
+      debugPrint('❌ Error injecting parameters: $e');
+    }
   }
 
   /// Set rotation speed (from audio modulation)
