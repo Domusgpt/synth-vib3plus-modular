@@ -145,16 +145,23 @@ class ComponentIntegrationManager extends ChangeNotifier {
   void _initialize() {
     _sessionStart = DateTime.now();
 
-    // Subscribe to audio stream if available
+    // Subscribe to audio provider updates
     if (audioProvider != null) {
-      // Create audio features stream (would need to be implemented in AudioProvider)
-      // audioStream = audioProvider!.audioFeaturesStream;
-      // _audioSubscription = audioStream?.listen(_handleAudioFeatures);
+      audioProvider!.addListener(_onAudioProviderUpdate);
+    }
+  }
+
+  /// Handle audio provider updates
+  void _onAudioProviderUpdate() {
+    final features = audioProvider?.currentFeatures;
+    if (features != null) {
+      _handleAudioFeatures(features);
     }
   }
 
   @override
   void dispose() {
+    audioProvider?.removeListener(_onAudioProviderUpdate);
     _audioSubscription?.cancel();
     _eventController.close();
     super.dispose();
