@@ -402,8 +402,7 @@ class ParameterSmoother {
   })  : _current = initial,
         _target = initial,
         _sampleRate = sampleRate,
-        _smoothTime = smoothTime,
-        // TODO: Implement different curve types (currently only linear)
+        _smoothTime = smoothTime;
 
   /// Set new target value
   void setTarget(double value) {

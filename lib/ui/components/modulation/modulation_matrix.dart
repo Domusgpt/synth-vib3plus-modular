@@ -188,7 +188,7 @@ class ModulationMatrix extends StatefulWidget {
   final double height;
 
   const ModulationMatrix({
-    Key? key,
+    super.key,
     required this.sources,
     required this.targets,
     this.connections = const [],
@@ -198,7 +198,7 @@ class ModulationMatrix extends StatefulWidget {
     this.audioFeatures,
     this.width = 800,
     this.height = 600,
-  }) : super(key: key);
+  });
 
   @override
   State<ModulationMatrix> createState() => _ModulationMatrixState();

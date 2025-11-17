@@ -79,7 +79,7 @@ class _SynthMainScreenState extends State<SynthMainScreen> {
 }
 
 class _SynthMainContent extends StatefulWidget {
-  const _SynthMainContent({super.key});
+  const _SynthMainContent();
 
   @override
   State<_SynthMainContent> createState() => _SynthMainContentState();

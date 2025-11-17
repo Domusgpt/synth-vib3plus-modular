@@ -75,9 +75,7 @@ class IntegratedSynthApp extends StatelessWidget {
 class IntegratedMainScreen extends StatefulWidget {
   final SynthModules modules;
 
-  const IntegratedMainScreen({super.key, required this.modules})
-      : super(key: key);
-
+  const IntegratedMainScreen({super.key, required this.modules});
   @override
   State<IntegratedMainScreen> createState() => _IntegratedMainScreenState();
 }
@@ -247,7 +245,6 @@ class _IntegratedMainContent extends StatelessWidget {
   final VoidCallback onToggleHelp;
 
   const _IntegratedMainContent({
-    super.key,
     required this.modules,
     required this.gestureSystem,
     required this.performanceTracker,
