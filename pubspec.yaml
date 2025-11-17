@@ -94,7 +94,8 @@ flutter:
     - assets/js/  # VIB34D JavaScript visualization systems
     - assets/src/  # VIB3+ engine source files
     - assets/styles/  # VIB3+ CSS styles
-    - assets/vib3_dist/  # VIB3+ Bundled (Vite build for Android WebView)
+    - assets/vib3_dist/  # VIB3+ Bundled (Vite build for Android WebView - DEPRECATED)
+    - assets/vib3_smart/  # VIB3+ Smart Canvas (lazy initialization, single WebGL context)
     - assets/vib34d_viewer.html  # VIB34D WebView HTML file
     - assets/vib3plus_viewer.html  # VIB3+ Working System
 

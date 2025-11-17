@@ -595,6 +595,141 @@ class VisualProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // ========================================================================
+  // SMART CANVAS LIFECYCLE MANAGEMENT
+  // ========================================================================
+
+  /// Update a single parameter in the JavaScript Smart Canvas
+  /// Uses the new window.updateParameter() API from smart canvas
+  void _updateJavaScriptParameter(String key, dynamic value) {
+    if (_webViewController == null) {
+      // WebView not ready yet - defer update
+      return;
+    }
+
+    try {
+      _webViewController!.runJavaScript(
+        'if (window.updateParameter) { window.updateParameter("$key", $value); }'
+      );
+    } catch (e) {
+      debugPrint('⚠️ Failed to update VIB3+ parameter $key: $e');
+    }
+  }
+
+  /// Batch update multiple parameters for better performance
+  /// Uses the new window.updateParameters() API from smart canvas
+  Future<void> updateBatchParameters(Map<String, dynamic> params) async {
+    if (_webViewController == null) {
+      debugPrint('⚠️ WebView not ready - cannot batch update parameters');
+      return;
+    }
+
+    try {
+      // Convert parameters to JSON-like object
+      final paramsJson = params.entries
+          .map((e) => '"${e.key}": ${e.value}')
+          .join(', ');
+
+      await _webViewController!.runJavaScript(
+        'if (window.updateParameters) { window.updateParameters({$paramsJson}); }'
+      );
+
+      debugPrint('📦 Batch updated ${params.length} parameters');
+    } catch (e) {
+      debugPrint('❌ Failed to batch update parameters: $e');
+    }
+  }
+
+  /// Query the Smart Canvas for current initialization state
+  Future<Map<String, bool>> getSmartCanvasState() async {
+    if (_webViewController == null) {
+      return {
+        'ready': false,
+        'quantum': false,
+        'faceted': false,
+        'holographic': false,
+      };
+    }
+
+    try {
+      final result = await _webViewController!.runJavaScriptReturningResult('''
+        (function() {
+          if (!window.canvasManager) return JSON.stringify({ready: false});
+
+          const manager = window.canvasManager;
+          const initialized = manager.initializedSystems || new Set();
+
+          return JSON.stringify({
+            ready: true,
+            quantum: initialized.has('quantum'),
+            faceted: initialized.has('faceted'),
+            holographic: initialized.has('holographic'),
+            currentSystem: manager.currentSystem || 'unknown',
+            fps: manager.fps || 0,
+          });
+        })()
+      ''');
+
+      // Parse the JSON result
+      if (result is String) {
+        // Remove quotes if present
+        final jsonString = result.replaceAll('"', '');
+        debugPrint('📊 Smart Canvas state: $jsonString');
+
+        return {
+          'ready': jsonString.contains('ready:true'),
+          'quantum': jsonString.contains('quantum:true'),
+          'faceted': jsonString.contains('faceted:true'),
+          'holographic': jsonString.contains('holographic:true'),
+        };
+      }
+
+      return {'ready': false, 'quantum': false, 'faceted': false, 'holographic': false};
+    } catch (e) {
+      debugPrint('⚠️ Failed to query Smart Canvas state: $e');
+      return {'ready': false, 'quantum': false, 'faceted': false, 'holographic': false};
+    }
+  }
+
+  /// Force initialization of a specific system (lazy loading)
+  Future<void> ensureSystemInitialized(String system) async {
+    if (_webViewController == null) {
+      debugPrint('⚠️ WebView not ready - cannot initialize $system');
+      return;
+    }
+
+    try {
+      await _webViewController!.runJavaScript('''
+        (async function() {
+          if (window.canvasManager && window.canvasManager.initializeSystem) {
+            console.log('🚀 Force initializing $system system...');
+            await window.canvasManager.initializeSystem('$system');
+          } else {
+            console.warn('⚠️ Smart Canvas manager not available');
+          }
+        })()
+      ''');
+
+      debugPrint('✅ Ensured $system system is initialized');
+    } catch (e) {
+      debugPrint('❌ Failed to ensure $system initialization: $e');
+    }
+  }
+
+  /// Toggle debug overlay in Smart Canvas
+  Future<void> toggleSmartCanvasDebug() async {
+    if (_webViewController == null) return;
+
+    try {
+      await _webViewController!.runJavaScript(
+        'if (window.toggleDebug) { window.toggleDebug(); }'
+      );
+      debugPrint('🐛 Toggled Smart Canvas debug overlay');
+    } catch (e) {
+      debugPrint('⚠️ Failed to toggle debug: $e');
+    }
+  }
+
   @override
   void dispose() {
     stopAnimation();

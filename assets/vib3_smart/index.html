@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>VIB3+ Smart Canvas - Lazy Initialization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Orbitron', monospace, sans-serif;
+            touch-action: none;
+            user-select: none;
+        }
+
+        /* Master container - always visible */
+        #vib3-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        /* Individual system containers - lazy initialized */
+        .system-canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none; /* Hidden by default */
+        }
+
+        .system-canvas-container.active {
+            display: block;
+        }
+
+        /* Holographic system uses 5 layered canvases */
+        .holographic-layers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .holographic-layers canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Other systems use single canvas */
+        .system-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Loading indicator */
+        #loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ff;
+            font-size: 1.2rem;
+            text-align: center;
+            z-index: 1000;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Debug overlay */
+        #debug-overlay {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #0ff;
+            padding: 10px;
+            color: #0ff;
+            font-size: 0.8rem;
+            font-family: monospace;
+            z-index: 2000;
+            display: none; /* Hidden by default */
+        }
+
+        #debug-overlay.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main container -->
+    <div id="vib3-container">
+        <!-- Quantum System Canvas (Geometry 0-7: Direct synthesis) -->
+        <div id="quantum-container" class="system-canvas-container active" data-system="quantum">
+            <canvas id="quantum-canvas" class="system-canvas"></canvas>
+        </div>
+
+        <!-- Faceted System Canvas (Geometry 8-15: FM synthesis) -->
+        <div id="faceted-container" class="system-canvas-container" data-system="faceted">
+            <canvas id="faceted-canvas" class="system-canvas"></canvas>
+        </div>
+
+        <!-- Holographic System Canvases (Geometry 16-23: Ring modulation) -->
+        <!-- Uses 5 layered canvases for holographic effect -->
+        <div id="holographic-container" class="system-canvas-container" data-system="holographic">
+            <div class="holographic-layers">
+                <canvas id="holographic-layer-0" data-layer="0"></canvas>
+                <canvas id="holographic-layer-1" data-layer="1"></canvas>
+                <canvas id="holographic-layer-2" data-layer="2"></canvas>
+                <canvas id="holographic-layer-3" data-layer="3"></canvas>
+                <canvas id="holographic-layer-4" data-layer="4"></canvas>
+            </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div id="loading-indicator">
+            <div>Loading VIB3+ Systems...</div>
+            <div style="font-size: 0.8rem; margin-top: 10px;">Initializing WebGL</div>
+        </div>
+
+        <!-- Debug overlay -->
+        <div id="debug-overlay">
+            <div>Current System: <span id="debug-system">quantum</span></div>
+            <div>Initialized Systems: <span id="debug-initialized">0/3</span></div>
+            <div>Active WebGL Contexts: <span id="debug-contexts">0</span></div>
+            <div>FPS: <span id="debug-fps">0</span></div>
+        </div>
+    </div>
+
+    <script type="module">
+        /**
+         * VIB3+ Smart Canvas Manager
+         * Implements lazy initialization pattern to prevent WebGL context overload
+         *
+         * Key Features:
+         * - Pre-created canvases with display:none switching
+         * - Lazy initialization (only create visualizer when first switched to)
+         * - Single render loop for active system only
+         * - NEVER destroys visualizers (just hides/shows canvases)
+         * - Only ONE WebGL context active at a time
+         *
+         * A Paul Phillips Manifestation
+         */
+
+        class SmartCanvasManager {
+            constructor() {
+                this.currentSystem = 'quantum'; // Default to quantum (geometry 0-7)
+                this.initializedSystems = new Set();
+                this.visualizers = {}; // Store visualizer instances
+                this.activeContext = null;
+                this.isRendering = false;
+                this.fps = 0;
+                this.frameCount = 0;
+                this.lastFPSUpdate = performance.now();
+
+                // Visual state (updated by Flutter)
+                this.state = {
+                    geometry: 0, // 0-23 (full geometry index)
+
+                    // 3D rotations (XY, XZ, YZ)
+                    rot4dXY: 0,
+                    rot4dXZ: 0,
+                    rot4dYZ: 0,
+
+                    // 4D rotations (XW, YW, ZW)
+                    rot4dXW: 0,
+                    rot4dYW: 0,
+                    rot4dZW: 0,
+
+                    // Visual parameters
+                    gridDensity: 15,
+                    morphFactor: 0.5,
+                    chaos: 0,
+                    speed: 1,
+
+                    // Color parameters
+                    hue: 200,
+                    saturation: 0.8,
+                    intensity: 0.5,
+
+                    // Dimension control
+                    dimension: 3.2,
+                };
+
+                console.log('🎯 SmartCanvasManager: Initializing with lazy loading pattern');
+                this.init();
+            }
+
+            async init() {
+                // Show loading indicator
+                const loadingIndicator = document.getElementById('loading-indicator');
+                loadingIndicator.style.display = 'block';
+
+                // Initialize the default system (quantum)
+                await this.initializeSystem('quantum');
+
+                // Hide loading indicator
+                loadingIndicator.style.display = 'none';
+
+                // Start render loop
+                this.startRenderLoop();
+
+                // Expose to Flutter bridge
+                this.setupFlutterBridge();
+
+                console.log('✅ SmartCanvasManager: Ready');
+            }
+
+            async initializeSystem(system) {
+                if (this.initializedSystems.has(system)) {
+                    console.log(`⚡ ${system} already initialized, reusing`);
+                    return true;
+                }
+
+                console.log(`🚀 Initializing ${system} system (lazy)...`);
+
+                try {
+                    switch (system) {
+                        case 'quantum':
+                            await this.initQuantumSystem();
+                            break;
+                        case 'faceted':
+                            await this.initFacetedSystem();
+                            break;
+                        case 'holographic':
+                            await this.initHolographicSystem();
+                            break;
+                        default:
+                            console.error(`❌ Unknown system: ${system}`);
+                            return false;
+                    }
+
+                    this.initializedSystems.add(system);
+                    console.log(`✅ ${system} system initialized`);
+                    this.updateDebugOverlay();
+                    return true;
+                } catch (error) {
+                    console.error(`❌ Failed to initialize ${system}:`, error);
+                    return false;
+                }
+            }
+
+            async initQuantumSystem() {
+                const canvas = document.getElementById('quantum-canvas');
+                this.resizeCanvas(canvas);
+
+                // Create visualizer instance
+                this.visualizers.quantum = {
+                    canvas: canvas,
+                    context: canvas.getContext('webgl2', {
+                        antialias: true,
+                        alpha: true,
+                        powerPreference: 'high-performance',
+                        preserveDrawingBuffer: false,
+                    }),
+                    render: (state) => this.renderQuantum(state),
+                };
+
+                if (!this.visualizers.quantum.context) {
+                    throw new Error('WebGL2 not available for Quantum system');
+                }
+
+                console.log('🌌 Quantum system initialized (Geometry 0-7, Direct synthesis)');
+            }
+
+            async initFacetedSystem() {
+                const canvas = document.getElementById('faceted-canvas');
+                this.resizeCanvas(canvas);
+
+                this.visualizers.faceted = {
+                    canvas: canvas,
+                    context: canvas.getContext('webgl2', {
+                        antialias: true,
+                        alpha: true,
+                        powerPreference: 'high-performance',
+                        preserveDrawingBuffer: false,
+                    }),
+                    render: (state) => this.renderFaceted(state),
+                };
+
+                if (!this.visualizers.faceted.context) {
+                    throw new Error('WebGL2 not available for Faceted system');
+                }
+
+                console.log('🔷 Faceted system initialized (Geometry 8-15, FM synthesis)');
+            }
+
+            async initHolographicSystem() {
+                const layers = [];
+                for (let i = 0; i < 5; i++) {
+                    const canvas = document.getElementById(`holographic-layer-${i}`);
+                    this.resizeCanvas(canvas);
+
+                    const context = canvas.getContext('webgl2', {
+                        antialias: true,
+                        alpha: true,
+                        powerPreference: 'high-performance',
+                        preserveDrawingBuffer: false,
+                    });
+
+                    if (!context) {
+                        throw new Error(`WebGL2 not available for Holographic layer ${i}`);
+                    }
+
+                    layers.push({ canvas, context });
+                }
+
+                this.visualizers.holographic = {
+                    layers: layers,
+                    render: (state) => this.renderHolographic(state),
+                };
+
+                console.log('✨ Holographic system initialized (Geometry 16-23, Ring modulation)');
+            }
+
+            async switchSystem(system) {
+                if (system === this.currentSystem) {
+                    console.log(`⚡ Already on ${system}, no switch needed`);
+                    return;
+                }
+
+                console.log(`🔄 Switching: ${this.currentSystem} → ${system}`);
+
+                // Hide current system
+                const currentContainer = document.getElementById(`${this.currentSystem}-container`);
+                if (currentContainer) {
+                    currentContainer.classList.remove('active');
+                }
+
+                // Initialize target system if needed (lazy initialization)
+                if (!this.initializedSystems.has(system)) {
+                    await this.initializeSystem(system);
+                }
+
+                // Show target system
+                const targetContainer = document.getElementById(`${system}-container`);
+                if (targetContainer) {
+                    targetContainer.classList.add('active');
+                }
+
+                // Update current system
+                this.currentSystem = system;
+                this.updateDebugOverlay();
+
+                console.log(`✅ Switched to ${system}`);
+
+                // Notify Flutter (if bridge exists)
+                if (window.FlutterBridge) {
+                    window.FlutterBridge.postMessage(`SYSTEM_SWITCHED:${system}`);
+                }
+            }
+
+            resizeCanvas(canvas) {
+                const dpr = window.devicePixelRatio || 1;
+                const rect = canvas.parentElement.getBoundingClientRect();
+
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                canvas.style.width = `${rect.width}px`;
+                canvas.style.height = `${rect.height}px`;
+            }
+
+            startRenderLoop() {
+                if (this.isRendering) return;
+
+                this.isRendering = true;
+                console.log('🎬 Starting render loop (60 FPS target)');
+
+                const render = () => {
+                    if (!this.isRendering) return;
+
+                    // Render active system only
+                    const visualizer = this.visualizers[this.currentSystem];
+                    if (visualizer) {
+                        visualizer.render(this.state);
+                    }
+
+                    // Update FPS counter
+                    this.frameCount++;
+                    const now = performance.now();
+                    if (now - this.lastFPSUpdate >= 1000) {
+                        this.fps = Math.round(this.frameCount * 1000 / (now - this.lastFPSUpdate));
+                        this.frameCount = 0;
+                        this.lastFPSUpdate = now;
+                        this.updateDebugOverlay();
+                    }
+
+                    requestAnimationFrame(render);
+                };
+
+                requestAnimationFrame(render);
+            }
+
+            stopRenderLoop() {
+                this.isRendering = false;
+                console.log('⏸️ Render loop stopped');
+            }
+
+            // Placeholder render functions (will be replaced with actual implementations)
+            renderQuantum(state) {
+                const { context } = this.visualizers.quantum;
+
+                // Simple gradient background for now
+                context.clearColor(0.0, 0.0, state.intensity * 0.3, 1.0);
+                context.clear(context.COLOR_BUFFER_BIT);
+
+                // TODO: Implement actual Quantum rendering
+            }
+
+            renderFaceted(state) {
+                const { context } = this.visualizers.faceted;
+
+                // Simple gradient background for now
+                context.clearColor(state.intensity * 0.2, 0.0, state.intensity * 0.4, 1.0);
+                context.clear(context.COLOR_BUFFER_BIT);
+
+                // TODO: Implement actual Faceted rendering
+            }
+
+            renderHolographic(state) {
+                const { layers } = this.visualizers.holographic;
+
+                // Render each layer with different opacity
+                layers.forEach((layer, i) => {
+                    const { context } = layer;
+                    const opacity = state.intensity * (0.2 + i * 0.15);
+
+                    context.clearColor(0.0, opacity * 0.3, opacity * 0.5, opacity);
+                    context.clear(context.COLOR_BUFFER_BIT);
+                });
+
+                // TODO: Implement actual Holographic rendering
+            }
+
+            updateParameter(param, value) {
+                this.state[param] = parseFloat(value);
+                console.log(`📊 Parameter updated: ${param} = ${value}`);
+            }
+
+            setupFlutterBridge() {
+                // Global function for Flutter to switch systems
+                window.switchSystem = async (system) => {
+                    await this.switchSystem(system);
+                };
+
+                // Global function for Flutter to update parameters
+                window.updateParameter = (param, value) => {
+                    this.updateParameter(param, value);
+                };
+
+                // Batch parameter updates
+                window.updateParameters = (params) => {
+                    Object.entries(params).forEach(([key, value]) => {
+                        this.updateParameter(key, value);
+                    });
+                };
+
+                // Toggle debug overlay
+                window.toggleDebug = () => {
+                    const overlay = document.getElementById('debug-overlay');
+                    overlay.classList.toggle('visible');
+                };
+
+                console.log('🌉 Flutter bridge functions exposed:');
+                console.log('   - window.switchSystem(system)');
+                console.log('   - window.updateParameter(param, value)');
+                console.log('   - window.updateParameters(params)');
+                console.log('   - window.toggleDebug()');
+            }
+
+            updateDebugOverlay() {
+                document.getElementById('debug-system').textContent = this.currentSystem;
+                document.getElementById('debug-initialized').textContent =
+                    `${this.initializedSystems.size}/3`;
+                document.getElementById('debug-contexts').textContent =
+                    `${this.initializedSystems.size}`;
+                document.getElementById('debug-fps').textContent = this.fps;
+            }
+        }
+
+        // Initialize on load
+        let canvasManager;
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                canvasManager = new SmartCanvasManager();
+                window.canvasManager = canvasManager;
+            });
+        } else {
+            canvasManager = new SmartCanvasManager();
+            window.canvasManager = canvasManager;
+        }
+
+        console.log('🎨 VIB3+ Smart Canvas: Module loaded');
+    </script>
+</body>
+</html>
