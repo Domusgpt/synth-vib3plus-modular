@@ -342,7 +342,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
     return GlassmorphicContainer(
       width: widget.width,
       height: widget.height,
-      borderRadius: DesignTokens.radiusMedium,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
       child: Column(
         children: [
           // Header with search
@@ -382,7 +382,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
               const SizedBox(width: DesignTokens.spacing2),
               Text(
                 'Preset Browser',
-                style: DesignTokens.headingMedium,
+                style: DesignTokens.headlineMedium,
               ),
               const Spacer(),
               Text(
@@ -614,7 +614,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
             const SizedBox(height: DesignTokens.spacing3),
             Text(
               'No presets found',
-              style: DesignTokens.headingMedium.copyWith(
+              style: DesignTokens.headlineMedium.copyWith(
                 color: Colors.white.withOpacity(0.4),
               ),
             ),

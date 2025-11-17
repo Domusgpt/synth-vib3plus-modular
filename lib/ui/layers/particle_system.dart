@@ -130,7 +130,7 @@ class Particle {
     position += velocity * dt;
 
     // Apply drag
-    velocity *= math.pow(0.95, dt * 60); // Frame-independent
+    velocity *= math.pow(0.95, dt * 60).toDouble(); // Frame-independent
 
     // Update rotation
     rotation += rotationSpeed * dt;

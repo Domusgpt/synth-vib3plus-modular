@@ -254,7 +254,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
     return GlassmorphicContainer(
       width: widget.width,
       height: widget.height,
-      borderRadius: DesignTokens.radiusMedium,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
       child: Column(
         children: [
           // Header
@@ -298,7 +298,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           const SizedBox(width: DesignTokens.spacing2),
           Text(
             'Performance Monitor',
-            style: DesignTokens.headingMedium,
+            style: DesignTokens.headlineMedium,
           ),
           const Spacer(),
           Container(
@@ -397,7 +397,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
             children: [
               Text(
                 value.toStringAsFixed(value >= 10 ? 0 : 1),
-                style: DesignTokens.headingMedium.copyWith(
+                style: DesignTokens.headlineMedium.copyWith(
                   color: color,
                   fontSize: 24,
                 ),

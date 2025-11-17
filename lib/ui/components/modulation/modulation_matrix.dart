@@ -320,7 +320,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
     return GlassmorphicContainer(
       width: widget.width,
       height: widget.height,
-      borderRadius: DesignTokens.radiusMedium,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
       child: Column(
         children: [
           // Header
@@ -366,7 +366,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
         children: [
           Text(
             'Modulation Matrix',
-            style: DesignTokens.headingMedium,
+            style: DesignTokens.headlineMedium,
           ),
           const Spacer(),
           Text(
