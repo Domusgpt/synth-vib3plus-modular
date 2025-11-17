@@ -84,7 +84,6 @@ class IntegratedMainScreen extends StatefulWidget {
 
 class _IntegratedMainScreenState extends State<IntegratedMainScreen> {
   // Integration systems
-  late ComponentIntegrationManager _integrationManager;
   late GestureRecognitionSystem _gestureSystem;
   late PerformanceTracker _performanceTracker;
 

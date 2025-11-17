@@ -105,7 +105,7 @@ class ModuleManager with ChangeNotifier {
             await other.module.onModuleReady(info.module.runtimeType);
           }
         }
-      } catch (e, stackTrace) {
+      } catch (e) {
         info.state = ModuleState.failed;
         info.error = e.toString();
         info.initEndTime = DateTime.now();

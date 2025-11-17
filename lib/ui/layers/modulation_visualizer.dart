@@ -198,11 +198,7 @@ class ModulationVisualizer {
     for (final connection in connections) {
       connection.update(dt);
 
-      // Audio-reactive strength modulation
-      if (audioFeatures != null) {
-        final pulse = 1.0 + (audioFeatures.rms * 0.3);
-        // Don't modify base strength, just use for visual pulsing
-      }
+      // Audio-reactive strength modulation handled in paint method
     }
   }
 
@@ -253,12 +249,12 @@ class ModulationVisualizer {
     // Opacity based on strength and audio
     final opacity = (connection.strength * 0.7 + 0.3) * pulse;
 
-    // Width based on strength
-    final strokeWidth = 1.0 + (connection.strength * 3.0);
+    // Width based on strength and pulse (AUDIO-REACTIVE!)
+    final strokeWidth = (1.0 + (connection.strength * 3.0)) * pulse;
 
-    // Create gradient along path
+    // Create gradient along path with opacity applied
     final paint = Paint()
-      ..shader = _createConnectionGradient(connection, pulse)
+      ..shader = _createConnectionGradient(connection, pulse, opacity)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
@@ -267,19 +263,20 @@ class ModulationVisualizer {
     canvas.drawPath(path, paint);
   }
 
-  /// Create gradient shader for connection
+  /// Create gradient shader for connection with audio-reactive opacity
   Shader _createConnectionGradient(
-      ModulationConnection connection, double pulse) {
+      ModulationConnection connection, double pulse, double opacity) {
     final sourceColor = connection.source.color;
     final targetColor = DesignTokens.stateActive;
 
+    // Use pre-calculated opacity value for consistency
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        sourceColor.withOpacity((connection.strength * 0.7 + 0.3) * pulse),
-        sourceColor.withOpacity((connection.strength * 0.5 + 0.2) * pulse),
-        targetColor.withOpacity((connection.strength * 0.3 + 0.1) * pulse),
+        sourceColor.withOpacity((0.7 * opacity).clamp(0.0, 1.0)),
+        sourceColor.withOpacity((0.5 * opacity).clamp(0.0, 1.0)),
+        targetColor.withOpacity((0.3 * opacity).clamp(0.0, 1.0)),
       ],
       stops: const [0.0, 0.5, 1.0],
     ).createShader(Rect.fromPoints(

@@ -178,10 +178,6 @@ abstract class ReactiveComponentState<T extends ReactiveComponent>
   late AnimationController _animationController;
   late Animation<double> _animation;
 
-  // Gesture tracking
-  Offset? _dragStart;
-  Offset? _currentDragPosition;
-
   @override
   void initState() {
     super.initState();
@@ -400,23 +396,18 @@ abstract class ReactiveComponentState<T extends ReactiveComponent>
   /// Handle pan start
   void handlePanStart(DragStartDetails details) {
     if (!widget.enabled || widget.onDrag == null) return;
-    _dragStart = details.localPosition;
-    _currentDragPosition = details.localPosition;
     setInteractionState(InteractionState.dragging);
   }
 
   /// Handle pan update
   void handlePanUpdate(DragUpdateDetails details) {
     if (!widget.enabled || widget.onDrag == null) return;
-    _currentDragPosition = details.localPosition;
     widget.onDrag?.call(details.localPosition);
   }
 
   /// Handle pan end
   void handlePanEnd(DragEndDetails details) {
     if (!widget.enabled || widget.onDrag == null) return;
-    _dragStart = null;
-    _currentDragPosition = null;
     setInteractionState(InteractionState.idle);
   }
 

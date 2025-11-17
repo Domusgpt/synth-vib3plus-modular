@@ -152,17 +152,6 @@ class _SynthMainContentState extends State<_SynthMainContent> {
     );
   }
 
-  Widget _buildVisualizationLayer(BuildContext context) {
-    final visualProvider = Provider.of<VisualProvider>(context);
-    final audioProvider = Provider.of<AudioProvider>(context);
-
-    return Positioned.fill(
-      child: VIB34DWidget(
-        visualProvider: visualProvider,
-        audioProvider: audioProvider,
-      ),
-    );
-  }
 
   Offset _getOrbInitialPosition(BuildContext context, UIStateProvider uiState) {
     final orientation = MediaQuery.of(context).orientation;

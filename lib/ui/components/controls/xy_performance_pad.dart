@@ -25,7 +25,6 @@ import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
 import '../../layout/flexible_layout.dart';
-import '../base/reactive_component.dart';
 
 // ============================================================================
 // XY PAD CONFIGURATION
@@ -332,7 +331,6 @@ class _XYPerformancePadState extends State<XYPerformancePad>
 
   List<Widget> _buildTouchIndicators(Size size) {
     return _activeTouches.values.map((touch) {
-      final normalized = touch.normalized(size);
       final color = widget.config.trailColor;
 
       return Positioned(

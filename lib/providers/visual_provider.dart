@@ -66,7 +66,6 @@ class VisualProvider with ChangeNotifier {
 
   // Animation state
   bool _isAnimating = false;
-  DateTime _lastUpdateTime = DateTime.now();
 
   VisualProvider() {
     debugPrint('✅ VisualProvider initialized');
@@ -448,7 +447,6 @@ class VisualProvider with ChangeNotifier {
   /// Start animation loop
   void startAnimation() {
     _isAnimating = true;
-    _lastUpdateTime = DateTime.now();
     notifyListeners();
   }
 

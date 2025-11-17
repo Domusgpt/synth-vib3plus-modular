@@ -336,7 +336,6 @@ class SynthesizerEngine {
   bool _isGliding = false;
 
   // Legacy single-note tracking (for compatibility)
-  int _currentNote = 60;
 
   SynthesizerEngine({
     this.sampleRate = 44100.0,
@@ -504,7 +503,6 @@ class SynthesizerEngine {
 
   /// Set base note (MIDI note number) - allocates a new voice
   void setNote(int midiNote) {
-    _currentNote = midiNote;
     final freq = _midiToFrequency(midiNote);
     _triggerPortamento(freq); // Trigger glide to new frequency
     voiceManager.allocateVoice(midiNote, freq);
@@ -605,34 +603,6 @@ class SynthesizerEngine {
   }
 
   /// Update portamento/glide (called per sample when gliding is active)
-  void _updatePortamento() {
-    if (!_isGliding || _glideStartTime == null) {
-      _glideCurrentFrequency = _glideTargetFrequency;
-      return;
-    }
-
-    if (_portamentoTime <= 0.0) {
-      // Portamento disabled, snap to target
-      _glideCurrentFrequency = _glideTargetFrequency;
-      _isGliding = false;
-      return;
-    }
-
-    final now = DateTime.now();
-    final elapsed = now.difference(_glideStartTime!).inMicroseconds / 1000000.0;
-    final progress = (elapsed / _portamentoTime).clamp(0.0, 1.0);
-
-    if (progress >= 1.0) {
-      // Glide complete
-      _glideCurrentFrequency = _glideTargetFrequency;
-      _isGliding = false;
-    } else {
-      // Apply smoothstep easing for natural pitch transition
-      final eased = _smoothStep(progress);
-      _glideCurrentFrequency = _glideStartFrequency +
-          (_glideTargetFrequency - _glideStartFrequency) * eased;
-    }
-  }
 
   /// Set portamento time in seconds (0 = disabled, 0.001-5.0 = enabled)
   void setPortamentoTime(double seconds) {

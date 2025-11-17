@@ -255,7 +255,6 @@ class _HelpOverlayState extends State<HelpOverlay>
   late AnimationController _animationController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  int _walkthroughStep = 0;
 
   @override
   void initState() {

@@ -23,7 +23,6 @@ library;
 import 'package:flutter/material.dart';
 import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';
-import '../base/reactive_component.dart';
 import 'enhanced_slider.dart'; // For ParameterType
 
 // ============================================================================

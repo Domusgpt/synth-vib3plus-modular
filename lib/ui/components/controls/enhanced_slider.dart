@@ -24,7 +24,6 @@ library;
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
-import '../base/reactive_component.dart';
 
 // ============================================================================
 // SLIDER STYLE
