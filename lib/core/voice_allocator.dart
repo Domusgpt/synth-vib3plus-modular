@@ -89,7 +89,7 @@ class VoiceAllocator {
 
   /// Allocate a voice for a new note
   VoiceAllocation allocate(int note, double velocity) {
-    final clamped Velocity = velocity.clamp(0.0, 1.0);
+    final clampedVelocity = velocity.clamp(0.0, 1.0);
     final now = DateTime.now();
 
     // Try to find an inactive voice (released or completed envelope)
