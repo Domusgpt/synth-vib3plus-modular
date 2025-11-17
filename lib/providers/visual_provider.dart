@@ -15,6 +15,7 @@
  * A Paul Phillips Manifestation
  */
 
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -63,9 +64,11 @@ class VisualProvider with ChangeNotifier {
   // Animation state
   bool _isAnimating = false;
   DateTime _lastUpdateTime = DateTime.now();
+  Timer? _rotationTimer;
 
   VisualProvider() {
     debugPrint('✅ VisualProvider initialized');
+    startAnimation(); // Start rotation animation by default
   }
 
   // Getters
@@ -205,15 +208,22 @@ class VisualProvider with ChangeNotifier {
   void updateRotations(double deltaTime) {
     final dt = deltaTime * _rotationSpeed;
 
-    // Calculate velocity
-    _rotationVelocityXW = (_rotationXW - _rotationXW) / deltaTime;
-    _rotationVelocityYW = (_rotationYW - _rotationYW) / deltaTime;
-    _rotationVelocityZW = (_rotationZW - _rotationZW) / deltaTime;
+    // Store previous values for velocity calculation
+    final prevXW = _rotationXW;
+    final prevYW = _rotationYW;
+    final prevZW = _rotationZW;
 
     // Update angles
     _rotationXW = (_rotationXW + dt * 0.5) % (2.0 * math.pi);
     _rotationYW = (_rotationYW + dt * 0.7) % (2.0 * math.pi);
     _rotationZW = (_rotationZW + dt * 0.3) % (2.0 * math.pi);
+
+    // Calculate velocity (change in angle per second)
+    if (deltaTime > 0) {
+      _rotationVelocityXW = (_rotationXW - prevXW) / deltaTime;
+      _rotationVelocityYW = (_rotationYW - prevYW) / deltaTime;
+      _rotationVelocityZW = (_rotationZW - prevZW) / deltaTime;
+    }
 
     // Update JavaScript
     _updateJavaScriptParameter('rot4dXW', _rotationXW);
@@ -343,6 +353,74 @@ class VisualProvider with ChangeNotifier {
     } catch (e) {
       debugPrint('⚠️  Error updating JS parameter $name: $e');
     }
+  }
+
+  /// Batch update multiple parameters with a single JavaScript call
+  /// Reduces async overhead from 300 calls/sec (5 params × 60 FPS) to 60 calls/sec
+  Future<void> updateParametersBatch(Map<String, dynamic> parameters) async {
+    if (_webViewController == null || parameters.isEmpty) return;
+
+    try {
+      // Build JavaScript code to update all parameters at once
+      final jsCode = StringBuffer('if (window.updateParameter) {');
+      for (final entry in parameters.entries) {
+        jsCode.write('window.updateParameter("${entry.key}", ${entry.value});');
+      }
+      jsCode.write('}');
+
+      await _webViewController!.runJavaScript(jsCode.toString());
+    } catch (e) {
+      debugPrint('⚠️  Error batch updating ${parameters.length} JS parameters: $e');
+    }
+  }
+
+  /// Batch update visual parameters from audio modulation
+  /// Updates internal state and sends single WebView call
+  Future<void> updateVisualParametersBatch({
+    double? rotationSpeed,
+    int? tessellationDensity,
+    double? vertexBrightness,
+    double? hueShift,
+    double? glowIntensity,
+    double? rgbSplit,
+  }) async {
+    final batch = <String, dynamic>{};
+
+    if (rotationSpeed != null) {
+      _rotationSpeed = rotationSpeed.clamp(0.1, 5.0);
+      batch['rotationSpeed'] = _rotationSpeed;
+    }
+
+    if (tessellationDensity != null) {
+      _tessellationDensity = tessellationDensity.clamp(3, 10);
+      batch['tessellationDensity'] = _tessellationDensity;
+    }
+
+    if (vertexBrightness != null) {
+      _vertexBrightness = vertexBrightness.clamp(0.0, 1.0);
+      batch['vertexBrightness'] = _vertexBrightness;
+    }
+
+    if (hueShift != null) {
+      _hueShift = hueShift % 360.0;
+      batch['hueShift'] = _hueShift;
+    }
+
+    if (glowIntensity != null) {
+      _glowIntensity = glowIntensity.clamp(0.0, 3.0);
+      batch['glowIntensity'] = _glowIntensity;
+    }
+
+    if (rgbSplit != null) {
+      _rgbSplitAmount = rgbSplit.clamp(0.0, 10.0);
+      batch['rgbSplitAmount'] = _rgbSplitAmount;
+    }
+
+    // Send batch update to WebView
+    await updateParametersBatch(batch);
+
+    // Notify listeners once for all changes
+    notifyListeners();
   }
 
   /// Start animation loop
@@ -509,6 +587,38 @@ class VisualProvider with ChangeNotifier {
     _layerSeparation = depth.clamp(0.0, 5.0);
     _updateJavaScriptParameter('layerDepth', _layerSeparation);
     notifyListeners();
+  }
+
+  // ============================================================================
+  // ROTATION ANIMATION CONTROL
+  // ============================================================================
+
+  /// Start rotation animation (60 FPS)
+  void startAnimation() {
+    if (_isAnimating) return;
+
+    _isAnimating = true;
+    _lastUpdateTime = DateTime.now();
+
+    // 60 FPS timer (16.67ms per frame)
+    _rotationTimer = Timer.periodic(const Duration(milliseconds: 16), (_) {
+      final now = DateTime.now();
+      final deltaTime = now.difference(_lastUpdateTime).inMilliseconds / 1000.0;
+      _lastUpdateTime = now;
+
+      // Update rotations with delta time
+      updateRotations(deltaTime);
+    });
+
+    debugPrint('🔄 Rotation animation started (60 FPS)');
+  }
+
+  /// Stop rotation animation
+  void stopAnimation() {
+    _rotationTimer?.cancel();
+    _rotationTimer = null;
+    _isAnimating = false;
+    debugPrint('⏸️  Rotation animation stopped');
   }
 
   @override
