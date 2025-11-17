@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/visual_provider.dart';
-import '../../audio/audio_analyzer.dart';
+import '../../audio/audio_analyzer.dart'; // AudioFeatures class is here
 import '../theme/synth_theme.dart';
 
 enum VisualizerMode {

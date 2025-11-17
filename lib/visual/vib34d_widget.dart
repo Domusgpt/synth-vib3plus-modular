@@ -47,7 +47,7 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
   void _initializeWebView() async {
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.black)
+      ..setBackgroundColor(const Color(0x00000000)) // TRANSPARENT, not black!
       ..addJavaScriptChannel(
         'FlutterBridge',
         onMessageReceived: (JavaScriptMessage message) {
@@ -84,6 +84,12 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
           onPageFinished: (String url) async {
             debugPrint('📄 Page loaded: $url');
             await _injectHelperFunctions();
+
+            // Let VIB3+ load naturally - it defaults to faceted
+            // NO system switch on startup - just wait for VIB3+ to be ready
+            debugPrint('✅ VIB3+ loaded - waiting for default system (faceted)');
+            await Future.delayed(const Duration(milliseconds: 300));
+
             setState(() {
               _isLoading = false;
             });
@@ -92,7 +98,7 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
           onWebResourceError: (WebResourceError error) {
             setState(() {
               _errorMessage = error.description;
-              _isLoading = false;
+              _isLoading = false; // CRITICAL: Clear loading state on error!
             });
             debugPrint('❌ WebView error: ${error.description}');
           },
@@ -177,7 +183,7 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
               pointer-events: none !important;
             }
 
-            /* Ensure canvas container takes full space */
+            /* Ensure canvas container takes full space AND stays on top */
             .canvas-container,
             #canvasContainer {
               position: absolute !important;
@@ -185,16 +191,24 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
               left: 0 !important;
               width: 100% !important;
               height: 100% !important;
-              z-index: 1 !important;
+              z-index: 9999 !important; /* ✅ FORCE ABOVE FLUTTER WIDGETS */
             }
 
-            /* Ensure holographic layers take full space */
-            .holographic-layers {
+            /* Ensure ALL layer containers stay on top */
+            .holographic-layers,
+            .quantum-layers,
+            .faceted-layers,
+            .polychora-layers,
+            #vib34dLayers,
+            #quantumLayers,
+            #holographicLayers,
+            #polychoraLayers {
               position: absolute !important;
               top: 0 !important;
               left: 0 !important;
               width: 100% !important;
               height: 100% !important;
+              z-index: 9999 !important; /* ✅ ALL LAYERS ABOVE FLUTTER WIDGETS */
             }
 
             /* Hide all buttons that aren't from Flutter */
@@ -285,9 +299,8 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
           });
         };
 
-        // STEP 2.5: VIB3+ Native System Support
-        // NOTE: VIB3+ manages its own canvases - we just use window.switchSystem()
-        console.log('✅ Using VIB3+ native canvas management (window.switchSystem)');
+        // STEP 2.5: Use VIB3+ Native System Management (NO custom canvas destruction)
+        console.log('✅ Using VIB3+ native canvas management - window.switchSystem() handles everything');
 
         // STEP 2.6: Audio Reactivity Handler - Send FFT data to WebGL systems
         window.updateAudioReactivity = function(audioData) {
@@ -388,10 +401,10 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
       children: [
         WebViewWidget(controller: _webViewController),
 
-        // Loading indicator
+        // Loading indicator - SEMI-TRANSPARENT so we can see if canvases render underneath
         if (_isLoading)
           Container(
-            color: Colors.black,
+            color: Colors.black.withOpacity(0.8), // Semi-transparent for debugging
             child: const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

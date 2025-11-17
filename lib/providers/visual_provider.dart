@@ -21,8 +21,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../ui/theme/synth_theme.dart';
 
 class VisualProvider with ChangeNotifier {
-  // Current VIB34D system
-  String _currentSystem = 'quantum'; // 'quantum', 'holographic', 'faceted'
+  // Current VIB34D system (matches VIB3+ default - DO NOT CHANGE!)
+  String _currentSystem = 'faceted'; // 'quantum', 'holographic', 'faceted'
 
   // 3D Rotation angles (radians, 0-2π)
   double _rotationXY = 0.0;
@@ -104,20 +104,20 @@ class VisualProvider with ChangeNotifier {
     final previousSystem = _currentSystem;
     _currentSystem = systemName;
 
-    debugPrint('🔄 System Switching: $previousSystem → $systemName');
+    debugPrint('🔄 System Switch: $previousSystem → $systemName');
 
-    // Use VIB3+'s native switchSystem function (it manages its own canvases)
+    // Use VIB3+'s native switchSystem (it handles canvas show/hide internally)
     if (_webViewController != null) {
       try {
         await _webViewController!.runJavaScript(
-          'if (window.switchSystem) { window.switchSystem("$systemName"); } else { console.error("❌ window.switchSystem not available"); }'
+          'if (window.switchSystem) { window.switchSystem("$systemName"); }'
         );
         debugPrint('✅ Called VIB3+ native switchSystem("$systemName")');
 
-        // Re-inject parameters after brief delay to let system initialize
-        await Future.delayed(const Duration(milliseconds: 150));
+        // Wait for system to fully initialize (Android WebGL needs more time)
+        await Future.delayed(const Duration(milliseconds: 500));
         await _injectAllParameters();
-        debugPrint('✅ Parameters re-injected after system switch');
+        debugPrint('✅ Parameters injected to $systemName');
       } catch (e) {
         debugPrint('❌ Error switching system: $e');
       }
