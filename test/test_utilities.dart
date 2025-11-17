@@ -6,6 +6,7 @@
  * A Paul Phillips Manifestation
  */
 
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -224,7 +225,7 @@ class MockAudioProvider {
   }
 
   Float32List generateTestBuffer() {
-    final frequency = 440.0 * (2.0.pow((currentNote - 69) / 12.0));
+    final frequency = 440.0 * pow(2.0, (currentNote - 69) / 12.0);
     lastGeneratedBuffer = generateTestSineWave(
       frequency: frequency,
       sampleRate: sampleRate,
@@ -365,6 +366,3 @@ class PerformanceBenchmark {
     print('Max: ${maxDuration.inMicroseconds / 1000.0} ms');
   }
 }
-
-// Import Random from dart:math
-import 'dart:math';

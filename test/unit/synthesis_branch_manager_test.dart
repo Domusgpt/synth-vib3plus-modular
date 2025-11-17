@@ -21,7 +21,7 @@ void main() {
     test('should route geometries 0-7 to Base core (Direct synthesis)', () {
       for (int geo = 0; geo < 8; geo++) {
         manager.setGeometry(geo);
-        final coreIndex = manager.geometryIndex ~/ 8;
+        final coreIndex = manager.currentGeometry ~/ 8;
         expect(coreIndex, equals(0), reason: 'Geometry $geo should route to Base core');
       }
     });
@@ -29,7 +29,7 @@ void main() {
     test('should route geometries 8-15 to Hypersphere core (FM synthesis)', () {
       for (int geo = 8; geo < 16; geo++) {
         manager.setGeometry(geo);
-        final coreIndex = manager.geometryIndex ~/ 8;
+        final coreIndex = manager.currentGeometry ~/ 8;
         expect(coreIndex, equals(1), reason: 'Geometry $geo should route to Hypersphere core');
       }
     });
@@ -37,7 +37,7 @@ void main() {
     test('should route geometries 16-23 to Hypertetrahedron core (Ring mod)', () {
       for (int geo = 16; geo < 24; geo++) {
         manager.setGeometry(geo);
-        final coreIndex = manager.geometryIndex ~/ 8;
+        final coreIndex = manager.currentGeometry ~/ 8;
         expect(coreIndex, equals(2), reason: 'Geometry $geo should route to Hypertetrahedron core');
       }
     });
@@ -55,7 +55,7 @@ void main() {
 
       testCases.forEach((geometryIndex, expectedBase) {
         manager.setGeometry(geometryIndex);
-        final baseGeometry = manager.geometryIndex % 8;
+        final baseGeometry = manager.currentGeometry % 8;
         expect(baseGeometry, equals(expectedBase),
           reason: 'Geometry $geometryIndex should have base geometry $expectedBase');
       });
@@ -71,7 +71,7 @@ void main() {
 
     test('should apply Quantum family characteristics', () {
       manager.setVisualSystem(VisualSystem.quantum);
-      final family = manager.currentSoundFamily;
+      final family = manager.soundFamily;
 
       expect(family.name, contains('Quantum'));
       expect(family.filterQ, greaterThan(7.0), reason: 'Quantum should have high filter Q');
@@ -80,7 +80,7 @@ void main() {
 
     test('should apply Faceted family characteristics', () {
       manager.setVisualSystem(VisualSystem.faceted);
-      final family = manager.currentSoundFamily;
+      final family = manager.soundFamily;
 
       expect(family.name, contains('Faceted'));
       expect(family.filterQ, inInclusiveRange(4.0, 7.0), reason: 'Faceted should have moderate Q');
@@ -88,7 +88,7 @@ void main() {
 
     test('should apply Holographic family characteristics', () {
       manager.setVisualSystem(VisualSystem.holographic);
-      final family = manager.currentSoundFamily;
+      final family = manager.soundFamily;
 
       expect(family.name, contains('Holographic'));
       expect(family.reverbMix, greaterThan(0.3), reason: 'Holographic should have high reverb');
@@ -105,7 +105,7 @@ void main() {
 
     test('Tetrahedron (0) should have fundamental character', () {
       manager.setGeometry(0); // Base core, Tetrahedron
-      final character = manager.currentVoiceCharacter;
+      final character = manager.voiceCharacter;
 
       expect(character.name, equals('Fundamental'));
       expect(character.detuneCents, equals(0.0), reason: 'Should have perfect tuning');
@@ -114,7 +114,7 @@ void main() {
 
     test('Hypercube (1) should have complex character', () {
       manager.setGeometry(1); // Base core, Hypercube
-      final character = manager.currentVoiceCharacter;
+      final character = manager.voiceCharacter;
 
       expect(character.name, equals('Complex'));
       expect(character.hasChorusEffect, isTrue, reason: 'Should have chorus');
@@ -123,7 +123,7 @@ void main() {
 
     test('Crystal (7) should have sharp attack', () {
       manager.setGeometry(7); // Base core, Crystal
-      final character = manager.currentVoiceCharacter;
+      final character = manager.voiceCharacter;
 
       expect(character.name, equals('Crystalline'));
       expect(character.attackMs, lessThan(15.0), reason: 'Should have fast attack');
@@ -132,13 +132,13 @@ void main() {
     test('Voice character should persist across core changes', () {
       // Test that base geometry determines character, not core
       manager.setGeometry(0);  // Base + Tetrahedron
-      final char1 = manager.currentVoiceCharacter.name;
+      final char1 = manager.voiceCharacter.name;
 
       manager.setGeometry(8);  // Hypersphere + Tetrahedron
-      final char2 = manager.currentVoiceCharacter.name;
+      final char2 = manager.voiceCharacter.name;
 
       manager.setGeometry(16); // Hypertetrahedron + Tetrahedron
-      final char3 = manager.currentVoiceCharacter.name;
+      final char3 = manager.voiceCharacter.name;
 
       expect(char1, equals(char2));
       expect(char2, equals(char3));

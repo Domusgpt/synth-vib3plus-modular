@@ -152,15 +152,15 @@ void main() {
       for (int baseGeo = 0; baseGeo < 8; baseGeo++) {
         // Test in Base core (geometries 0-7)
         manager.setGeometry(baseGeo);
-        final character = manager.currentVoiceCharacter;
+        final character = manager.voiceCharacter;
 
         // Test in Hypersphere core (geometries 8-15)
         manager.setGeometry(baseGeo + 8);
-        final characterFM = manager.currentVoiceCharacter;
+        final characterFM = manager.voiceCharacter;
 
         // Test in Hypertetrahedron core (geometries 16-23)
         manager.setGeometry(baseGeo + 16);
-        final characterRM = manager.currentVoiceCharacter;
+        final characterRM = manager.voiceCharacter;
 
         // Voice character should be consistent across cores
         expect(character.name, equals(characterFM.name),
@@ -204,7 +204,7 @@ void main() {
 
       for (final entry in systemTests.entries) {
         manager.setVisualSystem(entry.key);
-        final family = manager.currentSoundFamily;
+        final family = manager.soundFamily;
 
         familyCharacteristics[entry.value] = {
           'name': family.name,
@@ -377,7 +377,7 @@ void main() {
         final system = systemEntry.value;
 
         manager.setVisualSystem(system);
-        final family = manager.currentSoundFamily;
+        final family = manager.soundFamily;
 
         print('━'*80);
         print('VISUAL SYSTEM: $systemName');
@@ -394,7 +394,7 @@ void main() {
             final geo = coreIdx * 8 + baseIdx;
             manager.setGeometry(geo);
 
-            final character = manager.currentVoiceCharacter;
+            final character = manager.voiceCharacter;
 
             manager.noteOn(60, 1.0);
             final buffer = manager.generateBuffer(512);
