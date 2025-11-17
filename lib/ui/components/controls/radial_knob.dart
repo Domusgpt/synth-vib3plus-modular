@@ -95,7 +95,7 @@ class RadialKnob extends StatefulWidget {
   final String Function(double)? valueFormatter;
 
   const RadialKnob({
-    Key? key,
+    super.key,
     this.config = KnobConfig.standard,
     required this.label,
     required this.value,
@@ -107,7 +107,7 @@ class RadialKnob extends StatefulWidget {
     this.parameterType = ParameterType.generic,
     this.audioFeatures,
     this.valueFormatter,
-  }) : super(key: key);
+  });
 
   @override
   State<RadialKnob> createState() => _RadialKnobState();

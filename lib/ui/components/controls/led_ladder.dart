@@ -87,7 +87,7 @@ class LEDLadder extends StatefulWidget {
   final AudioFeatures? audioFeatures;
 
   const LEDLadder({
-    Key? key,
+    super.key,
     this.config = LEDLadderConfig.standard,
     required this.label,
     required this.value,
@@ -95,7 +95,7 @@ class LEDLadder extends StatefulWidget {
     this.onChanged,
     this.parameterType = ParameterType.generic,
     this.audioFeatures,
-  }) : super(key: key);
+  });
 
   @override
   State<LEDLadder> createState() => _LEDLadderState();

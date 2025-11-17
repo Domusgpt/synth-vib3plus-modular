@@ -90,7 +90,7 @@ class ResizablePanel extends StatefulWidget {
   final Color? color;
 
   const ResizablePanel({
-    Key? key,
+    super.key,
     required this.child,
     this.config = PanelConfig.customizable,
     this.gridConfig = GridConfig.standard,
@@ -103,7 +103,7 @@ class ResizablePanel extends StatefulWidget {
     this.audioFeatures,
     this.enableAudioReactivity = false,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   State<ResizablePanel> createState() => ResizablePanelState();

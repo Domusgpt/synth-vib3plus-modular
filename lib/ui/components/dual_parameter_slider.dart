@@ -31,7 +31,7 @@ class DualParameterSlider extends StatelessWidget {
   final bool logarithmic;
 
   const DualParameterSlider({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     required this.min,
@@ -42,7 +42,7 @@ class DualParameterSlider extends StatelessWidget {
     required this.systemColors,
     this.unit,
     this.logarithmic = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

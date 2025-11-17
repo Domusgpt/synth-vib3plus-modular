@@ -124,7 +124,7 @@ class OrbController extends StatefulWidget {
   final String? label;
 
   const OrbController({
-    Key? key,
+    super.key,
     this.config = OrbConfig.performance,
     this.onPositionChange,
     this.onPitchBendChange,
@@ -134,7 +134,7 @@ class OrbController extends StatefulWidget {
     this.audioFeatures,
     this.color,
     this.label,
-  }) : super(key: key);
+  });
 
   @override
   State<OrbController> createState() => _OrbControllerState();

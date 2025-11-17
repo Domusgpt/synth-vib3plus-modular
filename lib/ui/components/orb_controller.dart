@@ -27,10 +27,10 @@ class OrbController extends StatefulWidget {
   final Offset initialPosition;
 
   const OrbController({
-    Key? key,
+    super.key,
     required this.systemColors,
     this.initialPosition = const Offset(0.5, 0.5), // Normalized (0-1)
-  }) : super(key: key);
+  });
 
   @override
   State<OrbController> createState() => _OrbControllerState();

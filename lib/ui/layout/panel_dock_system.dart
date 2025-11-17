@@ -457,12 +457,12 @@ class DockZoneIndicator extends StatelessWidget {
   final double opacity;
 
   const DockZoneIndicator({
-    Key? key,
+    super.key,
     required this.zone,
     this.isActive = false,
     this.color = DesignTokens.stateActive,
     this.opacity = 0.3,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

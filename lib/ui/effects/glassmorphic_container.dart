@@ -39,7 +39,7 @@ class GlassmorphicContainer extends StatelessWidget {
   final List<BoxShadow>? customShadows;
 
   const GlassmorphicContainer({
-    Key? key,
+    super.key,
     required this.child,
     this.config = GlassmorphicConfig.interactive,
     this.audioFeatures,
@@ -51,7 +51,7 @@ class GlassmorphicContainer extends StatelessWidget {
     this.margin,
     this.borderRadius,
     this.customShadows,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -157,14 +157,14 @@ class GlassmorphicCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const GlassmorphicCard({
-    Key? key,
+    super.key,
     required this.child,
     this.audioFeatures,
     this.enableAudioReactivity = false,
     this.padding,
     this.margin,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +201,7 @@ class GlassmorphicPanel extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
 
   const GlassmorphicPanel({
-    Key? key,
+    super.key,
     required this.child,
     this.title,
     this.trailing,
@@ -211,7 +211,7 @@ class GlassmorphicPanel extends StatelessWidget {
     this.height,
     this.padding,
     this.margin,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +281,7 @@ class GlassmorphicButton extends StatefulWidget {
   final double? height;
 
   const GlassmorphicButton({
-    Key? key,
+    super.key,
     required this.child,
     this.onPressed,
     this.activeColor,
@@ -289,7 +289,7 @@ class GlassmorphicButton extends StatefulWidget {
     this.padding,
     this.width,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   State<GlassmorphicButton> createState() => _GlassmorphicButtonState();
@@ -370,13 +370,13 @@ class GlassmorphicModal extends StatelessWidget {
   final double? height;
 
   const GlassmorphicModal({
-    Key? key,
+    super.key,
     required this.child,
     this.onDismiss,
     this.barrierDismissible = true,
     this.width,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -111,7 +111,7 @@ class ResizeHandle extends StatefulWidget {
   final double size;
 
   const ResizeHandle({
-    Key? key,
+    super.key,
     required this.direction,
     required this.onResize,
     this.onResizeStart,
@@ -119,7 +119,7 @@ class ResizeHandle extends StatefulWidget {
     this.visible = true,
     this.color = DesignTokens.stateActive,
     this.size = 12.0,
-  }) : super(key: key);
+  });
 
   @override
   State<ResizeHandle> createState() => _ResizeHandleState();
@@ -271,7 +271,7 @@ class ResizeHandleSet extends StatelessWidget {
   final double size;
 
   const ResizeHandleSet({
-    Key? key,
+    super.key,
     required this.onResize,
     this.onResizeStart,
     this.onResizeEnd,
@@ -279,7 +279,7 @@ class ResizeHandleSet extends StatelessWidget {
     this.showEdges = true,
     this.color = DesignTokens.stateActive,
     this.size = 12.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -372,11 +372,11 @@ class ResizePreviewOverlay extends StatelessWidget {
   final bool show;
 
   const ResizePreviewOverlay({
-    Key? key,
+    super.key,
     required this.previewRect,
     this.color = DesignTokens.stateActive,
     this.show = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

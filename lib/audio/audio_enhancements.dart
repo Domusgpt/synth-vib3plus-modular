@@ -238,8 +238,7 @@ class SlewLimiter {
     required double sampleRate,
   })  : _current = initial,
         _maxRiseRate = maxRisePerSecond / sampleRate,
-        _maxFallRate = maxFallPerSecond / sampleRate,
-        _sampleRate = sampleRate;
+        _maxFallRate = maxFallPerSecond / sampleRate;
 
   /// Process input with slew limiting
   double process(double input) {

@@ -184,13 +184,13 @@ class PerformanceMonitor extends StatefulWidget {
   final bool showWarnings;
 
   const PerformanceMonitor({
-    Key? key,
+    super.key,
     required this.tracker,
     this.width = 400,
     this.height = 600,
     this.showGraphs = true,
     this.showWarnings = true,
-  }) : super(key: key);
+  });
 
   @override
   State<PerformanceMonitor> createState() => _PerformanceMonitorState();
@@ -673,9 +673,9 @@ class CompactPerformanceOverlay extends StatelessWidget {
   final PerformanceMetrics metrics;
 
   const CompactPerformanceOverlay({
-    Key? key,
+    super.key,
     required this.metrics,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

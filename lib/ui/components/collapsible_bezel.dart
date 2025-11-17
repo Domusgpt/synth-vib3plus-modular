@@ -31,13 +31,13 @@ class CollapsibleBezel extends StatefulWidget {
   final SystemColors systemColors;
 
   const CollapsibleBezel({
-    Key? key,
+    super.key,
     required this.panelId,
     required this.label,
     required this.icon,
     required this.content,
     required this.systemColors,
-  }) : super(key: key);
+  });
 
   @override
   State<CollapsibleBezel> createState() => _CollapsibleBezelState();
@@ -206,9 +206,9 @@ class BottomBezelContainer extends StatelessWidget {
   final SystemColors systemColors;
 
   const BottomBezelContainer({
-    Key? key,
+    super.key,
     required this.systemColors,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

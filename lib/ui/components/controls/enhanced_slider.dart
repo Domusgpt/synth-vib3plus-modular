@@ -143,7 +143,7 @@ class EnhancedSlider extends StatefulWidget {
   final String Function(double)? valueFormatter; // Custom value display
 
   const EnhancedSlider({
-    Key? key,
+    super.key,
     this.config = SliderConfig.standard,
     required this.label,
     required this.value,
@@ -154,7 +154,7 @@ class EnhancedSlider extends StatefulWidget {
     this.modulationAmount = 0.0,
     this.audioFeatures,
     this.valueFormatter,
-  }) : super(key: key);
+  });
 
   @override
   State<EnhancedSlider> createState() => _EnhancedSliderState();

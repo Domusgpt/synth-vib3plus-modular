@@ -139,7 +139,7 @@ class XYPerformancePad extends StatefulWidget {
   final String? label;
 
   const XYPerformancePad({
-    Key? key,
+    super.key,
     this.config = XYPadConfig.performance,
     this.xParameter = XYParameter.frequency,
     this.yParameter = XYParameter.filterCutoff,
@@ -150,7 +150,7 @@ class XYPerformancePad extends StatefulWidget {
     this.size = GridUnits.unit2x2,
     this.color,
     this.label,
-  }) : super(key: key);
+  });
 
   @override
   State<XYPerformancePad> createState() => _XYPerformancePadState();

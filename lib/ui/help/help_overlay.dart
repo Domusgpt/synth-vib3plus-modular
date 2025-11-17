@@ -240,11 +240,11 @@ class HelpOverlay extends StatefulWidget {
   final bool showWalkthrough;
 
   const HelpOverlay({
-    Key? key,
+    super.key,
     required this.context,
     this.onClose,
     this.showWalkthrough = false,
-  }) : super(key: key);
+  });
 
   @override
   State<HelpOverlay> createState() => _HelpOverlayState();
@@ -613,13 +613,13 @@ class RichTooltip extends StatelessWidget {
   final Color? color;
 
   const RichTooltip({
-    Key? key,
+    super.key,
     required this.title,
     required this.message,
     this.icon,
     required this.child,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -692,13 +692,13 @@ class FeatureHighlight extends StatefulWidget {
   final VoidCallback onDismiss;
 
   const FeatureHighlight({
-    Key? key,
+    super.key,
     required this.position,
     required this.size,
     required this.title,
     required this.description,
     required this.onDismiss,
-  }) : super(key: key);
+  });
 
   @override
   State<FeatureHighlight> createState() => _FeatureHighlightState();

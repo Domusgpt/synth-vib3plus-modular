@@ -45,7 +45,9 @@ void main() {
       // Calculate peak amplitude
       double peak = 0.0;
       for (var sample in buffer) {
-        if (sample.abs() > peak) peak = sample.abs();
+        if (sample.abs() > peak) {
+          peak = sample.abs();
+        }
       }
 
       debugPrint('Geo ${geo.toString().padLeft(2)}: '

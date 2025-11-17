@@ -99,11 +99,11 @@ class AnimationLayer extends StatefulWidget {
   final Widget? child; // Optional child widget (background)
 
   const AnimationLayer({
-    Key? key,
+    super.key,
     this.config = AnimationLayerConfig.full,
     this.audioStream,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   State<AnimationLayer> createState() => AnimationLayerState();
@@ -414,14 +414,14 @@ class AnimatedGestureDetector extends StatelessWidget {
   final bool spawnParticlesOnTap;
 
   const AnimatedGestureDetector({
-    Key? key,
+    super.key,
     required this.child,
     this.onTapDown,
     this.onPanUpdate,
     this.onPanEnd,
     this.trailColor,
     this.spawnParticlesOnTap = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

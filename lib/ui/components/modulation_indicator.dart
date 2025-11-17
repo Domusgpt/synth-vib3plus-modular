@@ -28,11 +28,11 @@ class ModulationIndicator extends StatefulWidget {
   final bool compact;
 
   const ModulationIndicator({
-    Key? key,
+    super.key,
     this.showAudioToVisual = true,
     this.showVisualToAudio = true,
     this.compact = false,
-  }) : super(key: key);
+  });
 
   @override
   State<ModulationIndicator> createState() => _ModulationIndicatorState();

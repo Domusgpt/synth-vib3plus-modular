@@ -156,7 +156,7 @@ abstract class ReactiveComponent extends StatefulWidget {
   final bool enabled;
 
   const ReactiveComponent({
-    Key? key,
+    super.key,
     this.initialState = const ComponentState(),
     this.style = const VisualStyle(),
     this.audioReactivity = AudioReactivity.none,
@@ -164,7 +164,7 @@ abstract class ReactiveComponent extends StatefulWidget {
     this.onDrag,
     this.onLongPress,
     this.enabled = true,
-  }) : super(key: key);
+  });
 }
 
 /// Base state for reactive components

@@ -26,9 +26,9 @@ class TopBezel extends StatefulWidget {
   final SystemColors systemColors;
 
   const TopBezel({
-    Key? key,
+    super.key,
     required this.systemColors,
-  }) : super(key: key);
+  });
 
   @override
   State<TopBezel> createState() => _TopBezelState();

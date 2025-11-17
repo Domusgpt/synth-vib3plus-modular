@@ -36,11 +36,11 @@ class AudioVisualizer extends StatefulWidget {
   final bool showLabels;
 
   const AudioVisualizer({
-    Key? key,
+    super.key,
     this.height = 120.0,
     this.mode = VisualizerMode.spectrum,
     this.showLabels = true,
-  }) : super(key: key);
+  });
 
   @override
   State<AudioVisualizer> createState() => _AudioVisualizerState();

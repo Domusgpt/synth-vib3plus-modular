@@ -30,11 +30,11 @@ class XYPerformancePad extends StatefulWidget {
   final Widget? backgroundVisualization;
 
   const XYPerformancePad({
-    Key? key,
+    super.key,
     required this.systemColors,
     this.showGrid = false,
     this.backgroundVisualization,
-  }) : super(key: key);
+  });
 
   @override
   State<XYPerformancePad> createState() => _XYPerformancePadState();

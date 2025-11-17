@@ -356,12 +356,12 @@ class GridOverlay extends StatelessWidget {
   final double opacity;
 
   const GridOverlay({
-    Key? key,
+    super.key,
     this.config = GridConfig.standard,
     this.showLabels = true,
     this.gridColor = DesignTokens.stateActive,
     this.opacity = 0.2,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -464,11 +464,11 @@ class GridContainer extends StatelessWidget {
   final bool showGrid;
 
   const GridContainer({
-    Key? key,
+    super.key,
     this.config = GridConfig.standard,
     required this.children,
     this.showGrid = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

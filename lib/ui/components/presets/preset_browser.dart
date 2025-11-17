@@ -284,7 +284,7 @@ class PresetBrowser extends StatefulWidget {
   final double height;
 
   const PresetBrowser({
-    Key? key,
+    super.key,
     required this.presets,
     this.onPresetSelected,
     this.onPresetFavorited,
@@ -293,7 +293,7 @@ class PresetBrowser extends StatefulWidget {
     this.onExportPresets,
     this.width = 900,
     this.height = 700,
-  }) : super(key: key);
+  });
 
   @override
   State<PresetBrowser> createState() => _PresetBrowserState();
