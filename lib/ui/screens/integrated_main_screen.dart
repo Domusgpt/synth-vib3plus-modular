@@ -50,7 +50,7 @@ import '../../core/synth_app_initializer.dart';
 class IntegratedSynthApp extends StatelessWidget {
   final SynthModules modules;
 
-  const IntegratedSynthApp({Key? key, required this.modules}) : super(key: key);
+  const IntegratedSynthApp({super.key, required this.modules});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,7 @@ class IntegratedSynthApp extends StatelessWidget {
 class IntegratedMainScreen extends StatefulWidget {
   final SynthModules modules;
 
-  const IntegratedMainScreen({Key? key, required this.modules})
+  const IntegratedMainScreen({super.key, required this.modules})
       : super(key: key);
 
   @override
@@ -247,7 +247,7 @@ class _IntegratedMainContent extends StatelessWidget {
   final VoidCallback onToggleHelp;
 
   const _IntegratedMainContent({
-    Key? key,
+    super.key,
     required this.modules,
     required this.gestureSystem,
     required this.performanceTracker,
@@ -260,7 +260,7 @@ class _IntegratedMainContent extends StatelessWidget {
     required this.onTogglePresetBrowser,
     required this.onToggleModulationMatrix,
     required this.onToggleHelp,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

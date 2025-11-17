@@ -25,10 +25,10 @@ class VIB34DWidget extends StatefulWidget {
   final AudioProvider audioProvider;
 
   const VIB34DWidget({
-    Key? key,
+    super.key,
     required this.visualProvider,
     required this.audioProvider,
-  }) : super(key: key);
+  });
 
   @override
   State<VIB34DWidget> createState() => _VIB34DWidgetState();
