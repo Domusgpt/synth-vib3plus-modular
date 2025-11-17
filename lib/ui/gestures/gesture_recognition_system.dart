@@ -112,7 +112,6 @@ class GestureRecognitionSystem {
   int maxSimultaneousTouches = 5;
 
   // State tracking
-  DateTime? _gestureStartTime;
   Offset? _initialCenter;
   double? _initialDistance;
   double? _initialAngle;
@@ -155,7 +154,6 @@ class GestureRecognitionSystem {
       timestamp: DateTime.now(),
     );
 
-    _gestureStartTime = DateTime.now();
     _updateGestureMetrics();
 
     _checkMultiTouchGestures();
@@ -483,7 +481,6 @@ class GestureRecognitionSystem {
   // ============================================================================
 
   void _reset() {
-    _gestureStartTime = null;
     _initialCenter = null;
     _initialDistance = null;
     _initialAngle = null;

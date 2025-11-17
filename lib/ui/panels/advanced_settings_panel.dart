@@ -19,7 +19,7 @@ import '../theme/design_tokens.dart';
 import '../utils/haptic_feedback.dart';
 
 class AdvancedSettingsPanel extends StatefulWidget {
-  const AdvancedSettingsPanel({Key? key}) : super(key: key);
+  const AdvancedSettingsPanel({super.key});
 
   @override
   State<AdvancedSettingsPanel> createState() => _AdvancedSettingsPanelState();

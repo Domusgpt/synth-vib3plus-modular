@@ -393,18 +393,17 @@ class ParameterSmoother {
   double _target;
   final double _sampleRate;
   double _smoothTime; // Seconds
-  MappingCurve _curve;
 
   ParameterSmoother({
     required double sampleRate,
     double initial = 0.0,
     double smoothTime = 0.05, // 50ms default
-    MappingCurve curve = MappingCurve.linear,
+    MappingCurve curve = MappingCurve.linear, // Reserved for future implementation
   })  : _current = initial,
         _target = initial,
         _sampleRate = sampleRate,
         _smoothTime = smoothTime,
-        _curve = curve;
+        // TODO: Implement different curve types (currently only linear)
 
   /// Set new target value
   void setTarget(double value) {
@@ -444,6 +443,6 @@ class ParameterSmoother {
 
   /// Set curve type
   void setCurve(MappingCurve curve) {
-    _curve = curve;
+    // TODO: Implement different curve types (currently only linear)
   }
 }

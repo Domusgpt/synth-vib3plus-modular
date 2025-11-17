@@ -20,7 +20,7 @@ import '../components/audio_visualizer.dart';
 import '../components/modulation_indicator.dart';
 
 class VisualizationPanel extends StatefulWidget {
-  const VisualizationPanel({Key? key}) : super(key: key);
+  const VisualizationPanel({super.key});
 
   @override
   State<VisualizationPanel> createState() => _VisualizationPanelState();

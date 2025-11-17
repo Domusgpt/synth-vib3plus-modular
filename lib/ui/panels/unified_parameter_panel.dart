@@ -23,7 +23,7 @@ import '../../providers/audio_provider.dart';
 import '../../providers/visual_provider.dart';
 
 class UnifiedParameterPanel extends StatelessWidget {
-  const UnifiedParameterPanel({Key? key}) : super(key: key);
+  const UnifiedParameterPanel({super.key});
 
   @override
   Widget build(BuildContext context) {

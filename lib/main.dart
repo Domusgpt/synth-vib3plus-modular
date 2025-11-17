@@ -31,7 +31,7 @@ void main() async {
 class SynthVIB3App extends StatelessWidget {
   final SynthModules modules;
 
-  const SynthVIB3App({Key? key, required this.modules}) : super(key: key);
+  const SynthVIB3App({super.key, required this.modules});
 
   @override
   Widget build(BuildContext context) {

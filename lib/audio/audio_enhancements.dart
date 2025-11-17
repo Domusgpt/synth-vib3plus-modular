@@ -230,7 +230,6 @@ class SlewLimiter {
   double _current;
   final double _maxRiseRate;
   final double _maxFallRate;
-  final double _sampleRate;
 
   SlewLimiter({
     double initial = 0.0,

@@ -16,7 +16,7 @@ import '../components/holographic_slider.dart';
 import '../../providers/visual_provider.dart';
 
 class GeometryPanelContent extends StatelessWidget {
-  const GeometryPanelContent({Key? key}) : super(key: key);
+  const GeometryPanelContent({super.key});
 
   @override
   Widget build(BuildContext context) {

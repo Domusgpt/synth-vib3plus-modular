@@ -36,7 +36,7 @@ import '../../core/synth_app_initializer.dart';
 class SynthMainScreen extends StatefulWidget {
   final SynthModules modules;
 
-  const SynthMainScreen({Key? key, required this.modules}) : super(key: key);
+  const SynthMainScreen({super.key, required this.modules});
 
   @override
   State<SynthMainScreen> createState() => _SynthMainScreenState();
@@ -79,7 +79,7 @@ class _SynthMainScreenState extends State<SynthMainScreen> {
 }
 
 class _SynthMainContent extends StatefulWidget {
-  const _SynthMainContent({Key? key}) : super(key: key);
+  const _SynthMainContent({super.key});
 
   @override
   State<_SynthMainContent> createState() => _SynthMainContentState();

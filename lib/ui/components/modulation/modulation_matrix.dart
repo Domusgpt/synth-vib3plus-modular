@@ -208,7 +208,6 @@ class _ModulationMatrixState extends State<ModulationMatrix>
     with SingleTickerProviderStateMixin {
   // Drag state
   String? _draggedSourceId;
-  Offset? _dragPosition;
   String? _hoveredTargetId;
 
   // Selected connection for editing
@@ -239,13 +238,13 @@ class _ModulationMatrixState extends State<ModulationMatrix>
   void _handleSourceDragStart(String sourceId, Offset globalPosition) {
     setState(() {
       _draggedSourceId = sourceId;
-      _dragPosition = globalPosition;
+      // TODO: Implement drag position tracking for visual feedback
     });
   }
 
   void _handleSourceDragUpdate(Offset globalPosition) {
     setState(() {
-      _dragPosition = globalPosition;
+      // TODO: Implement drag position tracking for visual feedback
     });
   }
 
@@ -256,7 +255,6 @@ class _ModulationMatrixState extends State<ModulationMatrix>
 
     setState(() {
       _draggedSourceId = null;
-      _dragPosition = null;
       _hoveredTargetId = null;
     });
   }

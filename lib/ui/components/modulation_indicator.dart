@@ -341,7 +341,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
 
 /// Compact version for minimal space usage
 class CompactModulationIndicator extends StatelessWidget {
-  const CompactModulationIndicator({Key? key}) : super(key: key);
+  const CompactModulationIndicator({super.key});
 
   @override
   Widget build(BuildContext context) {

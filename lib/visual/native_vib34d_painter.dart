@@ -256,7 +256,7 @@ class NativeVIB34DPainter extends CustomPainter {
 
 /// Widget that displays native VIB34D visualization
 class NativeVIB34DWidget extends StatefulWidget {
-  const NativeVIB34DWidget({Key? key}) : super(key: key);
+  const NativeVIB34DWidget({super.key});
 
   @override
   State<NativeVIB34DWidget> createState() => _NativeVIB34DWidgetState();

@@ -376,6 +376,11 @@ class SynthesizerEngine {
   Float32List generateBuffer(int frames) {
     final buffer = Float32List(frames);
 
+    // Update portamento/glide if active
+    if (_isGliding) {
+      _updatePortamento();
+    }
+
     for (int i = 0; i < frames; i++) {
       // Apply frequency modulation to all voices
       for (final voice in voiceManager.voices) {
@@ -596,6 +601,24 @@ class SynthesizerEngine {
   }
 
   /// Update portamento/glide (called per sample when gliding is active)
+  void _updatePortamento() {
+    if (!_isGliding) return;
+
+    final elapsed = DateTime.now().difference(_glideStartTime!).inMicroseconds / 1000000.0;
+    final progress = (elapsed / _portamentoTime).clamp(0.0, 1.0);
+
+    if (progress >= 1.0) {
+      // Glide complete
+      _glideCurrentFrequency = _glideTargetFrequency;
+      _isGliding = false;
+    } else {
+      // Hermite smoothstep interpolation (smooth acceleration/deceleration)
+      final smoothProgress = progress * progress * (3.0 - 2.0 * progress);
+      _glideCurrentFrequency = _glideStartFrequency +
+          (_glideTargetFrequency - _glideStartFrequency) * smoothProgress;
+    }
+  }
+
 
   /// Set portamento time in seconds (0 = disabled, 0.001-5.0 = enabled)
   void setPortamentoTime(double seconds) {
