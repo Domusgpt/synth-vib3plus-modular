@@ -15,6 +15,8 @@ import 'package:synther_vib34d_holographic/models/mapping_preset.dart';
 import '../test_utilities.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('ParameterBridge - Initialization', () {
     test('should initialize with audio and visual providers', () {
       final audioProvider = AudioProvider();
@@ -22,7 +24,7 @@ void main() {
 
       final bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
 
       expect(bridge.isRunning, isFalse, reason: 'Should not be running initially');
@@ -35,7 +37,7 @@ void main() {
 
       final bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
 
       bridge.start();
@@ -56,7 +58,7 @@ void main() {
 
       final bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
 
       bridge.start();
@@ -77,7 +79,7 @@ void main() {
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
       bridge.start();
     });
@@ -147,7 +149,7 @@ void main() {
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
       bridge.start();
     });
@@ -225,7 +227,7 @@ void main() {
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
     });
 
@@ -281,7 +283,7 @@ void main() {
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
     });
 
@@ -343,7 +345,7 @@ void main() {
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
     });
 
@@ -415,7 +417,7 @@ void main() {
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
       bridge.start();
     });
@@ -460,7 +462,7 @@ void main() {
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
         audioProvider: audioProvider,
-        visualProvider: visualProvider as VisualProvider,
+        visualProvider: visualProvider as dynamic,
       );
       bridge.start();
     });
@@ -481,7 +483,7 @@ void main() {
       // 2. Change visual (rotation) → should affect audio
       visualProvider.setRotationXW(1.5);
       await Future.delayed(const Duration(milliseconds: 50));
-      final modulated Buffer = audioProvider.getCurrentBuffer();
+      final modulatedBuffer = audioProvider.getCurrentBuffer();
 
       // Both directions should be active
       expect(bridge.currentPreset.audioReactiveEnabled, isTrue);

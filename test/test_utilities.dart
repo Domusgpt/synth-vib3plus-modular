@@ -23,7 +23,7 @@ Float32List generateTestSineWave({
   final buffer = Float32List(length);
   for (int i = 0; i < length; i++) {
     final time = i / sampleRate;
-    buffer[i] = amplitude * (0.5 * (1.0 + (2.0 * 3.14159 * frequency * time).sin()));
+    buffer[i] = amplitude * (0.5 * (1.0 + sin(2.0 * 3.14159 * frequency * time)));
   }
   return buffer;
 }
@@ -43,7 +43,7 @@ Float32List generateComplexWaveform({
     final time = i / sampleRate;
     double sample = 0.0;
     for (int j = 0; j < frequencies.length; j++) {
-      sample += amplitudes[j] * (2.0 * 3.14159 * frequencies[j] * time).sin();
+      sample += amplitudes[j] * sin(2.0 * 3.14159 * frequencies[j] * time);
     }
     buffer[i] = sample;
   }
@@ -82,7 +82,7 @@ double calculateRMS(Float32List buffer) {
   for (final sample in buffer) {
     sum += sample * sample;
   }
-  return (sum / buffer.length).sqrt();
+  return sqrt(sum / buffer.length);
 }
 
 /// Calculate peak amplitude of buffer
