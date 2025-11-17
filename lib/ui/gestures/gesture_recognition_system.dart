@@ -1,22 +1,22 @@
-/**
- * Gesture Recognition System
- *
- * Advanced multi-finger gesture detection for enhanced UI interactions.
- * Recognizes complex gestures like pinch-to-zoom, two-finger rotate,
- * three-finger swipe, and custom musical gestures.
- *
- * Features:
- * - Multi-touch gesture recognition (2-5 fingers)
- * - Pinch to zoom (UI scale)
- * - Two-finger rotate (parameter control)
- * - Three-finger swipe (preset navigation)
- * - Four-finger tap (panel toggle)
- * - Custom musical gestures
- * - Gesture history and replay
- * - Conflict resolution
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Gesture Recognition System
+///
+/// Advanced multi-finger gesture detection for enhanced UI interactions.
+/// Recognizes complex gestures like pinch-to-zoom, two-finger rotate,
+/// three-finger swipe, and custom musical gestures.
+///
+/// Features:
+/// - Multi-touch gesture recognition (2-5 fingers)
+/// - Pinch to zoom (UI scale)
+/// - Two-finger rotate (parameter control)
+/// - Three-finger swipe (preset navigation)
+/// - Four-finger tap (panel toggle)
+/// - Custom musical gestures
+/// - Gesture history and replay
+/// - Conflict resolution
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -411,8 +411,9 @@ class GestureRecognitionSystem {
 
   void _updateGestureMetrics() {
     _initialCenter = _calculateCenter();
-    _initialDistance =
-        _activeTouches.length == 2 ? _calculateDistance() : _calculateAverageDistance();
+    _initialDistance = _activeTouches.length == 2
+        ? _calculateDistance()
+        : _calculateAverageDistance();
     _initialAngle = _activeTouches.length == 2 ? _calculateAngle() : null;
   }
 

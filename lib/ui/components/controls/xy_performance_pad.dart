@@ -1,23 +1,23 @@
-/**
- * XY Performance Pad
- *
- * Enhanced multi-touch performance controller with resizable framework,
- * audio-reactive visuals, trail visualization, and scale quantization.
- *
- * Features:
- * - Resizable (1x1 to 4x4 grid units)
- * - Multi-touch support (up to 8 simultaneous touches)
- * - Trail visualization with audio reactivity
- * - Audio-reactive border glow
- * - Grid visualization (optional)
- * - Scale/root note quantization
- * - Modulation indicator overlay
- * - Touch pressure support
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// XY Performance Pad
+///
+/// Enhanced multi-touch performance controller with resizable framework,
+/// audio-reactive visuals, trail visualization, and scale quantization.
+///
+/// Features:
+/// - Resizable (1x1 to 4x4 grid units)
+/// - Multi-touch support (up to 8 simultaneous touches)
+/// - Trail visualization with audio reactivity
+/// - Audio-reactive border glow
+/// - Grid visualization (optional)
+/// - Scale/root note quantization
+/// - Modulation indicator overlay
+/// - Touch pressure support
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -156,7 +156,8 @@ class XYPerformancePad extends StatefulWidget {
   State<XYPerformancePad> createState() => _XYPerformancePadState();
 }
 
-class _XYPerformancePadState extends State<XYPerformancePad> with SingleTickerProviderStateMixin {
+class _XYPerformancePadState extends State<XYPerformancePad>
+    with SingleTickerProviderStateMixin {
   final Map<int, TouchPoint> _activeTouches = {};
   late AnimationController _pulseController;
 

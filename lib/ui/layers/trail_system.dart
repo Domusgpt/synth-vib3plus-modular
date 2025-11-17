@@ -1,21 +1,21 @@
-/**
- * Trail System
- *
- * Visual history of touch movements. Creates smooth, fading trails
- * that follow finger movements across the interface, providing
- * immediate visual feedback for gestures and XY pad interactions.
- *
- * Features:
- * - Pressure-sensitive width
- * - Time-based fade out
- * - Color gradient support
- * - Audio-reactive brightness
- * - Smooth bezier interpolation
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Trail System
+///
+/// Visual history of touch movements. Creates smooth, fading trails
+/// that follow finger movements across the interface, providing
+/// immediate visual feedback for gestures and XY pad interactions.
+///
+/// Features:
+/// - Pressure-sensitive width
+/// - Time-based fade out
+/// - Color gradient support
+/// - Audio-reactive brightness
+/// - Smooth bezier interpolation
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'dart:ui';
@@ -88,7 +88,9 @@ class TouchTrail {
     if (points.isNotEmpty) {
       final lastPoint = points.last;
       final distance = (position - lastPoint.position).distance;
-      final timeDelta = DateTime.now().difference(lastPoint.timestamp).inMilliseconds / 1000.0;
+      final timeDelta =
+          DateTime.now().difference(lastPoint.timestamp).inMilliseconds /
+              1000.0;
       if (timeDelta > 0) {
         velocity = distance / timeDelta;
       }
@@ -122,7 +124,8 @@ class TouchTrail {
 
     // Audio-reactive color shift
     if (audioFeatures != null) {
-      final hueShift = DesignTokens.dominantFreqToHueShift(audioFeatures.dominantFreq);
+      final hueShift =
+          DesignTokens.dominantFreqToHueShift(audioFeatures.dominantFreq);
       color = DesignTokens.adjustHue(color, hueShift * dt * 60);
     }
   }
@@ -147,12 +150,14 @@ class TouchTrail {
       final endPoint = points[i];
 
       // Calculate opacity (fade based on age)
-      final opacity = math.min(startPoint.opacity, endPoint.opacity) * brightnessFactor;
+      final opacity =
+          math.min(startPoint.opacity, endPoint.opacity) * brightnessFactor;
       if (opacity <= 0.0) continue;
 
       // Calculate width (pressure-sensitive + velocity-based)
       final avgPressure = (startPoint.pressure + endPoint.pressure) / 2;
-      final velocityFactor = (1.0 - (endPoint.velocity / 1000.0).clamp(0.0, 0.5));
+      final velocityFactor =
+          (1.0 - (endPoint.velocity / 1000.0).clamp(0.0, 0.5));
       final width = baseWidth * avgPressure * velocityFactor;
 
       // Draw segment
@@ -367,7 +372,8 @@ class TrailSystem {
   int get activeCount => _trails.length;
 
   /// Get total point count across all trails
-  int get totalPoints => _trails.values.fold(0, (sum, trail) => sum + trail.length);
+  int get totalPoints =>
+      _trails.values.fold(0, (sum, trail) => sum + trail.length);
 
   /// Set enabled state
   void setEnabled(bool value) {

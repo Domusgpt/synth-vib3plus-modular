@@ -1,11 +1,11 @@
-/**
- * Synth Patch Model
- *
- * Represents a complete synthesizer configuration that can be
- * saved, loaded, and recalled.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Synth Patch Model
+///
+/// Represents a complete synthesizer configuration that can be
+/// saved, loaded, and recalled.
+///
+/// A Paul Phillips Manifestation
+////
 
 import '../audio/synthesizer_engine.dart';
 
@@ -233,10 +233,12 @@ class SynthPatch {
     return SynthPatch(
       name: json['name'] as String,
       description: json['description'] as String,
-      oscillator1Waveform: _parseWaveform(json['oscillator1Waveform'] as String),
+      oscillator1Waveform:
+          _parseWaveform(json['oscillator1Waveform'] as String),
       oscillator1Octave: json['oscillator1Octave'] as int,
       oscillator1Detune: (json['oscillator1Detune'] as num).toDouble(),
-      oscillator2Waveform: _parseWaveform(json['oscillator2Waveform'] as String),
+      oscillator2Waveform:
+          _parseWaveform(json['oscillator2Waveform'] as String),
       oscillator2Octave: json['oscillator2Octave'] as int,
       oscillator2Detune: (json['oscillator2Detune'] as num).toDouble(),
       mixBalance: (json['mixBalance'] as num).toDouble(),

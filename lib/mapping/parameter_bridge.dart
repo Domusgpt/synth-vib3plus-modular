@@ -1,15 +1,15 @@
-/**
- * VIB34D + Synther Parameter Bridge
- *
- * Orchestrates bidirectional parameter flow between audio synthesis
- * and 4D visual rendering systems.
- *
- * Audio → Visual: Real-time FFT analysis modulates visual parameters
- * Visual → Audio: Quaternion rotations and geometry state modulate synthesis
- *
- * A Paul Phillips Manifestation
- * Paul@clearseassolutions.com
- */
+///
+/// VIB34D + Synther Parameter Bridge
+///
+/// Orchestrates bidirectional parameter flow between audio synthesis
+/// and 4D visual rendering systems.
+///
+/// Audio → Visual: Real-time FFT analysis modulates visual parameters
+/// Visual → Audio: Quaternion rotations and geometry state modulate synthesis
+///
+/// A Paul Phillips Manifestation
+/// Paul@clearseassolutions.com
+////
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -86,14 +86,16 @@ class ParameterBridge with ChangeNotifier {
   /// Set audio→visual modulation matrix
   void setAudioToVisualMatrix(ModulationMatrix matrix) {
     _audioToVisualMatrix = matrix.copy();
-    debugPrint('🔊→👁️ Audio→Visual matrix updated: ${_audioToVisualMatrix.routeCount} routes');
+    debugPrint(
+        '🔊→👁️ Audio→Visual matrix updated: ${_audioToVisualMatrix.routeCount} routes');
     notifyListeners();
   }
 
   /// Set visual→audio modulation matrix
   void setVisualToAudioMatrix(ModulationMatrix matrix) {
     _visualToAudioMatrix = matrix.copy();
-    debugPrint('👁️→🔊 Visual→Audio matrix updated: ${_visualToAudioMatrix.routeCount} routes');
+    debugPrint(
+        '👁️→🔊 Visual→Audio matrix updated: ${_visualToAudioMatrix.routeCount} routes');
     notifyListeners();
   }
 
@@ -138,8 +140,10 @@ class ParameterBridge with ChangeNotifier {
     );
 
     debugPrint('🌉 ParameterBridge started (60 FPS)');
-    debugPrint('   Audio→Visual: ${_currentPreset.audioReactiveEnabled ? "ENABLED" : "disabled"}');
-    debugPrint('   Visual→Audio: ${_currentPreset.visualReactiveEnabled ? "ENABLED" : "disabled"}');
+    debugPrint(
+        '   Audio→Visual: ${_currentPreset.audioReactiveEnabled ? "ENABLED" : "disabled"}');
+    debugPrint(
+        '   Visual→Audio: ${_currentPreset.visualReactiveEnabled ? "ENABLED" : "disabled"}');
 
     notifyListeners();
   }

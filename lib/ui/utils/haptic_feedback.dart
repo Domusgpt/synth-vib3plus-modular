@@ -1,14 +1,14 @@
-/**
- * Haptic Feedback System
- *
- * Professional haptic feedback for UI interactions:
- * - Light haptics for normal interactions
- * - Medium haptics for important actions
- * - Heavy haptics for critical actions
- * - Pattern-based haptics for musical feedback
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Haptic Feedback System
+///
+/// Professional haptic feedback for UI interactions:
+/// - Light haptics for normal interactions
+/// - Medium haptics for important actions
+/// - Heavy haptics for critical actions
+/// - Pattern-based haptics for musical feedback
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/services.dart';
 import 'dart:async';

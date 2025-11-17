@@ -1,20 +1,20 @@
-/**
- * Parameter Coupling Module - Bidirectional Audio↔Visual Modulation
- *
- * Orchestrates 60 FPS parameter coupling between audio synthesis
- * and VIB3+ visualization. Runs two independent modulation systems:
- * - Audio→Visual: FFT analysis modulates rotation, tessellation, colors
- * - Visual→Audio: 6D rotation modulates oscillators, filters, effects
- *
- * IMPORTANT: Audio reactivity is ALWAYS ON - this is a core feature,
- * not optional. The 19 ELEGANT_PAIRINGS are always active. User sliders
- * set BASE values, and audio analysis adds ± modulation on top.
- *
- * Enable/disable methods exist for debugging only and should NEVER be
- * exposed in the UI.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Parameter Coupling Module - Bidirectional Audio↔Visual Modulation
+///
+/// Orchestrates 60 FPS parameter coupling between audio synthesis
+/// and VIB3+ visualization. Runs two independent modulation systems:
+/// - Audio→Visual: FFT analysis modulates rotation, tessellation, colors
+/// - Visual→Audio: 6D rotation modulates oscillators, filters, effects
+///
+/// IMPORTANT: Audio reactivity is ALWAYS ON - this is a core feature,
+/// not optional. The 19 ELEGANT_PAIRINGS are always active. User sliders
+/// set BASE values, and audio analysis adds ± modulation on top.
+///
+/// Enable/disable methods exist for debugging only and should NEVER be
+/// exposed in the UI.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -68,15 +68,19 @@ class ParameterCouplingModule extends SynthModule {
 
   @override
   bool get isHealthy {
-    return _isRunning && _averageUpdateTime < 16.67; // Less than one frame at 60 FPS
+    return _isRunning &&
+        _averageUpdateTime < 16.67; // Less than one frame at 60 FPS
   }
 
   @override
   Map<String, dynamic> getDiagnostics() {
-    final uptime = _startTime != null ? DateTime.now().difference(_startTime!) : Duration.zero;
+    final uptime = _startTime != null
+        ? DateTime.now().difference(_startTime!)
+        : Duration.zero;
 
-    final actualRate =
-        _updateCount > 0 && uptime.inSeconds > 0 ? _updateCount / uptime.inSeconds : 0.0;
+    final actualRate = _updateCount > 0 && uptime.inSeconds > 0
+        ? _updateCount / uptime.inSeconds
+        : 0.0;
 
     return {
       'updateRate': '$_updateRate FPS (target)',
@@ -91,7 +95,8 @@ class ParameterCouplingModule extends SynthModule {
       },
       'averageUpdateTime': '${_averageUpdateTime.toStringAsFixed(2)}ms',
       'totalUpdates': _updateCount,
-      'uptime': '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
+      'uptime':
+          '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
       'healthy': isHealthy,
     };
   }
@@ -173,7 +178,8 @@ class ParameterCouplingModule extends SynthModule {
   /// Set update rate (FPS)
   void setUpdateRate(double fps) {
     if (fps < 1.0 || fps > 120.0) {
-      SynthLogger.warning('ParameterCoupling', 'Invalid FPS: $fps (must be 1-120)');
+      SynthLogger.warning(
+          'ParameterCoupling', 'Invalid FPS: $fps (must be 1-120)');
       return;
     }
 
@@ -236,7 +242,8 @@ class ParameterCouplingModule extends SynthModule {
       _updateCount++;
 
       // Track update duration
-      final elapsed = DateTime.now().difference(startTime).inMicroseconds / 1000.0;
+      final elapsed =
+          DateTime.now().difference(startTime).inMicroseconds / 1000.0;
       _recordUpdateDuration(elapsed);
 
       // Performance warning if update takes too long
@@ -261,6 +268,7 @@ class ParameterCouplingModule extends SynthModule {
       _updateDurations.removeAt(0);
     }
 
-    _averageUpdateTime = _updateDurations.reduce((a, b) => a + b) / _updateDurations.length;
+    _averageUpdateTime =
+        _updateDurations.reduce((a, b) => a + b) / _updateDurations.length;
   }
 }

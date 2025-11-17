@@ -1,18 +1,18 @@
-/**
- * XY Performance Pad
- *
- * Primary interaction surface overlaying the 4D visualization.
- * Features multi-touch support (up to 8 simultaneous notes),
- * scale quantization, holographic touch feedback, and dual-axis
- * parameter control.
- *
- * Visual Feedback:
- * - Touch ripples with system-color glow
- * - Sustaining notes show persistent indicators
- * - Scale-aware grid overlay (optional)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// XY Performance Pad
+///
+/// Primary interaction surface overlaying the 4D visualization.
+/// Features multi-touch support (up to 8 simultaneous notes),
+/// scale quantization, holographic touch feedback, and dual-axis
+/// parameter control.
+///
+/// Visual Feedback:
+/// - Touch ripples with system-color glow
+/// - Sustaining notes show persistent indicators
+/// - Scale-aware grid overlay (optional)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +38,8 @@ class XYPerformancePad extends StatefulWidget {
   State<XYPerformancePad> createState() => _XYPerformancePadState();
 }
 
-class _XYPerformancePadState extends State<XYPerformancePad> with TickerProviderStateMixin {
+class _XYPerformancePadState extends State<XYPerformancePad>
+    with TickerProviderStateMixin {
   // Track active touches (up to 8 simultaneous)
   final Map<int, TouchPoint> _activeTouches = {};
 
@@ -90,7 +91,8 @@ class _XYPerformancePadState extends State<XYPerformancePad> with TickerProvider
     // Create ripple animation
     _createRippleAnimation(touchId);
 
-    debugPrint('🎹 Touch $touchId: Note $midiNote, Y-Param: ${yValue.toStringAsFixed(2)}');
+    debugPrint(
+        '🎹 Touch $touchId: Note $midiNote, Y-Param: ${yValue.toStringAsFixed(2)}');
   }
 
   void _handleTouchMove(PointerMoveEvent event, UIStateProvider uiState,
@@ -131,7 +133,8 @@ class _XYPerformancePadState extends State<XYPerformancePad> with TickerProvider
     });
   }
 
-  void _handleTouchEnd(PointerUpEvent event, UIStateProvider uiState, AudioProvider audioProvider) {
+  void _handleTouchEnd(PointerUpEvent event, UIStateProvider uiState,
+      AudioProvider audioProvider) {
     final touchId = event.pointer;
     if (!_activeTouches.containsKey(touchId)) return;
 
@@ -176,8 +179,8 @@ class _XYPerformancePadState extends State<XYPerformancePad> with TickerProvider
     return normalizedY;
   }
 
-  void _applyYAxisParameter(double value, UIStateProvider uiState, AudioProvider audioProvider,
-      VisualProvider visualProvider) {
+  void _applyYAxisParameter(double value, UIStateProvider uiState,
+      AudioProvider audioProvider, VisualProvider visualProvider) {
     final yAxis = uiState.xyAxisY;
 
     switch (yAxis) {
@@ -240,8 +243,10 @@ class _XYPerformancePadState extends State<XYPerformancePad> with TickerProvider
     final visualProvider = Provider.of<VisualProvider>(context);
 
     return Listener(
-      onPointerDown: (event) => _handleTouchStart(event, uiState, audioProvider, visualProvider),
-      onPointerMove: (event) => _handleTouchMove(event, uiState, audioProvider, visualProvider),
+      onPointerDown: (event) =>
+          _handleTouchStart(event, uiState, audioProvider, visualProvider),
+      onPointerMove: (event) =>
+          _handleTouchMove(event, uiState, audioProvider, visualProvider),
       onPointerUp: (event) => _handleTouchEnd(event, uiState, audioProvider),
       child: Stack(
         children: [
@@ -354,7 +359,20 @@ class _XYPerformancePadState extends State<XYPerformancePad> with TickerProvider
   }
 
   String _getMidiNoteName(int midiNote) {
-    final noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    final noteNames = [
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B'
+    ];
     final octave = (midiNote ~/ 12) - 1;
     final noteName = noteNames[midiNote % 12];
     return '$noteName$octave';
@@ -447,7 +465,20 @@ class TouchIndicatorPainter extends CustomPainter {
   }
 
   String _getMidiNoteName(int midiNote) {
-    final noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    final noteNames = [
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B'
+    ];
     final octave = (midiNote ~/ 12) - 1;
     final noteName = noteNames[midiNote % 12];
     return '$noteName$octave';

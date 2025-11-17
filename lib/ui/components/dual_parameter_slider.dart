@@ -1,16 +1,16 @@
-/**
- * Dual Parameter Slider - Audio-Visual Parity Control
- *
- * Shows both sonic (🎵) and visual (🎨) effects for each parameter.
- * User controls BASE value, audio reactivity adds modulation on top.
- *
- * Design:
- * - Clear labeling of what parameter does to BOTH audio and visuals
- * - Holographic styling consistent with system colors
- * - Visual feedback shows base value + current modulation
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Dual Parameter Slider - Audio-Visual Parity Control
+///
+/// Shows both sonic (🎵) and visual (🎨) effects for each parameter.
+/// User controls BASE value, audio reactivity adds modulation on top.
+///
+/// Design:
+/// - Clear labeling of what parameter does to BOTH audio and visuals
+/// - Holographic styling consistent with system colors
+/// - Visual feedback shows base value + current modulation
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import '../theme/synth_theme.dart';

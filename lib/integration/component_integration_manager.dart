@@ -1,24 +1,24 @@
-/**
- * Component Integration Manager
- *
- * Central hub that connects all UI components with audio/visual systems,
- * manages parameter routing, animation layer integration, haptic feedback,
- * and coordinates state across the entire application.
- *
- * Features:
- * - Component registration and lifecycle management
- * - Audio → Visual parameter routing
- * - Visual → Audio parameter routing
- * - Animation layer coordination
- * - Haptic feedback integration
- * - Performance monitoring
- * - Event broadcasting
- * - State synchronization
- *
- * This is the "nervous system" of the application.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Component Integration Manager
+///
+/// Central hub that connects all UI components with audio/visual systems,
+/// manages parameter routing, animation layer integration, haptic feedback,
+/// and coordinates state across the entire application.
+///
+/// Features:
+/// - Component registration and lifecycle management
+/// - Audio → Visual parameter routing
+/// - Visual → Audio parameter routing
+/// - Animation layer coordination
+/// - Haptic feedback integration
+/// - Performance monitoring
+/// - Event broadcasting
+/// - State synchronization
+///
+/// This is the "nervous system" of the application.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -118,7 +118,8 @@ class ComponentIntegrationManager extends ChangeNotifier {
   DateTime _sessionStart = DateTime.now();
 
   // Event broadcasting
-  final StreamController<ComponentEvent> _eventController = StreamController.broadcast();
+  final StreamController<ComponentEvent> _eventController =
+      StreamController.broadcast();
   Stream<ComponentEvent> get events => _eventController.stream;
 
   // Configuration
@@ -507,7 +508,8 @@ class ComponentIntegrationManager extends ChangeNotifier {
 
     return {
       'sessionDuration': sessionDuration.inSeconds,
-      'totalInteractions': _interactionCounts.values.fold(0, (sum, count) => sum + count),
+      'totalInteractions':
+          _interactionCounts.values.fold(0, (sum, count) => sum + count),
       'componentCount': _components.length,
       'bindingCount': _bindings.length,
       'interactionBreakdown': Map.from(_interactionCounts),

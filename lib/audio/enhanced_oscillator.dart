@@ -1,15 +1,15 @@
-/**
- * Enhanced Oscillator with Anti-Aliasing
- *
- * Professional oscillator implementation with:
- * - PolyBLEP anti-aliasing for square and sawtooth
- * - Multiple waveform morphing
- * - Phase modulation (FM) support
- * - Pulse width modulation for square wave
- * - Sync and sub-oscillator support
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Enhanced Oscillator with Anti-Aliasing
+///
+/// Professional oscillator implementation with:
+/// - PolyBLEP anti-aliasing for square and sawtooth
+/// - Multiple waveform morphing
+/// - Phase modulation (FM) support
+/// - Pulse width modulation for square wave
+/// - Sync and sub-oscillator support
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'audio_enhancements.dart';
@@ -88,7 +88,8 @@ class EnhancedOscillator {
       subPhase += phaseIncrement * 0.5; // Half frequency
       if (subPhase >= 1.0) subPhase -= 1.0;
       final subSample = _generateWaveform(subPhase, phaseIncrement * 0.5);
-      sample = sample * (1.0 - subOscillatorLevel) + subSample * subOscillatorLevel;
+      sample =
+          sample * (1.0 - subOscillatorLevel) + subSample * subOscillatorLevel;
     }
 
     // Advance phase

@@ -1,18 +1,18 @@
-/**
- * Audio Visualizer Widget
- *
- * Real-time waveform and spectrum display with multiple visualization modes.
- * Provides immediate visual feedback for synthesis and audio reactivity.
- *
- * Features:
- * - Waveform display (time domain)
- * - Spectrum analyzer (frequency domain)
- * - Oscilloscope mode
- * - System-themed colors (Quantum/Faceted/Holographic)
- * - Smooth animations and transitions
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio Visualizer Widget
+///
+/// Real-time waveform and spectrum display with multiple visualization modes.
+/// Provides immediate visual feedback for synthesis and audio reactivity.
+///
+/// Features:
+/// - Waveform display (time domain)
+/// - Spectrum analyzer (frequency domain)
+/// - Oscilloscope mode
+/// - System-themed colors (Quantum/Faceted/Holographic)
+/// - Smooth animations and transitions
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -43,7 +43,8 @@ class AudioVisualizer extends StatefulWidget {
   State<AudioVisualizer> createState() => _AudioVisualizerState();
 }
 
-class _AudioVisualizerState extends State<AudioVisualizer> with SingleTickerProviderStateMixin {
+class _AudioVisualizerState extends State<AudioVisualizer>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
@@ -77,7 +78,8 @@ class _AudioVisualizerState extends State<AudioVisualizer> with SingleTickerProv
         color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _getSystemColor(visualProvider.currentSystemName).withOpacity(0.3),
+          color: _getSystemColor(visualProvider.currentSystemName)
+              .withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -96,7 +98,8 @@ class _AudioVisualizerState extends State<AudioVisualizer> with SingleTickerProv
               ),
             ),
             // Labels overlay
-            if (widget.showLabels) _buildLabels(features, visualProvider.currentSystemName),
+            if (widget.showLabels)
+              _buildLabels(features, visualProvider.currentSystemName),
           ],
         ),
       ),
@@ -240,13 +243,16 @@ class _VisualizerPainter extends CustomPainter {
       final x = (i / segments) * size.width;
 
       // Combine different frequency bands for synthetic waveform
-      final bassContribution =
-          features.bassEnergy * math.sin(i * 0.5 + animationValue * math.pi * 2);
-      final midContribution = features.midEnergy * math.sin(i * 1.5 + animationValue * math.pi * 4);
-      final highContribution =
-          features.highEnergy * math.sin(i * 3.0 + animationValue * math.pi * 8);
+      final bassContribution = features.bassEnergy *
+          math.sin(i * 0.5 + animationValue * math.pi * 2);
+      final midContribution =
+          features.midEnergy * math.sin(i * 1.5 + animationValue * math.pi * 4);
+      final highContribution = features.highEnergy *
+          math.sin(i * 3.0 + animationValue * math.pi * 8);
 
-      final amplitude = (bassContribution + midContribution * 0.5 + highContribution * 0.3) / 1.8;
+      final amplitude =
+          (bassContribution + midContribution * 0.5 + highContribution * 0.3) /
+              1.8;
       final y = size.height / 2 + amplitude * (size.height / 2 - 20);
 
       if (i == 0) {
@@ -288,7 +294,8 @@ class _VisualizerPainter extends CustomPainter {
       }
 
       // Add some variation
-      final variation = math.sin(i * 0.5 + animationValue * math.pi * 2) * 0.2 + 1.0;
+      final variation =
+          math.sin(i * 0.5 + animationValue * math.pi * 2) * 0.2 + 1.0;
       barValue *= variation;
       barValue = barValue.clamp(0.0, 1.0);
 
@@ -308,8 +315,8 @@ class _VisualizerPainter extends CustomPainter {
             barColor.withOpacity(0.8),
             systemColor.withOpacity(0.6),
           ],
-        ).createShader(
-            Rect.fromLTWH(x, size.height - barHeight, barWidth - spacing * 2, barHeight));
+        ).createShader(Rect.fromLTWH(
+            x, size.height - barHeight, barWidth - spacing * 2, barHeight));
 
       final barRect = RRect.fromRectAndRadius(
         Rect.fromLTWH(
@@ -363,12 +370,14 @@ class _VisualizerPainter extends CustomPainter {
       final t = (i / segments) * math.pi * 2;
 
       // X: Bass + Mid modulation
-      final xPhase = features.bassEnergy * math.sin(t * 2 + animationValue * math.pi * 2);
+      final xPhase =
+          features.bassEnergy * math.sin(t * 2 + animationValue * math.pi * 2);
       final x = size.width / 2 + xPhase * (size.width / 2 - 20);
 
       // Y: Mid + High modulation
-      final yPhase = features.midEnergy * math.sin(t * 3 + animationValue * math.pi * 3) +
-          features.highEnergy * math.cos(t * 5);
+      final yPhase =
+          features.midEnergy * math.sin(t * 3 + animationValue * math.pi * 3) +
+              features.highEnergy * math.cos(t * 5);
       final y = size.height / 2 + yPhase * (size.height / 2 - 20);
 
       if (i == 0) {
@@ -402,6 +411,7 @@ class _VisualizerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_VisualizerPainter oldDelegate) {
-    return oldDelegate.animationValue != animationValue || oldDelegate.features.rms != features.rms;
+    return oldDelegate.animationValue != animationValue ||
+        oldDelegate.features.rms != features.rms;
   }
 }

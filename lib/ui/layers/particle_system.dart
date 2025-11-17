@@ -1,20 +1,20 @@
-/**
- * Particle System
- *
- * Audio-reactive particle effects for touch interactions and
- * musical events. Particles spawn on note triggers, respond to
- * audio features, and create dynamic visual feedback.
- *
- * Features:
- * - Object pooling (efficient memory management)
- * - Audio-reactive size/color/movement
- * - Multiple particle types (note, burst, ambient)
- * - Batch rendering for performance
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Particle System
+///
+/// Audio-reactive particle effects for touch interactions and
+/// musical events. Particles spawn on note triggers, respond to
+/// audio features, and create dynamic visual feedback.
+///
+/// Features:
+/// - Object pooling (efficient memory management)
+/// - Audio-reactive size/color/movement
+/// - Multiple particle types (note, burst, ambient)
+/// - Batch rendering for performance
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'dart:ui';
@@ -151,7 +151,8 @@ class Particle {
       size *= pulse;
 
       // Hue shift with dominant frequency
-      final hueShift = DesignTokens.dominantFreqToHueShift(audioFeatures.dominantFreq);
+      final hueShift =
+          DesignTokens.dominantFreqToHueShift(audioFeatures.dominantFreq);
       color = DesignTokens.adjustHue(color, hueShift * dt * 60);
     }
   }

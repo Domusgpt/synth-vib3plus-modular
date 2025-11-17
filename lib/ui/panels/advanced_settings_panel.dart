@@ -1,16 +1,16 @@
-/**
- * Advanced Settings Panel
- *
- * Comprehensive settings for:
- * - Audio engine configuration
- * - Performance optimization
- * - Haptic feedback
- * - MIDI settings
- * - Visual system optimization
- * - Parameter mapping configuration
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Advanced Settings Panel
+///
+/// Comprehensive settings for:
+/// - Audio engine configuration
+/// - Performance optimization
+/// - Haptic feedback
+/// - MIDI settings
+/// - Visual system optimization
+/// - Parameter mapping configuration
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -89,7 +89,9 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
                 : Colors.white.withOpacity(0.05),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isSelected ? SynthTheme.quantumCyan : Colors.white.withOpacity(0.1),
+              color: isSelected
+                  ? SynthTheme.quantumCyan
+                  : Colors.white.withOpacity(0.1),
               width: isSelected ? 2 : 1,
             ),
           ),

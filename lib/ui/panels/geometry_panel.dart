@@ -1,11 +1,11 @@
-/**
- * Geometry Panel
- *
- * Controls for 4D geometry selection, polytope core, rotation parameters,
- * and projection settings.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Geometry Panel
+///
+/// Controls for 4D geometry selection, polytope core, rotation parameters,
+/// and projection settings.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

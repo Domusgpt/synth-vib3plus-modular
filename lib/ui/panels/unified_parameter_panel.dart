@@ -1,17 +1,17 @@
-/**
- * Unified Parameter Panel - Audio-Visual Parity
- *
- * Each control affects BOTH sound and visuals simultaneously.
- * Visual reactivity is always on - parameters naturally emerge
- * from the hybrid control philosophy.
- *
- * Every slider shows:
- * - 🎵 Sonic effect (what it does to sound)
- * - 🎨 Visual effect (what it does to visualization)
- * - Base value (user control) ± Audio modulation (automatic)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Unified Parameter Panel - Audio-Visual Parity
+///
+/// Each control affects BOTH sound and visuals simultaneously.
+/// Visual reactivity is always on - parameters naturally emerge
+/// from the hybrid control philosophy.
+///
+/// Every slider shows:
+/// - 🎵 Sonic effect (what it does to sound)
+/// - 🎨 Visual effect (what it does to visualization)
+/// - Base value (user control) ± Audio modulation (automatic)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -276,7 +276,8 @@ class UnifiedParameterPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoText(String sonicText, String visualText, SystemColors colors) {
+  Widget _buildInfoText(
+      String sonicText, String visualText, SystemColors colors) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: SynthTheme.spacingSmall),
       child: Column(
@@ -324,12 +325,15 @@ class UnifiedParameterPanel extends StatelessWidget {
           const SizedBox(height: SynthTheme.spacingSmall),
           _buildReactivityItem('Bass Energy → XY Rotation', colors),
           _buildReactivityItem('Mid Energy → XZ Rotation', colors),
-          _buildReactivityItem('High Energy → YZ Rotation + Vertex Brightness', colors),
-          _buildReactivityItem('RMS Amplitude → Rotation Speed + Scale', colors),
+          _buildReactivityItem(
+              'High Energy → YZ Rotation + Vertex Brightness', colors),
+          _buildReactivityItem(
+              'RMS Amplitude → Rotation Speed + Scale', colors),
           _buildReactivityItem('Spectral Centroid → Hue Shift + Glow', colors),
           _buildReactivityItem('Spectral Flux → Morph Modulation', colors),
           _buildReactivityItem('Noise Content → Chaos Modulation', colors),
-          _buildReactivityItem('Transients → 4D Rotation + Particle Density', colors),
+          _buildReactivityItem(
+              'Transients → 4D Rotation + Particle Density', colors),
           _buildReactivityItem('Polyphony → Tessellation Density', colors),
           const SizedBox(height: SynthTheme.spacingSmall),
           Text(

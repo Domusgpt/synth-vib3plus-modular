@@ -1,11 +1,11 @@
-/**
- * Native Flutter VIB34D Quantum Holographic Visualizer
- *
- * Pure Dart/Flutter implementation using CustomPainter
- * No WebView, no JavaScript - just native Canvas rendering
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Native Flutter VIB34D Quantum Holographic Visualizer
+///
+/// Pure Dart/Flutter implementation using CustomPainter
+/// No WebView, no JavaScript - just native Canvas rendering
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -48,7 +48,8 @@ class NativeVIB34DPainter extends CustomPainter {
   }
 
   /// Layer 1: Background geometric structure
-  void _drawBackgroundLayer(Canvas canvas, double cx, double cy, double radius) {
+  void _drawBackgroundLayer(
+      Canvas canvas, double cx, double cy, double radius) {
     final paint = Paint()
       ..color = Colors.cyan.withOpacity(0.1 + bass * 0.1)
       ..style = PaintingStyle.stroke

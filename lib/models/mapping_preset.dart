@@ -1,11 +1,11 @@
-/**
- * Mapping Preset Model
- *
- * Defines a complete bidirectional parameter mapping configuration
- * that can be saved, loaded, and shared.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Mapping Preset Model
+///
+/// Defines a complete bidirectional parameter mapping configuration
+/// that can be saved, loaded, and shared.
+///
+/// A Paul Phillips Manifestation
+////
 
 import '../mapping/audio_to_visual.dart';
 
@@ -100,7 +100,8 @@ class MappingPreset {
   factory MappingPreset.bassHeavy() {
     return MappingPreset(
       name: 'Bass Heavy',
-      description: 'Emphasizes low-frequency reactivity with aggressive rotation',
+      description:
+          'Emphasizes low-frequency reactivity with aggressive rotation',
       audioReactiveEnabled: true,
       visualReactiveEnabled: false,
       audioToVisualMappings: {
@@ -185,9 +186,12 @@ class MappingPreset {
       name: name ?? this.name,
       description: description ?? this.description,
       audioReactiveEnabled: audioReactiveEnabled ?? this.audioReactiveEnabled,
-      visualReactiveEnabled: visualReactiveEnabled ?? this.visualReactiveEnabled,
-      audioToVisualMappings: audioToVisualMappings ?? this.audioToVisualMappings,
-      visualToAudioMappings: visualToAudioMappings ?? this.visualToAudioMappings,
+      visualReactiveEnabled:
+          visualReactiveEnabled ?? this.visualReactiveEnabled,
+      audioToVisualMappings:
+          audioToVisualMappings ?? this.audioToVisualMappings,
+      visualToAudioMappings:
+          visualToAudioMappings ?? this.visualToAudioMappings,
     );
   }
 
@@ -198,10 +202,10 @@ class MappingPreset {
       'description': description,
       'audioReactiveEnabled': audioReactiveEnabled,
       'visualReactiveEnabled': visualReactiveEnabled,
-      'audioToVisualMappings':
-          audioToVisualMappings.map((key, mapping) => MapEntry(key, _mappingToJson(mapping))),
-      'visualToAudioMappings':
-          visualToAudioMappings.map((key, mapping) => MapEntry(key, _mappingToJson(mapping))),
+      'audioToVisualMappings': audioToVisualMappings
+          .map((key, mapping) => MapEntry(key, _mappingToJson(mapping))),
+      'visualToAudioMappings': visualToAudioMappings
+          .map((key, mapping) => MapEntry(key, _mappingToJson(mapping))),
     };
   }
 
@@ -212,10 +216,12 @@ class MappingPreset {
       description: json['description'] as String,
       audioReactiveEnabled: json['audioReactiveEnabled'] as bool,
       visualReactiveEnabled: json['visualReactiveEnabled'] as bool,
-      audioToVisualMappings: (json['audioToVisualMappings'] as Map<String, dynamic>)
-          .map((key, value) => MapEntry(key, _mappingFromJson(value))),
-      visualToAudioMappings: (json['visualToAudioMappings'] as Map<String, dynamic>)
-          .map((key, value) => MapEntry(key, _mappingFromJson(value))),
+      audioToVisualMappings:
+          (json['audioToVisualMappings'] as Map<String, dynamic>)
+              .map((key, value) => MapEntry(key, _mappingFromJson(value))),
+      visualToAudioMappings:
+          (json['visualToAudioMappings'] as Map<String, dynamic>)
+              .map((key, value) => MapEntry(key, _mappingFromJson(value))),
     );
   }
 

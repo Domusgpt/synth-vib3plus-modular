@@ -1,23 +1,23 @@
-/**
- * Synthesis Branch Manager - Musically Tuned Edition
- *
- * Routes geometry selection to appropriate synthesis branch based on polytope core:
- * - Base Core (0-7) → Direct Synthesis
- * - Hypersphere Core (8-15) → FM Synthesis
- * - Hypertetrahedron Core (16-23) → Ring Modulation
- *
- * Applies sound family characteristics from visual system:
- * - Quantum → Pure/Harmonic (sine-dominant, musical harmonics)
- * - Faceted → Geometric/Hybrid (rich harmonics, balanced spectrum)
- * - Holographic → Spectral/Rich (complex overtones, evolving timbre)
- *
- * Applies voice character from base geometry (0-7)
- *
- * **MUSICALLY TUNED**: All parameters optimized for musical intervals,
- * harmonic relationships, and pleasing timbres.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Synthesis Branch Manager - Musically Tuned Edition
+///
+/// Routes geometry selection to appropriate synthesis branch based on polytope core:
+/// - Base Core (0-7) → Direct Synthesis
+/// - Hypersphere Core (8-15) → FM Synthesis
+/// - Hypertetrahedron Core (16-23) → Ring Modulation
+///
+/// Applies sound family characteristics from visual system:
+/// - Quantum → Pure/Harmonic (sine-dominant, musical harmonics)
+/// - Faceted → Geometric/Hybrid (rich harmonics, balanced spectrum)
+/// - Holographic → Spectral/Rich (complex overtones, evolving timbre)
+///
+/// Applies voice character from base geometry (0-7)
+///
+/// **MUSICALLY TUNED**: All parameters optimized for musical intervals,
+/// harmonic relationships, and pleasing timbres.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -76,7 +76,16 @@ class SoundFamily {
     noiseLevel: 0.005, // Minimal noise
     reverbMix: 0.20, // Light reverb
     brightness: 0.7, // Bright but not harsh
-    harmonicAmplitudes: [1.0, 0.5, 0.33, 0.25, 0.20, 0.17, 0.14, 0.13], // Musical harmonics
+    harmonicAmplitudes: [
+      1.0,
+      0.5,
+      0.33,
+      0.25,
+      0.20,
+      0.17,
+      0.14,
+      0.13
+    ], // Musical harmonics
   );
 
   // Faceted system: Geometric hybrid - balanced for musical richness
@@ -87,7 +96,16 @@ class SoundFamily {
     noiseLevel: 0.01, // Very low noise
     reverbMix: 0.30, // Medium reverb
     brightness: 0.6, // Balanced spectrum
-    harmonicAmplitudes: [1.0, 0.7, 0.5, 0.35, 0.25, 0.18, 0.13, 0.10], // Rich but controlled
+    harmonicAmplitudes: [
+      1.0,
+      0.7,
+      0.5,
+      0.35,
+      0.25,
+      0.18,
+      0.13,
+      0.10
+    ], // Rich but controlled
   );
 
   // Holographic system: Spectral rich - complex but musical
@@ -98,7 +116,16 @@ class SoundFamily {
     noiseLevel: 0.02, // Low noise for clarity
     reverbMix: 0.45, // High reverb for depth
     brightness: 0.5, // Warm rich spectrum
-    harmonicAmplitudes: [1.0, 0.8, 0.6, 0.45, 0.35, 0.27, 0.21, 0.16], // Complex harmonics
+    harmonicAmplitudes: [
+      1.0,
+      0.8,
+      0.6,
+      0.45,
+      0.35,
+      0.27,
+      0.21,
+      0.16
+    ], // Complex harmonics
   );
 }
 
@@ -263,7 +290,7 @@ class SynthesisBranchManager {
     // Update voice character
     _currentVoiceCharacter = _getVoiceCharacter(_currentBaseGeometry);
 
-    print(
+    debugPrint(
         '🎵 Geometry $geometry: ${_currentCore.name} core, ${_currentBaseGeometry.name} geometry');
   }
 
@@ -272,7 +299,8 @@ class SynthesisBranchManager {
     _visualSystem = system;
     _currentSoundFamily = _getSoundFamily(system);
 
-    print('🎨 Visual system: ${system.name} → ${_currentSoundFamily.name}');
+    debugPrint(
+        '🎨 Visual system: ${system.name} → ${_currentSoundFamily.name}');
   }
 
   /// Note on (trigger envelope)
@@ -335,8 +363,10 @@ class SynthesisBranchManager {
 
   /// Calculate envelope level (musical ADSR)
   double _updateEnvelope() {
-    final attackSamples = (_currentVoiceCharacter.attackMs * sampleRate / 1000.0).round();
-    final releaseSamples = (_currentVoiceCharacter.releaseMs * sampleRate / 1000.0).round();
+    final attackSamples =
+        (_currentVoiceCharacter.attackMs * sampleRate / 1000.0).round();
+    final releaseSamples =
+        (_currentVoiceCharacter.releaseMs * sampleRate / 1000.0).round();
 
     if (_noteIsOn) {
       // Attack phase
@@ -359,7 +389,8 @@ class SynthesisBranchManager {
     final buffer = Float32List(frames);
 
     // Apply musical detuning from voice character (in cents)
-    final detuneRatio = math.pow(2.0, _currentVoiceCharacter.detuneCents / 1200.0);
+    final detuneRatio =
+        math.pow(2.0, _currentVoiceCharacter.detuneCents / 1200.0);
     final detunedFreq = frequency * detuneRatio;
     final phaseIncrement = detunedFreq / sampleRate * 2.0 * math.pi;
 
@@ -388,11 +419,16 @@ class SynthesisBranchManager {
 
       // Mix base waveforms for timbral character
       sample *= _currentSoundFamily.waveformMix[0]; // Sine component
-      sample += _currentSoundFamily.waveformMix[1] * _square(_phase1) * 0.3; // Square (quieter)
-      sample += _currentSoundFamily.waveformMix[2] * _triangle(_phase1) * 0.4; // Triangle
+      sample += _currentSoundFamily.waveformMix[1] *
+          _square(_phase1) *
+          0.3; // Square (quieter)
+      sample += _currentSoundFamily.waveformMix[2] *
+          _triangle(_phase1) *
+          0.4; // Triangle
 
       // Add minimal musical noise for warmth
-      sample += (_random.nextDouble() * 2.0 - 1.0) * _currentSoundFamily.noiseLevel;
+      sample +=
+          (_random.nextDouble() * 2.0 - 1.0) * _currentSoundFamily.noiseLevel;
 
       // Apply envelope
       sample *= envelope;
@@ -430,7 +466,9 @@ class SynthesisBranchManager {
       double sample = math.sin(_phase1 + modulator);
 
       // Add harmonics for richness
-      for (int h = 1; h < math.min(4, _currentVoiceCharacter.harmonicCount); h++) {
+      for (int h = 1;
+          h < math.min(4, _currentVoiceCharacter.harmonicCount);
+          h++) {
         final harmonicAmp = _currentSoundFamily.harmonicAmplitudes[h];
         sample += math.sin((_phase1 + modulator) * (h + 1)) * harmonicAmp * 0.5;
       }
@@ -469,7 +507,9 @@ class SynthesisBranchManager {
       double osc2 = 0.0;
 
       // Build oscillators with harmonics
-      for (int h = 0; h < math.min(3, _currentVoiceCharacter.harmonicCount); h++) {
+      for (int h = 0;
+          h < math.min(3, _currentVoiceCharacter.harmonicCount);
+          h++) {
         final amp = _currentSoundFamily.harmonicAmplitudes[h];
         osc1 += math.sin(_phase1 * (h + 1)) * amp;
         osc2 += math.sin(_phase2 * (h + 1)) * amp;

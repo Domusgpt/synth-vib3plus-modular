@@ -1,16 +1,16 @@
-/**
- * Top Bezel
- *
- * Slim status bar showing visual system selector, FPS counter,
- * geometry display, and settings access. Collapsible to maximize
- * screen real estate.
- *
- * Visual States:
- * - Collapsed: 44px height, essential info only
- * - Expanded: 120px height, detailed controls
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Top Bezel
+///
+/// Slim status bar showing visual system selector, FPS counter,
+/// geometry display, and settings access. Collapsible to maximize
+/// screen real estate.
+///
+/// Visual States:
+/// - Collapsed: 44px height, essential info only
+/// - Expanded: 120px height, detailed controls
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +32,8 @@ class TopBezel extends StatefulWidget {
   State<TopBezel> createState() => _TopBezelState();
 }
 
-class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin {
+class _TopBezelState extends State<TopBezel>
+    with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
   late AnimationController _animationController;
   late Animation<double> _heightAnimation;
@@ -107,7 +108,8 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
               // Expanded content (only when expanded)
               if (_isExpanded)
                 Expanded(
-                  child: _buildExpandedContent(uiState, visualProvider, audioProvider),
+                  child: _buildExpandedContent(
+                      uiState, visualProvider, audioProvider),
                 ),
             ],
           ),
@@ -125,7 +127,8 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
       onTap: _toggleExpanded,
       child: Container(
         height: SynthTheme.topBezelHeight,
-        padding: const EdgeInsets.symmetric(horizontal: SynthTheme.spacingMedium),
+        padding:
+            const EdgeInsets.symmetric(horizontal: SynthTheme.spacingMedium),
         child: Row(
           children: [
             // Visual system selector
@@ -181,20 +184,26 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
                 vertical: 6,
               ),
               decoration: BoxDecoration(
-                color: isActive ? systemColors.primary.withOpacity(0.3) : Colors.transparent,
+                color: isActive
+                    ? systemColors.primary.withOpacity(0.3)
+                    : Colors.transparent,
                 border: Border.all(
-                  color: isActive ? systemColors.primary : SynthTheme.borderSubtle,
+                  color:
+                      isActive ? systemColors.primary : SynthTheme.borderSubtle,
                   width: isActive ? 2 : 1,
                 ),
                 borderRadius: BorderRadius.circular(SynthTheme.radiusSmall),
                 boxShadow: isActive
-                    ? SynthTheme(systemColors: systemColors).getGlow(GlowIntensity.active)
+                    ? SynthTheme(systemColors: systemColors)
+                        .getGlow(GlowIntensity.active)
                     : null,
               ),
               child: Text(
                 system[0], // Single letter (Q, F, H)
                 style: SynthTheme.textStyleBody.copyWith(
-                  color: isActive ? systemColors.primary : SynthTheme.textSecondary,
+                  color: isActive
+                      ? systemColors.primary
+                      : SynthTheme.textSecondary,
                   fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
@@ -351,9 +360,12 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
           duration: SynthTheme.transitionQuick,
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: value ? widget.systemColors.primary.withOpacity(0.2) : SynthTheme.cardBackground,
+            color: value
+                ? widget.systemColors.primary.withOpacity(0.2)
+                : SynthTheme.cardBackground,
             border: Border.all(
-              color: value ? widget.systemColors.primary : SynthTheme.borderSubtle,
+              color:
+                  value ? widget.systemColors.primary : SynthTheme.borderSubtle,
               width: value ? 2 : 1,
             ),
             borderRadius: BorderRadius.circular(SynthTheme.radiusSmall),
@@ -363,14 +375,18 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
             children: [
               Icon(
                 icon,
-                color: value ? widget.systemColors.primary : SynthTheme.textSecondary,
+                color: value
+                    ? widget.systemColors.primary
+                    : SynthTheme.textSecondary,
                 size: 16,
               ),
               const SizedBox(width: 4),
               Text(
                 label,
                 style: SynthTheme.textStyleCaption.copyWith(
-                  color: value ? widget.systemColors.primary : SynthTheme.textSecondary,
+                  color: value
+                      ? widget.systemColors.primary
+                      : SynthTheme.textSecondary,
                   fontWeight: value ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
@@ -395,9 +411,11 @@ class _TopBezelState extends State<TopBezel> with SingleTickerProviderStateMixin
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem('Vertices', visualProvider.getActiveVertexCount().toString()),
+          _buildStatItem(
+              'Vertices', visualProvider.getActiveVertexCount().toString()),
           _buildStatItem('Voices', audioProvider.getVoiceCount().toString()),
-          _buildStatItem('Polyphony', audioProvider.activeNotes.length.toString() + '/8'),
+          _buildStatItem(
+              'Polyphony', audioProvider.activeNotes.length.toString() + '/8'),
         ],
       ),
     );

@@ -1,24 +1,24 @@
-/**
- * Modulation Matrix
- *
- * Visual modulation routing interface that shows all modulation sources,
- * targets, and their connections. Provides drag-and-drop routing,
- * strength adjustment, and visual feedback.
- *
- * Features:
- * - Drag-and-drop modulation routing
- * - Visual connection lines with flow animation
- * - Per-connection strength adjustment
- * - Source/target categorization
- * - Audio-reactive visualization
- * - Preset modulation templates
- * - Bi-directional modulation support
- * - Modulation depth meters
- *
- * Part of the Integration Layer (Phase 3.5)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Modulation Matrix
+///
+/// Visual modulation routing interface that shows all modulation sources,
+/// targets, and their connections. Provides drag-and-drop routing,
+/// strength adjustment, and visual feedback.
+///
+/// Features:
+/// - Drag-and-drop modulation routing
+/// - Visual connection lines with flow animation
+/// - Per-connection strength adjustment
+/// - Source/target categorization
+/// - Audio-reactive visualization
+/// - Preset modulation templates
+/// - Bi-directional modulation support
+/// - Modulation depth meters
+///
+/// Part of the Integration Layer (Phase 3.5)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -203,7 +203,8 @@ class ModulationMatrix extends StatefulWidget {
   State<ModulationMatrix> createState() => _ModulationMatrixState();
 }
 
-class _ModulationMatrixState extends State<ModulationMatrix> with SingleTickerProviderStateMixin {
+class _ModulationMatrixState extends State<ModulationMatrix>
+    with SingleTickerProviderStateMixin {
   // Drag state
   String? _draggedSourceId;
   Offset? _dragPosition;
@@ -298,13 +299,16 @@ class _ModulationMatrixState extends State<ModulationMatrix> with SingleTickerPr
   }
 
   void _updateConnectionStrength(String connectionId, double strength) {
-    final connection = widget.connections.firstWhere((c) => c.id == connectionId);
+    final connection =
+        widget.connections.firstWhere((c) => c.id == connectionId);
     widget.onConnectionModified?.call(connection.copyWith(strength: strength));
   }
 
   void _toggleConnectionBipolar(String connectionId) {
-    final connection = widget.connections.firstWhere((c) => c.id == connectionId);
-    widget.onConnectionModified?.call(connection.copyWith(bipolar: !connection.bipolar));
+    final connection =
+        widget.connections.firstWhere((c) => c.id == connectionId);
+    widget.onConnectionModified
+        ?.call(connection.copyWith(bipolar: !connection.bipolar));
   }
 
   // ============================================================================
@@ -415,7 +419,8 @@ class _ModulationMatrixState extends State<ModulationMatrix> with SingleTickerPr
 
   Widget _buildSourceItem(ModulationSource source) {
     final isDragging = _draggedSourceId == source.id;
-    final connectionCount = widget.connections.where((c) => c.sourceId == source.id).length;
+    final connectionCount =
+        widget.connections.where((c) => c.sourceId == source.id).length;
 
     return GestureDetector(
       onPanStart: (details) {
@@ -431,7 +436,9 @@ class _ModulationMatrixState extends State<ModulationMatrix> with SingleTickerPr
         margin: const EdgeInsets.only(bottom: DesignTokens.spacing2),
         padding: const EdgeInsets.all(DesignTokens.spacing2),
         decoration: BoxDecoration(
-          color: isDragging ? source.color.withOpacity(0.3) : Colors.white.withOpacity(0.05),
+          color: isDragging
+              ? source.color.withOpacity(0.3)
+              : Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           border: Border.all(
             color: isDragging ? source.color : source.color.withOpacity(0.3),
@@ -535,7 +542,8 @@ class _ModulationMatrixState extends State<ModulationMatrix> with SingleTickerPr
 
   Widget _buildTargetItem(ModulationTarget target) {
     final isHovered = _hoveredTargetId == target.id;
-    final connectionCount = widget.connections.where((c) => c.targetId == target.id).length;
+    final connectionCount =
+        widget.connections.where((c) => c.targetId == target.id).length;
 
     return MouseRegion(
       onEnter: (_) => _handleTargetHover(target.id),
@@ -549,7 +557,9 @@ class _ModulationMatrixState extends State<ModulationMatrix> with SingleTickerPr
               : Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           border: Border.all(
-            color: isHovered ? DesignTokens.stateActive : target.color.withOpacity(0.3),
+            color: isHovered
+                ? DesignTokens.stateActive
+                : target.color.withOpacity(0.3),
             width: isHovered ? 2 : 1,
           ),
         ),
@@ -625,8 +635,10 @@ class _ModulationMatrixState extends State<ModulationMatrix> with SingleTickerPr
     final connection = widget.connections.firstWhere(
       (c) => c.id == _selectedConnectionId,
     );
-    final source = widget.sources.firstWhere((s) => s.id == connection.sourceId);
-    final target = widget.targets.firstWhere((t) => t.id == connection.targetId);
+    final source =
+        widget.sources.firstWhere((s) => s.id == connection.sourceId);
+    final target =
+        widget.targets.firstWhere((t) => t.id == connection.targetId);
 
     return Container(
       padding: const EdgeInsets.all(DesignTokens.spacing3),
@@ -811,7 +823,8 @@ class _ConnectionPainter extends CustomPainter {
 
       final metrics = path.computeMetrics().first;
       final flowPosition = (animationValue + sourceIndex * 0.1) % 1.0;
-      final tangent = metrics.getTangentForOffset(metrics.length * flowPosition);
+      final tangent =
+          metrics.getTangentForOffset(metrics.length * flowPosition);
 
       if (tangent != null) {
         canvas.drawCircle(tangent.position, 3, flowPaint);

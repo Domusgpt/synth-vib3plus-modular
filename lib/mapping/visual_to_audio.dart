@@ -1,17 +1,17 @@
-/**
- * Visual → Audio Modulation System
- *
- * Maps visual parameter state to audio synthesis parameters:
- * - 4D Rotation XW Plane → Oscillator 1 Frequency (±2 semitones)
- * - 4D Rotation YW Plane → Oscillator 2 Frequency (±2 semitones)
- * - 4D Rotation ZW Plane → Filter Cutoff Frequency (±40%)
- * - Polytope Vertex Count → Voice Count
- * - Geometry Morph Parameter → Wavetable Position
- * - Projection Distance → Reverb Wet/Dry Mix
- * - Holographic Layer Depth → Delay Time
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Visual → Audio Modulation System
+///
+/// Maps visual parameter state to audio synthesis parameters:
+/// - 4D Rotation XW Plane → Oscillator 1 Frequency (±2 semitones)
+/// - 4D Rotation YW Plane → Oscillator 2 Frequency (±2 semitones)
+/// - 4D Rotation ZW Plane → Filter Cutoff Frequency (±40%)
+/// - Polytope Vertex Count → Voice Count
+/// - Geometry Morph Parameter → Wavetable Position
+/// - Projection Distance → Reverb Wet/Dry Mix
+/// - Holographic Layer Depth → Delay Time
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/foundation.dart';
 import 'dart:math' as math;

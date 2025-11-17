@@ -1,17 +1,17 @@
-/**
- * Modulation Indicator Widget
- *
- * Real-time visual feedback for parameter modulation showing active
- * audio-visual coupling with animated meters and value displays.
- *
- * Displays:
- * - Audio → Visual modulations (5 mappings)
- * - Visual → Audio modulations (6 mappings)
- * - Modulation depth with color-coded meters
- * - Current values and ranges
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Modulation Indicator Widget
+///
+/// Real-time visual feedback for parameter modulation showing active
+/// audio-visual coupling with animated meters and value displays.
+///
+/// Displays:
+/// - Audio → Visual modulations (5 mappings)
+/// - Visual → Audio modulations (6 mappings)
+/// - Modulation depth with color-coded meters
+/// - Current values and ranges
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -118,7 +118,8 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
               height: 8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.green.withOpacity(0.5 + _pulseController.value * 0.5),
+                color: Colors.green
+                    .withOpacity(0.5 + _pulseController.value * 0.5),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.green.withOpacity(0.5),

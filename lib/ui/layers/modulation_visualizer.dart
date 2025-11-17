@@ -1,21 +1,21 @@
-/**
- * Modulation Visualizer
- *
- * Visual representation of active parameter modulations.
- * Shows animated connection lines between source and target
- * parameters with strength indicators and color coding.
- *
- * Features:
- * - Curved bezier connection lines
- * - Animated particle flow along paths
- * - Color-coded by source type (audio/visual/LFO)
- * - Strength-based thickness and opacity
- * - Audio-reactive pulsing
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Modulation Visualizer
+///
+/// Visual representation of active parameter modulations.
+/// Shows animated connection lines between source and target
+/// parameters with strength indicators and color coding.
+///
+/// Features:
+/// - Curved bezier connection lines
+/// - Animated particle flow along paths
+/// - Color-coded by source type (audio/visual/LFO)
+/// - Strength-based thickness and opacity
+/// - Audio-reactive pulsing
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'dart:ui';
@@ -122,8 +122,12 @@ class ModulationConnection {
   Offset evaluateCurve(double t) {
     final t1 = 1.0 - t;
     return Offset(
-      t1 * t1 * source.position.dx + 2 * t1 * t * controlPoint.dx + t * t * target.position.dx,
-      t1 * t1 * source.position.dy + 2 * t1 * t * controlPoint.dy + t * t * target.position.dy,
+      t1 * t1 * source.position.dx +
+          2 * t1 * t * controlPoint.dx +
+          t * t * target.position.dx,
+      t1 * t1 * source.position.dy +
+          2 * t1 * t * controlPoint.dy +
+          t * t * target.position.dy,
     );
   }
 }
@@ -154,15 +158,17 @@ class ModulationVisualizer {
   /// Add modulation connection
   void addConnection(ModulationConnection connection) {
     // Remove existing connection with same source/target
-    connections.removeWhere(
-        (c) => c.source.id == connection.source.id && c.target.id == connection.target.id);
+    connections.removeWhere((c) =>
+        c.source.id == connection.source.id &&
+        c.target.id == connection.target.id);
 
     connections.add(connection);
   }
 
   /// Remove connection
   void removeConnection(String sourceId, String targetId) {
-    connections.removeWhere((c) => c.source.id == sourceId && c.target.id == targetId);
+    connections
+        .removeWhere((c) => c.source.id == sourceId && c.target.id == targetId);
   }
 
   /// Update connection strength
@@ -260,7 +266,8 @@ class ModulationVisualizer {
   }
 
   /// Create gradient shader for connection
-  Shader _createConnectionGradient(ModulationConnection connection, double pulse) {
+  Shader _createConnectionGradient(
+      ModulationConnection connection, double pulse) {
     final sourceColor = connection.source.color;
     final targetColor = DesignTokens.stateActive;
 
@@ -343,7 +350,8 @@ class ModulationVisualizer {
 
     // Offset label from connection point
     final offset = isSource
-        ? Offset(position.dx - textPainter.width - 8, position.dy - textPainter.height / 2)
+        ? Offset(position.dx - textPainter.width - 8,
+            position.dy - textPainter.height / 2)
         : Offset(position.dx + 8, position.dy - textPainter.height / 2);
 
     // Draw background
@@ -368,7 +376,8 @@ class ModulationVisualizer {
   }
 
   /// Paint strength indicator
-  void _paintStrengthIndicator(Canvas canvas, Offset position, double strength) {
+  void _paintStrengthIndicator(
+      Canvas canvas, Offset position, double strength) {
     final size = 16.0;
     final rect = Rect.fromCenter(
       center: position,

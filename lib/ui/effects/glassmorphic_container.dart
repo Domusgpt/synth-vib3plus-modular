@@ -1,21 +1,21 @@
-/**
- * Glassmorphic Container
- *
- * Provides frosted glass effect with backdrop blur, transparency,
- * and audio-reactive modulation. Core visual component for the
- * holographic interface design system.
- *
- * Features:
- * - Backdrop blur (configurable intensity)
- * - Semi-transparent background
- * - Border with glow effects
- * - Audio-reactive blur/opacity/glow
- * - Holographic gradient option
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Glassmorphic Container
+///
+/// Provides frosted glass effect with backdrop blur, transparency,
+/// and audio-reactive modulation. Core visual component for the
+/// holographic interface design system.
+///
+/// Features:
+/// - Backdrop blur (configurable intensity)
+/// - Semi-transparent background
+/// - Border with glow effects
+/// - Audio-reactive blur/opacity/glow
+/// - Holographic gradient option
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -90,21 +90,24 @@ class GlassmorphicContainer extends StatelessWidget {
         : effectiveConfig.borderWidth;
 
     // Generate holographic gradient if enabled
-    final backgroundDecoration = enableHolographicGradient && audioFeatures != null
-        ? BoxDecoration(
-            gradient: DesignTokens.holographicGradient(
-              audioIntensity: audioFeatures!.rms,
-            ),
-            borderRadius: borderRadius ?? BorderRadius.circular(DesignTokens.radiusMedium),
-          )
-        : null;
+    final backgroundDecoration =
+        enableHolographicGradient && audioFeatures != null
+            ? BoxDecoration(
+                gradient: DesignTokens.holographicGradient(
+                  audioIntensity: audioFeatures!.rms,
+                ),
+                borderRadius: borderRadius ??
+                    BorderRadius.circular(DesignTokens.radiusMedium),
+              )
+            : null;
 
     return Container(
       width: width,
       height: height,
       margin: margin,
       child: ClipRRect(
-        borderRadius: borderRadius ?? BorderRadius.circular(DesignTokens.radiusMedium),
+        borderRadius:
+            borderRadius ?? BorderRadius.circular(DesignTokens.radiusMedium),
         child: BackdropFilter(
           filter: ImageFilter.blur(
             sigmaX: effectiveConfig.blurRadius,
@@ -113,8 +116,10 @@ class GlassmorphicContainer extends StatelessWidget {
           child: Container(
             padding: padding,
             decoration: BoxDecoration(
-              color: effectiveConfig.backgroundColor.withOpacity(effectiveConfig.opacity),
-              borderRadius: borderRadius ?? BorderRadius.circular(DesignTokens.radiusMedium),
+              color: effectiveConfig.backgroundColor
+                  .withOpacity(effectiveConfig.opacity),
+              borderRadius: borderRadius ??
+                  BorderRadius.circular(DesignTokens.radiusMedium),
               border: Border.all(
                 color: effectiveConfig.borderColor,
                 width: borderWidth,
@@ -334,8 +339,9 @@ class _GlassmorphicButtonState extends State<GlassmorphicButton> {
             : Colors.white.withOpacity(0.2);
 
     // Glow effect when active
-    final shadows =
-        widget.isActive && !isDisabled ? [DesignTokens.glowMedium(effectiveColor)] : <BoxShadow>[];
+    final shadows = widget.isActive && !isDisabled
+        ? [DesignTokens.glowMedium(effectiveColor)]
+        : <BoxShadow>[];
 
     return GestureDetector(
       onTapDown: isDisabled ? null : (_) => setState(() => _isPressed = true),

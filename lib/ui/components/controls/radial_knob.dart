@@ -1,23 +1,23 @@
-/**
- * Radial Knob
- *
- * Circular parameter control with arc visualization, value display,
- * and audio-reactive visuals.
- *
- * Features:
- * - Circular arc value indicator
- * - Drag to rotate control
- * - Value display at center
- * - Modulation indicator ring
- * - Fine control mode (vertical drag)
- * - Double-tap to reset
- * - Audio-reactive glow
- * - Tick marks for reference
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Radial Knob
+///
+/// Circular parameter control with arc visualization, value display,
+/// and audio-reactive visuals.
+///
+/// Features:
+/// - Circular arc value indicator
+/// - Drag to rotate control
+/// - Value display at center
+/// - Modulation indicator ring
+/// - Fine control mode (vertical drag)
+/// - Double-tap to reset
+/// - Audio-reactive glow
+/// - Tick marks for reference
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -145,7 +145,8 @@ class _RadialKnobState extends State<RadialKnob> {
 
       // Fine vertical control (10x precision)
       final sensitivity = -1.0 / (widget.config.size * 10);
-      final newValue = (_valueAtDragStart! + (delta.dy * sensitivity)).clamp(0.0, 1.0);
+      final newValue =
+          (_valueAtDragStart! + (delta.dy * sensitivity)).clamp(0.0, 1.0);
       widget.onChanged?.call(newValue);
     } else {
       // Normal circular drag
@@ -156,7 +157,8 @@ class _RadialKnobState extends State<RadialKnob> {
       }
 
       final sensitivity = 1.0 / widget.config.size;
-      final newValue = (_valueAtDragStart! + (delta.dx * sensitivity)).clamp(0.0, 1.0);
+      final newValue =
+          (_valueAtDragStart! + (delta.dx * sensitivity)).clamp(0.0, 1.0);
       widget.onChanged?.call(newValue);
     }
   }
@@ -350,7 +352,8 @@ class _KnobPainter extends CustomPainter {
   }
 
   void _drawModulation(Canvas canvas, Offset center, double radius) {
-    final currentAngle = config.minAngle + (config.maxAngle - config.minAngle) * value;
+    final currentAngle =
+        config.minAngle + (config.maxAngle - config.minAngle) * value;
     final modRange = (config.maxAngle - config.minAngle) * modulationAmount / 2;
 
     final modPaint = Paint()

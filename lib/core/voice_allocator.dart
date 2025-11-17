@@ -1,16 +1,16 @@
-/**
- * Voice Allocator - Intelligent Polyphony Management
- *
- * Professional voice allocation system with:
- * - Velocity-based voice stealing (steal quieter notes first)
- * - Age-based secondary stealing (steal oldest among equal velocity)
- * - Dual indexing for O(1) lookups
- * - Configurable polyphony (1-64 voices)
- * - Proper MIDI note tracking
- *
- * Adopted from synther-refactored architecture
- * A Paul Phillips Manifestation
- */
+///
+/// Voice Allocator - Intelligent Polyphony Management
+///
+/// Professional voice allocation system with:
+/// - Velocity-based voice stealing (steal quieter notes first)
+/// - Age-based secondary stealing (steal oldest among equal velocity)
+/// - Dual indexing for O(1) lookups
+/// - Configurable polyphony (1-64 voices)
+/// - Proper MIDI note tracking
+///
+/// Adopted from synther-refactored architecture
+/// A Paul Phillips Manifestation
+////
 
 /// Voice state for polyphony management
 class VoiceState {
@@ -152,7 +152,8 @@ class VoiceAllocator {
     for (final voiceId in voiceIds) {
       final voice = _voicesById[voiceId];
       if (voice != null && !voice.released) {
-        if (mostRecent == null || voice.startedAt.isAfter(mostRecent.startedAt)) {
+        if (mostRecent == null ||
+            voice.startedAt.isAfter(mostRecent.startedAt)) {
           mostRecent = voice;
         }
       }
@@ -193,7 +194,10 @@ class VoiceAllocator {
   List<VoiceState> getVoicesForNote(int note) {
     final voiceIds = _voicesByNote[note];
     if (voiceIds == null) return [];
-    return voiceIds.map((id) => _voicesById[id]).whereType<VoiceState>().toList();
+    return voiceIds
+        .map((id) => _voicesById[id])
+        .whereType<VoiceState>()
+        .toList();
   }
 
   /// Get active voice count

@@ -1,20 +1,20 @@
-/**
- * Synth Main Screen
- *
- * Master UI scaffold that assembles all components:
- * - Top bezel (system selector, stats)
- * - XY performance pad (with VIB3+ visualization background)
- * - Orb controller (floating pitch modulation)
- * - Bottom bezel (collapsible panels)
- *
- * Layout Philosophy:
- * - Visualization-first: 75-90% screen real estate for visuals
- * - Collapsible everything: Maximize visual space when not needed
- * - Multi-touch optimized: Up to 8 simultaneous touch points
- * - Responsive: Adapts to portrait/landscape/tablet
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Synth Main Screen
+///
+/// Master UI scaffold that assembles all components:
+/// - Top bezel (system selector, stats)
+/// - XY performance pad (with VIB3+ visualization background)
+/// - Orb controller (floating pitch modulation)
+/// - Bottom bezel (collapsible panels)
+///
+/// Layout Philosophy:
+/// - Visualization-first: 75-90% screen real estate for visuals
+/// - Collapsible everything: Maximize visual space when not needed
+/// - Multi-touch optimized: Up to 8 simultaneous touch points
+/// - Responsive: Adapts to portrait/landscape/tablet
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -110,7 +110,8 @@ class _SynthMainContentState extends State<_SynthMainContent> {
               showGrid: uiState.xyPadShowGrid,
               backgroundVisualization: VIB34DWidget(
                 visualProvider: visualProvider,
-                audioProvider: Provider.of<AudioProvider>(context, listen: false),
+                audioProvider:
+                    Provider.of<AudioProvider>(context, listen: false),
               ),
             ),
           ),
@@ -200,12 +201,14 @@ class _SynthMainContentState extends State<_SynthMainContent> {
             _buildThumbPad('Octave -', systemColors, () {
               final current = uiState.pitchRangeStart;
               uiState.setPitchRangeStart((current - 12).clamp(0, 127));
-              uiState.setPitchRangeEnd((uiState.pitchRangeEnd - 12).clamp(0, 127));
+              uiState
+                  .setPitchRangeEnd((uiState.pitchRangeEnd - 12).clamp(0, 127));
             }),
             _buildThumbPad('Octave +', systemColors, () {
               final current = uiState.pitchRangeStart;
               uiState.setPitchRangeStart((current + 12).clamp(0, 127));
-              uiState.setPitchRangeEnd((uiState.pitchRangeEnd + 12).clamp(0, 127));
+              uiState
+                  .setPitchRangeEnd((uiState.pitchRangeEnd + 12).clamp(0, 127));
             }),
           ],
         ),
@@ -235,11 +238,13 @@ class _SynthMainContentState extends State<_SynthMainContent> {
           children: [
             _buildThumbPad('Filter+', systemColors, () {
               final current = audioProvider.filterCutoff;
-              audioProvider.setFilterCutoff((current * 1.2).clamp(20.0, 20000.0));
+              audioProvider
+                  .setFilterCutoff((current * 1.2).clamp(20.0, 20000.0));
             }),
             _buildThumbPad('Filter-', systemColors, () {
               final current = audioProvider.filterCutoff;
-              audioProvider.setFilterCutoff((current / 1.2).clamp(20.0, 20000.0));
+              audioProvider
+                  .setFilterCutoff((current / 1.2).clamp(20.0, 20000.0));
             }),
           ],
         ),
@@ -247,7 +252,8 @@ class _SynthMainContentState extends State<_SynthMainContent> {
     );
   }
 
-  Widget _buildThumbPad(String label, SystemColors systemColors, VoidCallback onPressed) {
+  Widget _buildThumbPad(
+      String label, SystemColors systemColors, VoidCallback onPressed) {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
@@ -257,7 +263,8 @@ class _SynthMainContentState extends State<_SynthMainContent> {
           color: SynthTheme.cardBackground,
           borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
           border: Border.all(color: systemColors.primary.withOpacity(0.5)),
-          boxShadow: SynthTheme(systemColors: systemColors).getGlow(GlowIntensity.inactive),
+          boxShadow: SynthTheme(systemColors: systemColors)
+              .getGlow(GlowIntensity.inactive),
         ),
         child: Center(
           child: Text(

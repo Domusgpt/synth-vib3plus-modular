@@ -1,20 +1,20 @@
-/**
- * Reactive Component Base
- *
- * Abstract base class for all audio-reactive UI components.
- * Provides unified state management, visual feedback, and
- * audio-driven modulation capabilities.
- *
- * All components inherit from this to ensure consistent:
- * - Interaction states (idle, hover, pressed, dragging)
- * - Functional states (active, inactive, disabled, loading)
- * - Audio reactivity (real-time visual modulation)
- * - Visual encoding (color, glow, border, animation)
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Reactive Component Base
+///
+/// Abstract base class for all audio-reactive UI components.
+/// Provides unified state management, visual feedback, and
+/// audio-driven modulation capabilities.
+///
+/// All components inherit from this to ensure consistent:
+/// - Interaction states (idle, hover, pressed, dragging)
+/// - Functional states (active, inactive, disabled, loading)
+/// - Audio reactivity (real-time visual modulation)
+/// - Visual encoding (color, glow, border, animation)
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -166,8 +166,8 @@ abstract class ReactiveComponent extends StatefulWidget {
 }
 
 /// Base state for reactive components
-abstract class ReactiveComponentState<T extends ReactiveComponent> extends State<T>
-    with SingleTickerProviderStateMixin {
+abstract class ReactiveComponentState<T extends ReactiveComponent>
+    extends State<T> with SingleTickerProviderStateMixin {
   // State tracking
   late ComponentState _state;
   AudioFeatures? _audioFeatures;
@@ -184,7 +184,8 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
   void initState() {
     super.initState();
     _state = widget.initialState.copyWith(
-      functional: widget.enabled ? FunctionalState.active : FunctionalState.disabled,
+      functional:
+          widget.enabled ? FunctionalState.active : FunctionalState.disabled,
     );
 
     _animationController = AnimationController(
@@ -210,7 +211,9 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
     if (oldWidget.enabled != widget.enabled) {
       setState(() {
         _state = _state.copyWith(
-          functional: widget.enabled ? FunctionalState.active : FunctionalState.disabled,
+          functional: widget.enabled
+              ? FunctionalState.active
+              : FunctionalState.disabled,
         );
       });
     }
@@ -231,7 +234,8 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
     });
 
     // Trigger animation on state change
-    if (interaction == InteractionState.pressed || interaction == InteractionState.hover) {
+    if (interaction == InteractionState.pressed ||
+        interaction == InteractionState.hover) {
       _animationController.forward();
     } else if (interaction == InteractionState.idle) {
       _animationController.reverse();
@@ -289,8 +293,10 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
     if (widget.audioReactivity.enabled &&
         widget.audioReactivity.reactToSpectral &&
         _audioFeatures != null) {
-      final hueShift = DesignTokens.dominantFreqToHueShift(_audioFeatures!.dominantFreq);
-      baseColor = DesignTokens.adjustHue(baseColor, hueShift * widget.audioReactivity.sensitivity);
+      final hueShift =
+          DesignTokens.dominantFreqToHueShift(_audioFeatures!.dominantFreq);
+      baseColor = DesignTokens.adjustHue(
+          baseColor, hueShift * widget.audioReactivity.sensitivity);
     }
 
     return baseColor;
@@ -313,7 +319,8 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
 
   /// Get border width for current state
   double getBorderWidth({bool isSelected = false}) {
-    double width = DesignTokens.getBorderWidth(_state.interaction, isSelected: isSelected);
+    double width =
+        DesignTokens.getBorderWidth(_state.interaction, isSelected: isSelected);
 
     // Add audio-reactive width modulation
     if (widget.audioReactivity.enabled &&
@@ -334,7 +341,9 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
 
     return BoxDecoration(
       borderRadius: BorderRadius.circular(widget.style.borderRadius),
-      border: widget.style.showBorder ? Border.all(color: color, width: borderWidth) : null,
+      border: widget.style.showBorder
+          ? Border.all(color: color, width: borderWidth)
+          : null,
       boxShadow: widget.style.showGlow && glowIntensity > 0
           ? [
               BoxShadow(
@@ -443,7 +452,8 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
 // ============================================================================
 
 /// Mixin for components that need audio stream updates
-mixin AudioReactiveMixin<T extends ReactiveComponent> on ReactiveComponentState<T> {
+mixin AudioReactiveMixin<T extends ReactiveComponent>
+    on ReactiveComponentState<T> {
   StreamSubscription<AudioFeatures>? _audioSubscription;
 
   /// Subscribe to audio features stream
@@ -474,7 +484,8 @@ mixin AudioReactiveMixin<T extends ReactiveComponent> on ReactiveComponentState<
 extension ComponentStateExtension on ComponentState {
   /// Check if component should respond to interaction
   bool get shouldRespondToTouch =>
-      functional == FunctionalState.active || functional == FunctionalState.inactive;
+      functional == FunctionalState.active ||
+      functional == FunctionalState.inactive;
 
   /// Check if component is in pressed state
   bool get isPressed => interaction == InteractionState.pressed;
@@ -483,5 +494,6 @@ extension ComponentStateExtension on ComponentState {
   bool get isDragging => interaction == InteractionState.dragging;
 
   /// Check if component has active audio
-  bool get hasActiveAudio => audio == AudioState.playing || audio == AudioState.modulating;
+  bool get hasActiveAudio =>
+      audio == AudioState.playing || audio == AudioState.modulating;
 }

@@ -1,14 +1,14 @@
-/**
- * Audio Engine Module - Professional Synthesis Lifecycle Management
- *
- * HYBRID WRAPPER: Wraps existing AudioProvider with professional
- * module infrastructure (logging, diagnostics, health monitoring).
- *
- * Manages PCM audio output, synthesis engine, voice management,
- * and audio performance monitoring.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio Engine Module - Professional Synthesis Lifecycle Management
+///
+/// HYBRID WRAPPER: Wraps existing AudioProvider with professional
+/// module infrastructure (logging, diagnostics, health monitoring).
+///
+/// Manages PCM audio output, synthesis engine, voice management,
+/// and audio performance monitoring.
+///
+/// A Paul Phillips Manifestation
+////
 
 import '../core/synth_module.dart';
 import '../core/synth_logger.dart';
@@ -66,14 +66,17 @@ class AudioEngineModule extends SynthModule {
 
   @override
   Map<String, dynamic> getDiagnostics() {
-    final uptime = _startTime != null ? DateTime.now().difference(_startTime!) : Duration.zero;
+    final uptime = _startTime != null
+        ? DateTime.now().difference(_startTime!)
+        : Duration.zero;
 
     return {
       'sampleRate': 44100,
       'bufferSize': 512,
       'activeVoices': provider.getVoiceCount(),
       'isPlaying': provider.isPlaying,
-      'uptime': '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
+      'uptime':
+          '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
       'notesTriggered': _noteOnCount,
       'notesReleased': _noteOffCount,
       'activeNotes': provider.activeNotes.length,

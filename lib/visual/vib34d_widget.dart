@@ -1,16 +1,16 @@
-/**
- * VIB34D Widget
- *
- * Flutter WebView widget that displays the THREE VIB34D visualization systems
- * with full bidirectional parameter coupling to audio synthesis.
- *
- * Integrates with:
- * - VisualProvider for parameter state
- * - AudioProvider for audio-reactive modulation
- * - ParameterBridge for bidirectional coupling
- *
- * A Paul Phillips Manifestation
- */
+///
+/// VIB34D Widget
+///
+/// Flutter WebView widget that displays the THREE VIB34D visualization systems
+/// with full bidirectional parameter coupling to audio synthesis.
+///
+/// Integrates with:
+/// - VisualProvider for parameter state
+/// - AudioProvider for audio-reactive modulation
+/// - ParameterBridge for bidirectional coupling
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -206,7 +206,8 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                    const Icon(Icons.error_outline,
+                        color: Colors.red, size: 48),
                     const SizedBox(height: 20),
                     Text(
                       'Error Loading Visualization',

@@ -1,16 +1,16 @@
-/**
- * Audio → Visual Modulation System
- *
- * Maps real-time audio analysis to visual parameters:
- * - Bass Energy (20-250 Hz) → 4D Rotation Speed
- * - Mid Energy (250-2000 Hz) → Tessellation Density
- * - High Energy (2000-8000 Hz) → Vertex Brightness
- * - Spectral Centroid → Hue Shift
- * - RMS Amplitude → Glow Intensity
- * - Stereo Width → RGB Split Amount
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio → Visual Modulation System
+///
+/// Maps real-time audio analysis to visual parameters:
+/// - Bass Energy (20-250 Hz) → 4D Rotation Speed
+/// - Mid Energy (250-2000 Hz) → Tessellation Density
+/// - High Energy (2000-8000 Hz) → Vertex Brightness
+/// - Spectral Centroid → Hue Shift
+/// - RMS Amplitude → Glow Intensity
+/// - Stereo Width → RGB Split Amount
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/foundation.dart';
 import 'dart:typed_data';
@@ -136,8 +136,10 @@ class AudioToVisualModulator {
 
     // Get mapped visual values
     final rotSpeed = _mappings['bassEnergy_to_rotationSpeed']?.map(bass) ?? 0.0;
-    final tessellation = _mappings['midEnergy_to_tessellationDensity']?.map(mid) ?? 0.0;
-    final brightness = _mappings['highEnergy_to_vertexBrightness']?.map(high) ?? 0.0;
+    final tessellation =
+        _mappings['midEnergy_to_tessellationDensity']?.map(mid) ?? 0.0;
+    final brightness =
+        _mappings['highEnergy_to_vertexBrightness']?.map(high) ?? 0.0;
     final hue = _mappings['spectralCentroid_to_hueShift']?.map(centroid) ?? 0.0;
     final glow = _mappings['rms_to_glowIntensity']?.map(rms) ?? 0.0;
 

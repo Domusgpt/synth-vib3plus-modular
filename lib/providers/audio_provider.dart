@@ -1,19 +1,19 @@
-/**
- * Audio Provider
- *
- * Manages the synthesizer engine and audio analyzer, providing
- * state management for the audio synthesis system.
- *
- * Responsibilities:
- * - SynthesizerEngine instance and control
- * - AudioAnalyzer instance
- * - Audio buffer management
- * - Microphone input handling
- * - Audio output to speakers
- * - Current audio feature state
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio Provider
+///
+/// Manages the synthesizer engine and audio analyzer, providing
+/// state management for the audio synthesis system.
+///
+/// Responsibilities:
+/// - SynthesizerEngine instance and control
+/// - AudioAnalyzer instance
+/// - Audio buffer management
+/// - Microphone input handling
+/// - Audio output to speakers
+/// - Current audio feature state
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:async';
 import 'dart:math';
@@ -164,7 +164,8 @@ class AudioProvider with ChangeNotifier {
 
       // Generate buffer using Synthesis Branch Manager (routes to Direct/FM/Ring Mod)
       // This applies: polytope core routing + voice character + sound family
-      Float32List rawBuffer = synthesisBranchManager.generateBuffer(bufferSize, frequency);
+      Float32List rawBuffer =
+          synthesisBranchManager.generateBuffer(bufferSize, frequency);
 
       // Apply global effects from synthesis engine (filter, reverb, delay)
       // This maintains the effect chain while using the branch manager for core synthesis
@@ -227,7 +228,8 @@ class AudioProvider with ChangeNotifier {
   /// Set geometry (0-23) for synthesis
   void setGeometry(int geometry) {
     synthesisBranchManager.setGeometry(geometry);
-    debugPrint('🎵 Geometry set to: $geometry (${synthesisBranchManager.configString})');
+    debugPrint(
+        '🎵 Geometry set to: $geometry (${synthesisBranchManager.configString})');
     notifyListeners();
   }
 
@@ -344,7 +346,8 @@ class AudioProvider with ChangeNotifier {
   Map<String, dynamic> getMetrics() {
     final now = DateTime.now();
     final elapsed = now.difference(_lastMetricsCheck).inMilliseconds;
-    final buffersPerSecond = elapsed > 0 ? (_buffersGenerated * 1000.0 / elapsed) : 0.0;
+    final buffersPerSecond =
+        elapsed > 0 ? (_buffersGenerated * 1000.0 / elapsed) : 0.0;
 
     return {
       'buffersPerSecond': buffersPerSecond.toStringAsFixed(1),

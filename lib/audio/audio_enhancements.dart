@@ -1,15 +1,15 @@
-/**
- * Audio Enhancements Module
- *
- * Professional audio quality improvements:
- * - Anti-aliasing for oscillators (PolyBLEP)
- * - DC blocking filter
- * - Soft clipping/limiting
- * - Improved interpolation
- * - Voice spreading/unison effects
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio Enhancements Module
+///
+/// Professional audio quality improvements:
+/// - Anti-aliasing for oscillators (PolyBLEP)
+/// - DC blocking filter
+/// - Soft clipping/limiting
+/// - Improved interpolation
+/// - Voice spreading/unison effects
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'dart:typed_data';

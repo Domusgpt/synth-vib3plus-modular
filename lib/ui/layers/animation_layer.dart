@@ -1,21 +1,21 @@
-/**
- * Animation Layer
- *
- * Unified animation and visual effects layer that sits on top of
- * the VIB3+ visualization. Coordinates particles, trails, and
- * modulation visualization with 60 FPS updates.
- *
- * Features:
- * - 60 FPS update loop
- * - Integrated particle, trail, and modulation systems
- * - Audio-reactive effects
- * - Performance optimization
- * - Layered z-index rendering
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Animation Layer
+///
+/// Unified animation and visual effects layer that sits on top of
+/// the VIB3+ visualization. Coordinates particles, trails, and
+/// modulation visualization with 60 FPS updates.
+///
+/// Features:
+/// - 60 FPS update loop
+/// - Integrated particle, trail, and modulation systems
+/// - Audio-reactive effects
+/// - Performance optimization
+/// - Layered z-index rendering
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:async';
 import 'dart:ui' as ui;
@@ -108,7 +108,8 @@ class AnimationLayer extends StatefulWidget {
   State<AnimationLayer> createState() => AnimationLayerState();
 }
 
-class AnimationLayerState extends State<AnimationLayer> with SingleTickerProviderStateMixin {
+class AnimationLayerState extends State<AnimationLayer>
+    with SingleTickerProviderStateMixin {
   // Effect systems
   late ParticleSystem _particleSystem;
   late TrailSystem _trailSystem;
@@ -405,7 +406,8 @@ extension AnimationLayerContext on BuildContext {
 class AnimatedGestureDetector extends StatelessWidget {
   final Widget child;
   final Function(Offset)? onTapDown;
-  final Function(int, Offset, double)? onPanUpdate; // pointerId, position, pressure
+  final Function(int, Offset, double)?
+      onPanUpdate; // pointerId, position, pressure
   final Function(int)? onPanEnd;
   final Color? trailColor;
   final bool spawnParticlesOnTap;
@@ -447,7 +449,8 @@ class AnimatedGestureDetector extends StatelessWidget {
         onPanUpdate?.call(pointerId, details.localPosition, 1.0);
 
         if (animationLayer != null) {
-          animationLayer.addTrailPoint(pointerId, details.localPosition, pressure: 1.0);
+          animationLayer.addTrailPoint(pointerId, details.localPosition,
+              pressure: 1.0);
         }
       },
       onPanEnd: (details) {

@@ -1,18 +1,18 @@
-/**
- * Synthesizer Engine - Professional Audio Implementation
- *
- * Core audio synthesis system with:
- * - ADSR envelope system for natural note articulation
- * - 8-voice polyphony with voice stealing
- * - Stereo output with panning and width control
- * - Noise generator for textural content
- * - Bidirectional parameter coupling to VIB34D visual system
- * - Multi-mode filter with resonance
- * - Dual oscillators with FM and ring modulation
- * - Effects: reverb, delay with adjustable mix
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Synthesizer Engine - Professional Audio Implementation
+///
+/// Core audio synthesis system with:
+/// - ADSR envelope system for natural note articulation
+/// - 8-voice polyphony with voice stealing
+/// - Stereo output with panning and width control
+/// - Noise generator for textural content
+/// - Bidirectional parameter coupling to VIB34D visual system
+/// - Multi-mode filter with resonance
+/// - Dual oscillators with FM and ring modulation
+/// - Effects: reverb, delay with adjustable mix
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -183,7 +183,8 @@ class VoiceManager {
 
   /// Allocate voice for new note with intelligent voice stealing
   /// Uses velocity-based stealing (quieter notes first) + age-based secondary
-  Voice? allocateVoice(int midiNote, double frequency, {double velocity = 0.8}) {
+  Voice? allocateVoice(int midiNote, double frequency,
+      {double velocity = 0.8}) {
     // First, try to find an inactive voice
     for (int i = 0; i < voices.length; i++) {
       if (!voices[i].isActive) {
@@ -626,8 +627,8 @@ class SynthesizerEngine {
     } else {
       // Apply smoothstep easing for natural pitch transition
       final eased = _smoothStep(progress);
-      _glideCurrentFrequency =
-          _glideStartFrequency + (_glideTargetFrequency - _glideStartFrequency) * eased;
+      _glideCurrentFrequency = _glideStartFrequency +
+          (_glideTargetFrequency - _glideStartFrequency) * eased;
     }
   }
 
@@ -737,7 +738,8 @@ class Filter {
   double process(double input) {
     // Apply cutoff modulation
     final modulatedCutoff = baseCutoff * (1.0 + cutoffModulation);
-    final normalizedCutoff = (2.0 * modulatedCutoff / sampleRate).clamp(0.01, 0.99);
+    final normalizedCutoff =
+        (2.0 * modulatedCutoff / sampleRate).clamp(0.01, 0.99);
 
     // Simple 2-pole filter
     final f = 2.0 * math.sin(math.pi * normalizedCutoff);
@@ -788,7 +790,8 @@ class Reverb {
   final int _bufferSize;
   int _writePos = 0;
 
-  Reverb({required this.sampleRate}) : _bufferSize = (sampleRate * 0.1).round() {
+  Reverb({required this.sampleRate})
+      : _bufferSize = (sampleRate * 0.1).round() {
     _buffer = List<double>.filled(_bufferSize, 0.0);
   }
 
@@ -823,7 +826,8 @@ class Delay {
   final int _maxBufferSize;
   int _writePos = 0;
 
-  Delay({required this.sampleRate}) : _maxBufferSize = (sampleRate * 2.0).round() {
+  Delay({required this.sampleRate})
+      : _maxBufferSize = (sampleRate * 2.0).round() {
     _buffer = List<double>.filled(_maxBufferSize, 0.0);
   }
 

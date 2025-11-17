@@ -1,11 +1,11 @@
-/**
- * Synth-VIB3+ Application Initializer
- *
- * Demonstrates the modular architecture pattern by initializing
- * all system modules in dependency order with professional logging.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Synth-VIB3+ Application Initializer
+///
+/// Demonstrates the modular architecture pattern by initializing
+/// all system modules in dependency order with professional logging.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'synth_module.dart';
 import 'synth_logger.dart';

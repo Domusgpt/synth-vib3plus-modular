@@ -1,14 +1,14 @@
-/**
- * UI State Provider
- *
- * Manages all UI state including panel visibility, layout configuration,
- * XY pad settings, orb controller position, and keyboard mode.
- *
- * This provider works alongside AudioProvider and VisualProvider to provide
- * comprehensive state management for the entire application.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// UI State Provider
+///
+/// Manages all UI state including panel visibility, layout configuration,
+/// XY pad settings, orb controller position, and keyboard mode.
+///
+/// This provider works alongside AudioProvider and VisualProvider to provide
+/// comprehensive state management for the entire application.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -95,19 +95,25 @@ class UIStateProvider with ChangeNotifier {
   // Pitch configuration (X-axis when pitch is assigned)
   int _pitchRangeStart = 48; // C3 (MIDI note)
   int _pitchRangeEnd = 72; // C5 (MIDI note)
-  String _pitchScale = 'chromatic'; // chromatic, major, minor, pentatonic, blues
+  String _pitchScale =
+      'chromatic'; // chromatic, major, minor, pentatonic, blues
   int _pitchRootNote = 0; // C (0-11 for C-B)
 
   // Parameter ranges (Y-axis assignments)
   final Map<XYAxisParameter, ParameterRange> _parameterRanges = {
     XYAxisParameter.pitch: const ParameterRange(min: 0, max: 127, unit: 'note'),
-    XYAxisParameter.filterCutoff: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
-    XYAxisParameter.resonance: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
-    XYAxisParameter.fmDepth: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
-    XYAxisParameter.ringModMix: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.filterCutoff:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.resonance:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.fmDepth:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.ringModMix:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
     XYAxisParameter.morph: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
     XYAxisParameter.chaos: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
-    XYAxisParameter.brightness: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.brightness:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
     XYAxisParameter.reverb: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
   };
 
@@ -187,7 +193,8 @@ class UIStateProvider with ChangeNotifier {
     if (_panelStates.containsKey(panelName)) {
       _panelStates[panelName] = !_panelStates[panelName]!;
       notifyListeners();
-      debugPrint('🎛️ Panel "$panelName" ${_panelStates[panelName]! ? "opened" : "closed"}');
+      debugPrint(
+          '🎛️ Panel "$panelName" ${_panelStates[panelName]! ? "opened" : "closed"}');
     }
   }
 

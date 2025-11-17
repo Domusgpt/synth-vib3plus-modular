@@ -1,17 +1,17 @@
-/**
- * Visualization Panel
- *
- * Panel for audio visualization and modulation indicators.
- * Provides real-time visual feedback for audio-visual coupling.
- *
- * Features:
- * - Waveform/Spectrum/Oscilloscope visualizer
- * - Active modulation indicators
- * - Mode switching
- * - Compact layout for bottom bezel
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Visualization Panel
+///
+/// Panel for audio visualization and modulation indicators.
+/// Provides real-time visual feedback for audio-visual coupling.
+///
+/// Features:
+/// - Waveform/Spectrum/Oscilloscope visualizer
+/// - Active modulation indicators
+/// - Mode switching
+/// - Compact layout for bottom bezel
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import '../components/audio_visualizer.dart';
@@ -100,10 +100,14 @@ class _VisualizationPanelState extends State<VisualizationPanel> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.cyan.withOpacity(0.3) : Colors.white.withOpacity(0.1),
+            color: isSelected
+                ? Colors.cyan.withOpacity(0.3)
+                : Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
-              color: isSelected ? Colors.cyan.withOpacity(0.6) : Colors.white.withOpacity(0.2),
+              color: isSelected
+                  ? Colors.cyan.withOpacity(0.6)
+                  : Colors.white.withOpacity(0.2),
               width: isSelected ? 2 : 1,
             ),
           ),

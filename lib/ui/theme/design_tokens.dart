@@ -1,14 +1,14 @@
-/**
- * Design Token System
- *
- * Unified design language for Synth-VIB3+ holographic interface.
- * Provides consistent colors, typography, spacing, and animations
- * across all components with audio-reactive capabilities.
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Design Token System
+///
+/// Unified design language for Synth-VIB3+ holographic interface.
+/// Provides consistent colors, typography, spacing, and animations
+/// across all components with audio-reactive capabilities.
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -22,7 +22,8 @@ class DesignTokens {
 
   /// State Colors - Semantic meaning across all components
   static const Color stateActive = Color(0xFF00FFFF); // Cyan - active/enabled
-  static const Color stateInactive = Color(0xFF404050); // Gray - inactive but enabled
+  static const Color stateInactive =
+      Color(0xFF404050); // Gray - inactive but enabled
   static const Color stateDisabled = Color(0xFF202028); // Dark gray - disabled
   static const Color stateWarning = Color(0xFFFFAA00); // Amber - warning state
   static const Color stateError = Color(0xFFFF3366); // Red - error state
@@ -54,9 +55,11 @@ class DesignTokens {
   /// Audio-Reactive Colors - Frequency band visualization
   static const Color audioLow = Color(0xFFFF3366); // Red - bass (20-250 Hz)
   static const Color audioMid = Color(0xFF00FF88); // Green - mid (250-2000 Hz)
-  static const Color audioHigh = Color(0xFF00AAFF); // Blue - high (2000-8000 Hz)
+  static const Color audioHigh =
+      Color(0xFF00AAFF); // Blue - high (2000-8000 Hz)
   static const Color audioSilent = Color(0xFF303040); // Dark gray - no audio
-  static const Color audioClipping = Color(0xFFFF0044); // Bright red - clipping warning
+  static const Color audioClipping =
+      Color(0xFFFF0044); // Bright red - clipping warning
 
   // ============================================================================
   // GLASSMORPHIC LAYER DEFINITIONS
@@ -69,7 +72,8 @@ class DesignTokens {
   static const double glassBaseBorderWidth = 1.0;
 
   /// Interactive Layer - UI controls
-  static const Color glassInteractiveBackground = Color(0x33FFFFFF); // 20% white
+  static const Color glassInteractiveBackground =
+      Color(0x33FFFFFF); // 20% white
   static const double glassInteractiveBlur = 20.0;
   static const Color glassInteractiveBorder = Color(0x40FFFFFF); // 25% white
   static const double glassInteractiveBorderWidth = 1.0;
@@ -384,7 +388,8 @@ class DesignTokens {
   }
 
   /// Get border width for state
-  static double getBorderWidth(InteractionState state, {required bool isSelected}) {
+  static double getBorderWidth(InteractionState state,
+      {required bool isSelected}) {
     if (isSelected) return 2.0;
 
     switch (state) {
@@ -407,19 +412,25 @@ class DesignTokens {
   /// Lighten a color by percentage (0-1)
   static Color _lighten(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
-    return hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0)).toColor();
+    return hsl
+        .withLightness((hsl.lightness + amount).clamp(0.0, 1.0))
+        .toColor();
   }
 
   /// Darken a color by percentage (0-1)
   static Color _darken(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
-    return hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0)).toColor();
+    return hsl
+        .withLightness((hsl.lightness - amount).clamp(0.0, 1.0))
+        .toColor();
   }
 
   /// Desaturate a color by percentage (0-1)
   static Color _desaturate(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
-    return hsl.withSaturation((hsl.saturation * (1.0 - amount)).clamp(0.0, 1.0)).toColor();
+    return hsl
+        .withSaturation((hsl.saturation * (1.0 - amount)).clamp(0.0, 1.0))
+        .toColor();
   }
 
   /// Adjust hue by degrees
@@ -449,9 +460,12 @@ class DesignTokens {
       end: Alignment.bottomRight,
       colors: [
         HSLColor.fromAHSL(1.0, (baseHue + hueShift) % 360, 0.8, 0.5).toColor(),
-        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 60) % 360, 0.8, 0.5).toColor(),
-        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 120) % 360, 0.8, 0.5).toColor(),
-        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 180) % 360, 0.8, 0.5).toColor(),
+        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 60) % 360, 0.8, 0.5)
+            .toColor(),
+        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 120) % 360, 0.8, 0.5)
+            .toColor(),
+        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 180) % 360, 0.8, 0.5)
+            .toColor(),
       ],
       stops: const [0.0, 0.33, 0.66, 1.0],
     );

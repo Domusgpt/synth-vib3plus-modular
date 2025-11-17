@@ -1,17 +1,17 @@
-/**
- * Orb Controller
- *
- * Floating, draggable trackball-style pitch modulation controller.
- * Features pitch bend (±1 to ±12 semitones) and vibrato control.
- * Integrates with device tilt for hands-free modulation.
- *
- * Visual States:
- * - Inactive: Subtle glow at origin
- * - Active (dragging): Intense glow + trail effect
- * - Tilt mode: Pulsing indicator + auto-movement
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Orb Controller
+///
+/// Floating, draggable trackball-style pitch modulation controller.
+/// Features pitch bend (±1 to ±12 semitones) and vibrato control.
+/// Integrates with device tilt for hands-free modulation.
+///
+/// Visual States:
+/// - Inactive: Subtle glow at origin
+/// - Active (dragging): Intense glow + trail effect
+/// - Tilt mode: Pulsing indicator + auto-movement
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +34,8 @@ class OrbController extends StatefulWidget {
   State<OrbController> createState() => _OrbControllerState();
 }
 
-class _OrbControllerState extends State<OrbController> with SingleTickerProviderStateMixin {
+class _OrbControllerState extends State<OrbController>
+    with SingleTickerProviderStateMixin {
   Offset _position = Offset.zero; // Relative to origin (-1 to 1)
   bool _isDragging = false;
   late AnimationController _pulseController;
@@ -121,7 +122,8 @@ class _OrbControllerState extends State<OrbController> with SingleTickerProvider
   }
 
   // Update orb position from tilt sensor
-  void _updateFromTilt(Offset tiltPosition, UIStateProvider uiState, AudioProvider audioProvider) {
+  void _updateFromTilt(Offset tiltPosition, UIStateProvider uiState,
+      AudioProvider audioProvider) {
     if (!uiState.tiltEnabled) return;
 
     setState(() {
@@ -140,8 +142,8 @@ class _OrbControllerState extends State<OrbController> with SingleTickerProvider
     // Sync with tilt if enabled
     if (uiState.tiltEnabled && tiltSensor.isEnabled) {
       final orientation = MediaQuery.of(context).orientation;
-      _updateFromTilt(
-          tiltSensor.getTiltPositionForOrientation(orientation), uiState, audioProvider);
+      _updateFromTilt(tiltSensor.getTiltPositionForOrientation(orientation),
+          uiState, audioProvider);
     }
 
     final screenSize = MediaQuery.of(context).size;
@@ -186,13 +188,15 @@ class _OrbControllerState extends State<OrbController> with SingleTickerProvider
           top: orbY - orbSize.height / 2,
           child: GestureDetector(
             onPanStart: (details) => _handleDragStart(details, uiState),
-            onPanUpdate: (details) => _handleDragUpdate(details, uiState, audioProvider, orbSize),
+            onPanUpdate: (details) =>
+                _handleDragUpdate(details, uiState, audioProvider, orbSize),
             onPanEnd: (details) => _handleDragEnd(details, uiState),
             child: AnimatedBuilder(
               animation: _pulseAnimation,
               builder: (context, child) {
-                final scale =
-                    uiState.tiltEnabled ? _pulseAnimation.value : (_isDragging ? 1.1 : 1.0);
+                final scale = uiState.tiltEnabled
+                    ? _pulseAnimation.value
+                    : (_isDragging ? 1.1 : 1.0);
 
                 return Transform.scale(
                   scale: scale,
@@ -220,7 +224,9 @@ class _OrbControllerState extends State<OrbController> with SingleTickerProvider
                       children: [
                         // Center icon
                         Icon(
-                          uiState.tiltEnabled ? Icons.screen_rotation : Icons.control_camera,
+                          uiState.tiltEnabled
+                              ? Icons.screen_rotation
+                              : Icons.control_camera,
                           color: Colors.white.withOpacity(0.8),
                           size: 40,
                         ),

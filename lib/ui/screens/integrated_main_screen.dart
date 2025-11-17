@@ -1,20 +1,20 @@
-/**
- * Integrated Synth Application
- *
- * Complete integration of all enhancement systems:
- * - Component Integration Manager
- * - Gesture Recognition System
- * - Performance Monitoring
- * - Preset Browser
- * - Modulation Matrix
- * - Haptic Feedback
- * - Context-Sensitive Help
- *
- * This demonstrates the "extra dimension of ability" through
- * comprehensive system integration.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Integrated Synth Application
+///
+/// Complete integration of all enhancement systems:
+/// - Component Integration Manager
+/// - Gesture Recognition System
+/// - Performance Monitoring
+/// - Preset Browser
+/// - Modulation Matrix
+/// - Haptic Feedback
+/// - Context-Sensitive Help
+///
+/// This demonstrates the "extra dimension of ability" through
+/// comprehensive system integration.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,7 +76,8 @@ class IntegratedSynthApp extends StatelessWidget {
 class IntegratedMainScreen extends StatefulWidget {
   final SynthModules modules;
 
-  const IntegratedMainScreen({Key? key, required this.modules}) : super(key: key);
+  const IntegratedMainScreen({Key? key, required this.modules})
+      : super(key: key);
 
   @override
   State<IntegratedMainScreen> createState() => _IntegratedMainScreenState();
@@ -180,8 +181,8 @@ class _IntegratedMainScreenState extends State<IntegratedMainScreen> {
         ChangeNotifierProvider(create: (_) => LayoutProvider()),
 
         // Integration manager (depends on other providers)
-        ChangeNotifierProxyProvider4<AudioProvider, VisualProvider, LayoutProvider, UIStateProvider,
-            ComponentIntegrationManager>(
+        ChangeNotifierProxyProvider4<AudioProvider, VisualProvider,
+            LayoutProvider, UIStateProvider, ComponentIntegrationManager>(
           create: (context) => ComponentIntegrationManager(
             audioProvider: context.read<AudioProvider>(),
             visualProvider: context.read<VisualProvider>(),
@@ -265,7 +266,8 @@ class _IntegratedMainContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final integrationManager = Provider.of<ComponentIntegrationManager>(context);
+    final integrationManager =
+        Provider.of<ComponentIntegrationManager>(context);
     final audioProvider = Provider.of<AudioProvider>(context);
 
     // Track parameter updates
@@ -294,7 +296,8 @@ class _IntegratedMainContent extends StatelessWidget {
           ),
 
           // Compact performance overlay (top-right)
-          if (compactPerformanceOverlay && performanceTracker.history.isNotEmpty)
+          if (compactPerformanceOverlay &&
+              performanceTracker.history.isNotEmpty)
             Positioned(
               top: 16,
               right: 16,

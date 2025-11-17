@@ -1,25 +1,25 @@
-/**
- * Context-Sensitive Help Overlay
- *
- * Interactive help system that provides contextual guidance based on user
- * location and actions. Includes tooltips, walkthroughs, feature highlights,
- * and interactive tutorials.
- *
- * Features:
- * - Context-aware help based on current screen/component
- * - Interactive walkthroughs (first-time user experience)
- * - Feature highlights with animated pointers
- * - Tooltip system with rich content
- * - Gesture instruction overlays
- * - Quick reference sheets
- * - Search help topics
- * - Video tutorial integration
- * - Help history tracking
- *
- * Part of the Integration Layer (Phase 3.5)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Context-Sensitive Help Overlay
+///
+/// Interactive help system that provides contextual guidance based on user
+/// location and actions. Includes tooltips, walkthroughs, feature highlights,
+/// and interactive tutorials.
+///
+/// Features:
+/// - Context-aware help based on current screen/component
+/// - Interactive walkthroughs (first-time user experience)
+/// - Feature highlights with animated pointers
+/// - Tooltip system with rich content
+/// - Gesture instruction overlays
+/// - Quick reference sheets
+/// - Search help topics
+/// - Video tutorial integration
+/// - Help history tracking
+///
+/// Part of the Integration Layer (Phase 3.5)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -128,7 +128,8 @@ extension HelpContextExtension on HelpContext {
           ),
           const HelpTopic(
             title: 'Vibrato',
-            content: 'Drag vertically for vibrato depth. Higher movement = more intense vibrato.',
+            content:
+                'Drag vertically for vibrato depth. Higher movement = more intense vibrato.',
             icon: Icons.graphic_eq,
           ),
           const HelpTopic(
@@ -154,7 +155,8 @@ extension HelpContextExtension on HelpContext {
           ),
           const HelpTopic(
             title: 'Bipolar Mode',
-            content: 'Toggle bipolar mode to modulate in both positive and negative directions.',
+            content:
+                'Toggle bipolar mode to modulate in both positive and negative directions.',
             icon: Icons.swap_vert,
           ),
         ];
@@ -247,7 +249,8 @@ class HelpOverlay extends StatefulWidget {
   State<HelpOverlay> createState() => _HelpOverlayState();
 }
 
-class _HelpOverlayState extends State<HelpOverlay> with SingleTickerProviderStateMixin {
+class _HelpOverlayState extends State<HelpOverlay>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -291,7 +294,9 @@ class _HelpOverlayState extends State<HelpOverlay> with SingleTickerProviderStat
           child: Center(
             child: GestureDetector(
               onTap: () {}, // Prevent closing when tapping content
-              child: widget.showWalkthrough ? _buildWalkthrough() : _buildHelpContent(),
+              child: widget.showWalkthrough
+                  ? _buildWalkthrough()
+                  : _buildHelpContent(),
             ),
           ),
         ),
@@ -477,7 +482,8 @@ class _HelpOverlayState extends State<HelpOverlay> with SingleTickerProviderStat
                     padding: const EdgeInsets.all(DesignTokens.spacing2),
                     decoration: BoxDecoration(
                       color: DesignTokens.quantum.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
+                      borderRadius:
+                          BorderRadius.circular(DesignTokens.radiusSmall),
                     ),
                     child: Icon(
                       topic.icon,
@@ -698,7 +704,8 @@ class FeatureHighlight extends StatefulWidget {
   State<FeatureHighlight> createState() => _FeatureHighlightState();
 }
 
-class _FeatureHighlightState extends State<FeatureHighlight> with SingleTickerProviderStateMixin {
+class _FeatureHighlightState extends State<FeatureHighlight>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -746,10 +753,12 @@ class _FeatureHighlightState extends State<FeatureHighlight> with SingleTickerPr
                       ),
                       width: 3,
                     ),
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+                    borderRadius:
+                        BorderRadius.circular(DesignTokens.radiusMedium),
                     boxShadow: [
                       BoxShadow(
-                        color: DesignTokens.stateActive.withOpacity(_controller.value * 0.5),
+                        color: DesignTokens.stateActive
+                            .withOpacity(_controller.value * 0.5),
                         blurRadius: 20,
                         spreadRadius: 5,
                       ),

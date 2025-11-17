@@ -1,23 +1,23 @@
-/**
- * Orb Controller
- *
- * Enhanced 2D pitch bend/vibrato controller with holographic visuals,
- * audio-reactive glow, and auto-return functionality.
- *
- * Features:
- * - Resizable (small 80px to XL 200px diameter)
- * - Holographic gradient sphere
- * - Audio-reactive halo glow
- * - Crosshairs and connection line
- * - Pitch bend & vibrato readout
- * - Auto-return with spring physics
- * - Configurable range (±1 to ±12 semitones)
- * - Dockable or floating
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Orb Controller
+///
+/// Enhanced 2D pitch bend/vibrato controller with holographic visuals,
+/// audio-reactive glow, and auto-return functionality.
+///
+/// Features:
+/// - Resizable (small 80px to XL 200px diameter)
+/// - Holographic gradient sphere
+/// - Audio-reactive halo glow
+/// - Crosshairs and connection line
+/// - Pitch bend & vibrato readout
+/// - Auto-return with spring physics
+/// - Configurable range (±1 to ±12 semitones)
+/// - Dockable or floating
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -140,7 +140,8 @@ class OrbController extends StatefulWidget {
   State<OrbController> createState() => _OrbControllerState();
 }
 
-class _OrbControllerState extends State<OrbController> with SingleTickerProviderStateMixin {
+class _OrbControllerState extends State<OrbController>
+    with SingleTickerProviderStateMixin {
   Offset _position = Offset.zero; // -1 to 1
   bool _isDragging = false;
   late AnimationController _returnController;
@@ -150,7 +151,8 @@ class _OrbControllerState extends State<OrbController> with SingleTickerProvider
     super.initState();
     _returnController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: (1000 / widget.config.returnSpeed).round()),
+      duration:
+          Duration(milliseconds: (1000 / widget.config.returnSpeed).round()),
     );
   }
 
@@ -189,7 +191,8 @@ class _OrbControllerState extends State<OrbController> with SingleTickerProvider
 
     // Clamp to circle
     final distance = localPosition.distance;
-    final clamped = distance > radius ? localPosition / distance * radius : localPosition;
+    final clamped =
+        distance > radius ? localPosition / distance * radius : localPosition;
 
     // Normalize to -1 to 1
     setState(() {

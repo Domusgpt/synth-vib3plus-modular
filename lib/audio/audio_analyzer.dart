@@ -1,18 +1,18 @@
-/**
- * Audio Analyzer
- *
- * Performs real-time FFT analysis and audio feature extraction
- * for driving visual parameter modulation in the VIB34D system.
- *
- * Features:
- * - FFT computation with configurable window size
- * - Frequency band energy extraction (bass, mid, high)
- * - Spectral centroid calculation
- * - RMS amplitude computation
- * - Stereo width analysis
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio Analyzer
+///
+/// Performs real-time FFT analysis and audio feature extraction
+/// for driving visual parameter modulation in the VIB34D system.
+///
+/// Features:
+/// - FFT computation with configurable window size
+/// - Frequency band energy extraction (bass, mid, high)
+/// - Spectral centroid calculation
+/// - RMS amplitude computation
+/// - Stereo width analysis
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -241,7 +241,8 @@ class AudioAnalyzer {
       _transientTimestamps.add(now);
 
       // Clean up old timestamps (older than 1 second)
-      _transientTimestamps.removeWhere((timestamp) => now - timestamp > transientWindowMs);
+      _transientTimestamps
+          .removeWhere((timestamp) => now - timestamp > transientWindowMs);
     }
 
     return isTransient;
@@ -252,7 +253,8 @@ class AudioAnalyzer {
     final now = DateTime.now().millisecondsSinceEpoch;
 
     // Clean up old timestamps
-    _transientTimestamps.removeWhere((timestamp) => now - timestamp > transientWindowMs);
+    _transientTimestamps
+        .removeWhere((timestamp) => now - timestamp > transientWindowMs);
 
     return _transientTimestamps.length.toDouble();
   }
@@ -270,7 +272,8 @@ class AudioAnalyzer {
       totalEnergy += magnitudes[i];
 
       // Peak detection: local maximum
-      if (magnitudes[i] > magnitudes[i - 1] && magnitudes[i] > magnitudes[i + 1]) {
+      if (magnitudes[i] > magnitudes[i - 1] &&
+          magnitudes[i] > magnitudes[i + 1]) {
         peakEnergy += magnitudes[i];
       }
     }
@@ -284,7 +287,9 @@ class AudioAnalyzer {
 
   /// Convert frequency to FFT bin index
   int _freqToBin(double freq) {
-    return (freq * fftSize / sampleRate).round().clamp(0, _magnitudes.length - 1);
+    return (freq * fftSize / sampleRate)
+        .round()
+        .clamp(0, _magnitudes.length - 1);
   }
 
   /// Convert FFT bin index to frequency
@@ -293,7 +298,8 @@ class AudioAnalyzer {
   }
 
   /// Normalize magnitude values to 0-1 range with smoothing
-  double normalizeEnergy(double energy, {double maxExpected = 1.0, double smoothing = 0.8}) {
+  double normalizeEnergy(double energy,
+      {double maxExpected = 1.0, double smoothing = 0.8}) {
     final normalized = (energy / maxExpected).clamp(0.0, 1.0);
     return math.pow(normalized, smoothing).toDouble();
   }
@@ -326,7 +332,8 @@ class AudioFeatures {
   });
 
   /// Compute overall energy (weighted average)
-  double get totalEnergy => (bassEnergy * 0.4) + (midEnergy * 0.35) + (highEnergy * 0.25);
+  double get totalEnergy =>
+      (bassEnergy * 0.4) + (midEnergy * 0.35) + (highEnergy * 0.25);
 
   /// Normalize all features to 0-1 range
   AudioFeatures normalize({

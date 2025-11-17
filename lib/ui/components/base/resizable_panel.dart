@@ -1,22 +1,22 @@
-/**
- * Resizable Panel
- *
- * Panel component with drag-to-resize handles, size constraints,
- * grid snapping, and visual feedback. Foundation for customizable
- * layout system.
- *
- * Features:
- * - Drag-to-resize handles (corner + edge)
- * - Min/max size constraints
- * - Grid snapping
- * - Visual resize preview
- * - Docking support
- * - Layout persistence
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 2
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Resizable Panel
+///
+/// Panel component with drag-to-resize handles, size constraints,
+/// grid snapping, and visual feedback. Foundation for customizable
+/// layout system.
+///
+/// Features:
+/// - Drag-to-resize handles (corner + edge)
+/// - Min/max size constraints
+/// - Grid snapping
+/// - Visual resize preview
+/// - Docking support
+/// - Layout persistence
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
@@ -197,8 +197,10 @@ class ResizablePanelState extends State<ResizablePanel> {
 
       // Apply constraints
       final constrainedSize = GridUnits(
-        newSize.columns.clamp(widget.config.minSize.columns, widget.config.maxSize.columns),
-        newSize.rows.clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
+        newSize.columns.clamp(
+            widget.config.minSize.columns, widget.config.maxSize.columns),
+        newSize.rows
+            .clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
       );
 
       // Update preview
@@ -223,8 +225,10 @@ class ResizablePanelState extends State<ResizablePanel> {
       setState(() {
         _position = newPosition;
         _size = GridUnits(
-          newSize.columns.clamp(widget.config.minSize.columns, widget.config.maxSize.columns),
-          newSize.rows.clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
+          newSize.columns.clamp(
+              widget.config.minSize.columns, widget.config.maxSize.columns),
+          newSize.rows
+              .clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
         );
         _isResizing = false;
         _previewRect = null;
@@ -344,7 +348,8 @@ class ResizablePanelState extends State<ResizablePanel> {
                         ),
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
+                          borderRadius:
+                              BorderRadius.circular(DesignTokens.radiusSmall),
                         ),
                         child: Text(
                           _isResizing ? 'Resizing...' : 'Moving...',
@@ -395,8 +400,10 @@ class ResizablePanelState extends State<ResizablePanel> {
   void setSize(GridUnits newSize) {
     setState(() {
       _size = GridUnits(
-        newSize.columns.clamp(widget.config.minSize.columns, widget.config.maxSize.columns),
-        newSize.rows.clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
+        newSize.columns.clamp(
+            widget.config.minSize.columns, widget.config.maxSize.columns),
+        newSize.rows
+            .clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
       );
     });
   }

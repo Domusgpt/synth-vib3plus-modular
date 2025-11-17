@@ -1,22 +1,22 @@
-/**
- * Haptic Manager
- *
- * Comprehensive haptic feedback system for tactile UI response.
- * Provides musical haptics, pattern-based feedback, and intensity control.
- *
- * Features:
- * - Basic haptic types (light, medium, heavy, selection)
- * - Musical haptics (pitch-scaled vibrations)
- * - Pattern-based haptics (note on, preset load, system switch)
- * - Custom haptic sequences
- * - Intensity scaling (0.1-2.0x)
- * - Platform-adaptive (iOS/Android)
- * - Energy-efficient batching
- *
- * Part of the Integration Layer (Phase 3.5)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Haptic Manager
+///
+/// Comprehensive haptic feedback system for tactile UI response.
+/// Provides musical haptics, pattern-based feedback, and intensity control.
+///
+/// Features:
+/// - Basic haptic types (light, medium, heavy, selection)
+/// - Musical haptics (pitch-scaled vibrations)
+/// - Pattern-based haptics (note on, preset load, system switch)
+/// - Custom haptic sequences
+/// - Intensity scaling (0.1-2.0x)
+/// - Platform-adaptive (iOS/Android)
+/// - Energy-efficient batching
+///
+/// Part of the Integration Layer (Phase 3.5)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:async';
 import 'package:flutter/services.dart';
@@ -198,7 +198,8 @@ class HapticManager {
 
     // Rate limiting
     final now = DateTime.now();
-    if (_lastHapticTime != null && now.difference(_lastHapticTime!) < _minInterval) {
+    if (_lastHapticTime != null &&
+        now.difference(_lastHapticTime!) < _minInterval) {
       return;
     }
     _lastHapticTime = now;
@@ -298,7 +299,7 @@ class HapticManager {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Haptic feedback error: $e');
+        debugPrint('Haptic feedback error: $e');
       }
     }
   }

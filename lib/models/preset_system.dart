@@ -1,16 +1,16 @@
-/**
- * Comprehensive Preset Management System
- *
- * Features:
- * - Complete synthesizer state serialization
- * - Preset categories and tags
- * - Search and filter
- * - Factory presets + user presets
- * - Cloud sync ready (Firebase integration)
- * - Import/export
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Comprehensive Preset Management System
+///
+/// Features:
+/// - Complete synthesizer state serialization
+/// - Preset categories and tags
+/// - Search and filter
+/// - Factory presets + user presets
+/// - Cloud sync ready (Firebase integration)
+/// - Import/export
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -261,7 +261,10 @@ class AudioPresetData {
       pitchBendRange: json['pitchBendRange'] ?? 2.0,
       vibratoDepth: json['vibratoDepth'] ?? 0.0,
       noiseAmount: json['noiseAmount'] ?? 0.0,
-      lfos: (json['lfos'] as List?)?.map((lfo) => LFOPresetData.fromJson(lfo)).toList() ?? [],
+      lfos: (json['lfos'] as List?)
+              ?.map((lfo) => LFOPresetData.fromJson(lfo))
+              .toList() ??
+          [],
       masterVolume: json['masterVolume'] ?? 0.7,
       stereoWidth: json['stereoWidth'] ?? 1.0,
     );

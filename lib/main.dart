@@ -1,11 +1,11 @@
-/**
- * Synth-VIB3+ Main Application
- *
- * Professional holographic synthesizer with 4D visualization,
- * multi-touch XY pad, orb controller, and collapsible UI.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Synth-VIB3+ Main Application
+///
+/// Professional holographic synthesizer with 4D visualization,
+/// multi-touch XY pad, orb controller, and collapsible UI.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import 'core/synth_app_initializer.dart';

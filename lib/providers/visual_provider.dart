@@ -1,19 +1,19 @@
-/**
- * Visual Provider
- *
- * Manages the VIB34D visualization system state, providing
- * parameter control and state queries for the visual system.
- *
- * Responsibilities:
- * - VIB34D system state (Quantum, Holographic, Faceted)
- * - 4D rotation angles (XW, YW, ZW planes)
- * - Visual parameters (tessellation, brightness, hue, glow, etc.)
- * - Geometry state (vertex count, morph parameter, complexity)
- * - Projection parameters (distance, layer depth)
- * - WebView bridge to JavaScript systems
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Visual Provider
+///
+/// Manages the VIB34D visualization system state, providing
+/// parameter control and state queries for the visual system.
+///
+/// Responsibilities:
+/// - VIB34D system state (Quantum, Holographic, Faceted)
+/// - 4D rotation angles (XW, YW, ZW planes)
+/// - Visual parameters (tessellation, brightness, hue, glow, etc.)
+/// - Geometry state (vertex count, morph parameter, complexity)
+/// - Projection parameters (distance, layer depth)
+/// - WebView bridge to JavaScript systems
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
@@ -51,7 +51,8 @@ class VisualProvider with ChangeNotifier {
   int _activeVertexCount = 120; // Current vertex count
   double _morphParameter = 0.0; // Geometry morph (0-1)
   int _currentGeometry = 0; // Base geometry index (0-7)
-  int _fullGeometryIndex = 0; // Full geometry index (0-23) for 72-combination matrix
+  int _fullGeometryIndex =
+      0; // Full geometry index (0-23) for 72-combination matrix
   double _geometryComplexity = 0.5; // Complexity measure (0-1)
 
   // Projection parameters
@@ -116,14 +117,15 @@ class VisualProvider with ChangeNotifier {
     // VIB3+ uses window.switchSystem(), not window.vib34d.switchSystem()
     if (_webViewController != null) {
       try {
-        await _webViewController!
-            .runJavaScript('if (window.switchSystem) { window.switchSystem("$systemName"); }');
+        await _webViewController!.runJavaScript(
+            'if (window.switchSystem) { window.switchSystem("$systemName"); }');
         debugPrint('✅ VIB3+ system switched to $systemName');
       } catch (e) {
         debugPrint('❌ Error switching VIB3+ system: $e');
       }
     } else {
-      debugPrint('⚠️  WebView controller not initialized - system switch deferred');
+      debugPrint(
+          '⚠️  WebView controller not initialized - system switch deferred');
     }
 
     // Update vertex count and complexity based on system
@@ -131,17 +133,20 @@ class VisualProvider with ChangeNotifier {
       case 'quantum':
         _activeVertexCount = 120; // Tesseract has 120 cells
         _geometryComplexity = 0.8;
-        debugPrint('   Quantum: vertices=120, complexity=0.8 (Pure harmonic synthesis)');
+        debugPrint(
+            '   Quantum: vertices=120, complexity=0.8 (Pure harmonic synthesis)');
         break;
       case 'holographic':
         _activeVertexCount = 500; // 5 layers × 100 vertices
         _geometryComplexity = 0.9;
-        debugPrint('   Holographic: vertices=500, complexity=0.9 (Spectral rich synthesis)');
+        debugPrint(
+            '   Holographic: vertices=500, complexity=0.9 (Spectral rich synthesis)');
         break;
       case 'faceted':
         _activeVertexCount = 50; // Simpler geometry
         _geometryComplexity = 0.3;
-        debugPrint('   Faceted: vertices=50, complexity=0.3 (Geometric hybrid synthesis)');
+        debugPrint(
+            '   Faceted: vertices=50, complexity=0.3 (Geometric hybrid synthesis)');
         break;
     }
 
@@ -344,7 +349,8 @@ class VisualProvider with ChangeNotifier {
 
     debugPrint('🎯 Full Geometry Set: $previousFullGeometry → $clampedIndex');
     debugPrint('   Core: $coreIndex (${_coreNames[coreIndex]})');
-    debugPrint('   Base Geometry: $baseGeometry (${_geometryNames[baseGeometry]})');
+    debugPrint(
+        '   Base Geometry: $baseGeometry (${_geometryNames[baseGeometry]})');
     debugPrint('   Target System: $targetSystem');
 
     // Switch system if needed
@@ -616,8 +622,8 @@ class VisualProvider with ChangeNotifier {
     }
 
     try {
-      _webViewController!
-          .runJavaScript('if (window.updateParameter) { window.updateParameter("$key", $value); }');
+      _webViewController!.runJavaScript(
+          'if (window.updateParameter) { window.updateParameter("$key", $value); }');
     } catch (e) {
       debugPrint('⚠️ Failed to update VIB3+ parameter $key: $e');
     }
@@ -633,7 +639,8 @@ class VisualProvider with ChangeNotifier {
 
     try {
       // Convert parameters to JSON-like object
-      final paramsJson = params.entries.map((e) => '"${e.key}": ${e.value}').join(', ');
+      final paramsJson =
+          params.entries.map((e) => '"${e.key}": ${e.value}').join(', ');
 
       await _webViewController!.runJavaScript(
           'if (window.updateParameters) { window.updateParameters({$paramsJson}); }');
@@ -688,10 +695,20 @@ class VisualProvider with ChangeNotifier {
         };
       }
 
-      return {'ready': false, 'quantum': false, 'faceted': false, 'holographic': false};
+      return {
+        'ready': false,
+        'quantum': false,
+        'faceted': false,
+        'holographic': false
+      };
     } catch (e) {
       debugPrint('⚠️ Failed to query Smart Canvas state: $e');
-      return {'ready': false, 'quantum': false, 'faceted': false, 'holographic': false};
+      return {
+        'ready': false,
+        'quantum': false,
+        'faceted': false,
+        'holographic': false
+      };
     }
   }
 
@@ -725,7 +742,8 @@ class VisualProvider with ChangeNotifier {
     if (_webViewController == null) return;
 
     try {
-      await _webViewController!.runJavaScript('if (window.toggleDebug) { window.toggleDebug(); }');
+      await _webViewController!
+          .runJavaScript('if (window.toggleDebug) { window.toggleDebug(); }');
       debugPrint('🐛 Toggled Smart Canvas debug overlay');
     } catch (e) {
       debugPrint('⚠️ Failed to toggle debug: $e');

@@ -1,20 +1,20 @@
-/**
- * Panel Docking System
- *
- * Manages panel docking with snap-to-edge functionality, magnetic
- * snapping, collision detection, and auto-layout when docked.
- *
- * Features:
- * - 5 dock zones (top, bottom, left, right, float)
- * - Magnetic snapping with distance threshold
- * - Collision detection
- * - Auto-layout when docked
- * - Dock zone visualization
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 2
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Panel Docking System
+///
+/// Manages panel docking with snap-to-edge functionality, magnetic
+/// snapping, collision detection, and auto-layout when docked.
+///
+/// Features:
+/// - 5 dock zones (top, bottom, left, right, float)
+/// - Magnetic snapping with distance threshold
+/// - Collision detection
+/// - Auto-layout when docked
+/// - Dock zone visualization
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -286,7 +286,9 @@ class PanelDockSystem extends ChangeNotifier {
 
       case DockZone.right:
         return Rect.fromLTWH(
-          containerSize.width - config.dockZoneMargin.right - config.dockedPanelSize,
+          containerSize.width -
+              config.dockZoneMargin.right -
+              config.dockedPanelSize,
           config.dockZoneMargin.top + (order * (config.dockedPanelSize + 8)),
           config.dockedPanelSize,
           containerSize.height - config.dockZoneMargin.vertical,
@@ -337,7 +339,8 @@ class PanelDockSystem extends ChangeNotifier {
   }
 
   /// Get all colliding panels
-  List<DockedPanelInfo> getCollidingPanels(Rect rect, {String? excludePanelId}) {
+  List<DockedPanelInfo> getCollidingPanels(Rect rect,
+      {String? excludePanelId}) {
     final collisions = <DockedPanelInfo>[];
 
     for (final entry in _panels.entries) {
@@ -371,7 +374,8 @@ class PanelDockSystem extends ChangeNotifier {
 
     for (final offset in offsets) {
       final testRect = targetRect.shift(offset);
-      if (!hasCollision(testRect, excludePanelId: excludePanelId) && _isRectInBounds(testRect)) {
+      if (!hasCollision(testRect, excludePanelId: excludePanelId) &&
+          _isRectInBounds(testRect)) {
         return testRect;
       }
     }
@@ -426,10 +430,12 @@ class PanelDockSystem extends ChangeNotifier {
   int get panelCount => _panels.length;
 
   /// Get number of docked panels
-  int get dockedPanelCount => _panels.values.where((p) => p.zone.isDocked).length;
+  int get dockedPanelCount =>
+      _panels.values.where((p) => p.zone.isDocked).length;
 
   /// Get number of floating panels
-  int get floatingPanelCount => _panels.values.where((p) => p.zone == DockZone.floating).length;
+  int get floatingPanelCount =>
+      _panels.values.where((p) => p.zone == DockZone.floating).length;
 
   /// Clear all panels
   void clear() {

@@ -1,20 +1,20 @@
-/**
- * Resize Handle Widget
- *
- * Interactive handles for resizing panels. Supports corner and edge
- * handles with visual feedback and snap-to-grid behavior.
- *
- * Features:
- * - Corner handles (8 directions)
- * - Edge handles (4 directions)
- * - Visual feedback (hover, active)
- * - Snap-to-grid support
- * - Touch-optimized sizes
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 2
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Resize Handle Widget
+///
+/// Interactive handles for resizing panels. Supports corner and edge
+/// handles with visual feedback and snap-to-grid behavior.
+///
+/// Features:
+/// - Corner handles (8 directions)
+/// - Edge handles (4 directions)
+/// - Visual feedback (hover, active)
+/// - Snap-to-grid support
+/// - Touch-optimized sizes
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import '../theme/design_tokens.dart';

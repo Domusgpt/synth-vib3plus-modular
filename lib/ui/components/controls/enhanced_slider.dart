@@ -1,23 +1,23 @@
-/**
- * Enhanced Slider
- *
- * Advanced parameter slider with multiple styles, value visualization,
- * modulation indicators, and musical curve mappings.
- *
- * Features:
- * - Multiple styles (horizontal, vertical)
- * - Value graph (historical values)
- * - Modulation indicator
- * - Range markers (min/mid/max)
- * - Color coding by parameter type
- * - Fine control mode (long-press)
- * - Double-tap to reset
- * - Audio-reactive visual effects
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Enhanced Slider
+///
+/// Advanced parameter slider with multiple styles, value visualization,
+/// modulation indicators, and musical curve mappings.
+///
+/// Features:
+/// - Multiple styles (horizontal, vertical)
+/// - Value graph (historical values)
+/// - Modulation indicator
+/// - Range markers (min/mid/max)
+/// - Color coding by parameter type
+/// - Fine control mode (long-press)
+/// - Double-tap to reset
+/// - Audio-reactive visual effects
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -205,7 +205,8 @@ class _EnhancedSliderState extends State<EnhancedSlider> {
 
     final sensitivity = _isFineControl ? widget.config.fineControlFactor : 1.0;
 
-    final newValue = (widget.value + (delta / width) * sensitivity).clamp(0.0, 1.0);
+    final newValue =
+        (widget.value + (delta / width) * sensitivity).clamp(0.0, 1.0);
 
     widget.onChanged?.call(newValue);
   }
@@ -511,7 +512,8 @@ class _SliderPainter extends CustomPainter {
     canvas.drawCircle(position, outerRadius, outerPaint);
 
     // Inner fill
-    final innerPaint = Paint()..color = color.withOpacity(isDragging ? 0.8 : 0.6);
+    final innerPaint = Paint()
+      ..color = color.withOpacity(isDragging ? 0.8 : 0.6);
 
     canvas.drawCircle(position, outerRadius - 4, innerPaint);
 

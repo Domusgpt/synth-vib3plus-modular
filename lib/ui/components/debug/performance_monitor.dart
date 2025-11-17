@@ -1,26 +1,26 @@
-/**
- * Performance Monitor
- *
- * Real-time performance monitoring dashboard for tracking FPS, audio latency,
- * memory usage, CPU usage, and system health metrics.
- *
- * Features:
- * - Real-time FPS graph (target: 60 FPS)
- * - Audio latency monitoring (<10ms target)
- * - Memory usage tracking
- * - CPU usage monitoring
- * - Parameter update rate tracking (60 Hz target)
- * - Active voice count
- * - Particle count
- * - WebView communication latency
- * - Historical performance graphs
- * - Performance warnings and alerts
- * - Exportable performance logs
- *
- * Part of the Integration Layer (Phase 3.5)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Performance Monitor
+///
+/// Real-time performance monitoring dashboard for tracking FPS, audio latency,
+/// memory usage, CPU usage, and system health metrics.
+///
+/// Features:
+/// - Real-time FPS graph (target: 60 FPS)
+/// - Audio latency monitoring (<10ms target)
+/// - Memory usage tracking
+/// - CPU usage monitoring
+/// - Parameter update rate tracking (60 Hz target)
+/// - Active voice count
+/// - Particle count
+/// - WebView communication latency
+/// - Historical performance graphs
+/// - Performance warnings and alerts
+/// - Exportable performance logs
+///
+/// Part of the Integration Layer (Phase 3.5)
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:async';
 import 'dart:math' as math;
@@ -57,11 +57,14 @@ class PerformanceMetrics {
     required this.timestamp,
   });
 
-  bool get isHealthy => fps >= 55 && audioLatency < 15 && parameterUpdateRate >= 55;
+  bool get isHealthy =>
+      fps >= 55 && audioLatency < 15 && parameterUpdateRate >= 55;
 
-  bool get hasWarnings => fps < 55 || audioLatency >= 15 || parameterUpdateRate < 55;
+  bool get hasWarnings =>
+      fps < 55 || audioLatency >= 15 || parameterUpdateRate < 55;
 
-  bool get hasCriticalIssues => fps < 30 || audioLatency >= 30 || parameterUpdateRate < 30;
+  bool get hasCriticalIssues =>
+      fps < 30 || audioLatency >= 30 || parameterUpdateRate < 30;
 }
 
 // ============================================================================
@@ -267,7 +270,8 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
             ),
 
           // Warnings
-          if (widget.showWarnings && _currentMetrics!.hasWarnings) _buildWarnings(),
+          if (widget.showWarnings && _currentMetrics!.hasWarnings)
+            _buildWarnings(),
         ],
       ),
     );
@@ -323,31 +327,37 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
         children: [
           Row(
             children: [
-              Expanded(child: _buildMetricCard('FPS', _currentMetrics!.fps, 'fps', 60)),
-              const SizedBox(width: DesignTokens.spacing2),
-              Expanded(child: _buildMetricCard('Latency', _currentMetrics!.audioLatency, 'ms', 10)),
-            ],
-          ),
-          const SizedBox(height: DesignTokens.spacing2),
-          Row(
-            children: [
-              Expanded(
-                  child: _buildMetricCard(
-                      'Update Rate', _currentMetrics!.parameterUpdateRate, 'Hz', 60)),
-              const SizedBox(width: DesignTokens.spacing2),
               Expanded(
                   child:
-                      _buildMetricCard('Voices', _currentMetrics!.activeVoices.toDouble(), '', 8)),
+                      _buildMetricCard('FPS', _currentMetrics!.fps, 'fps', 60)),
+              const SizedBox(width: DesignTokens.spacing2),
+              Expanded(
+                  child: _buildMetricCard(
+                      'Latency', _currentMetrics!.audioLatency, 'ms', 10)),
             ],
           ),
           const SizedBox(height: DesignTokens.spacing2),
           Row(
             children: [
               Expanded(
-                  child: _buildMetricCard(
-                      'Particles', _currentMetrics!.particleCount.toDouble(), '', 500)),
+                  child: _buildMetricCard('Update Rate',
+                      _currentMetrics!.parameterUpdateRate, 'Hz', 60)),
               const SizedBox(width: DesignTokens.spacing2),
-              Expanded(child: _buildMetricCard('Memory', _currentMetrics!.memoryUsage, 'MB', 200)),
+              Expanded(
+                  child: _buildMetricCard('Voices',
+                      _currentMetrics!.activeVoices.toDouble(), '', 8)),
+            ],
+          ),
+          const SizedBox(height: DesignTokens.spacing2),
+          Row(
+            children: [
+              Expanded(
+                  child: _buildMetricCard('Particles',
+                      _currentMetrics!.particleCount.toDouble(), '', 500)),
+              const SizedBox(width: DesignTokens.spacing2),
+              Expanded(
+                  child: _buildMetricCard(
+                      'Memory', _currentMetrics!.memoryUsage, 'MB', 200)),
             ],
           ),
         ],
@@ -355,9 +365,11 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
     );
   }
 
-  Widget _buildMetricCard(String label, double value, String unit, double target) {
+  Widget _buildMetricCard(
+      String label, double value, String unit, double target) {
     final isGood = value <= target || (label == 'FPS' && value >= target);
-    final color = isGood ? DesignTokens.stateSuccess : DesignTokens.stateWarning;
+    final color =
+        isGood ? DesignTokens.stateSuccess : DesignTokens.stateWarning;
 
     return Container(
       padding: const EdgeInsets.all(DesignTokens.spacing2),
@@ -445,7 +457,8 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
     );
   }
 
-  Widget _buildGraph(String label, List<double> values, Color color, double maxValue) {
+  Widget _buildGraph(
+      String label, List<double> values, Color color, double maxValue) {
     if (values.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(DesignTokens.spacing3),
@@ -493,7 +506,8 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
       warnings.add('Low FPS: ${_currentMetrics!.fps.toStringAsFixed(1)}');
     }
     if (_currentMetrics!.audioLatency >= 15) {
-      warnings.add('High audio latency: ${_currentMetrics!.audioLatency.toStringAsFixed(1)}ms');
+      warnings.add(
+          'High audio latency: ${_currentMetrics!.audioLatency.toStringAsFixed(1)}ms');
     }
     if (_currentMetrics!.parameterUpdateRate < 55) {
       warnings.add(
@@ -521,7 +535,9 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           Row(
             children: [
               Icon(
-                _currentMetrics!.hasCriticalIssues ? Icons.error : Icons.warning,
+                _currentMetrics!.hasCriticalIssues
+                    ? Icons.error
+                    : Icons.warning,
                 color: _currentMetrics!.hasCriticalIssues
                     ? DesignTokens.stateError
                     : DesignTokens.stateWarning,
@@ -697,7 +713,8 @@ class CompactPerformanceOverlay extends StatelessWidget {
 
   Widget _buildCompactMetric(String label, double value, double target) {
     final isGood = value >= target || (label == 'LAT' && value <= target);
-    final color = isGood ? DesignTokens.stateSuccess : DesignTokens.stateWarning;
+    final color =
+        isGood ? DesignTokens.stateSuccess : DesignTokens.stateWarning;
 
     return Row(
       mainAxisSize: MainAxisSize.min,

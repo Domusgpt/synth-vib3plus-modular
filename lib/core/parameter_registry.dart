@@ -1,15 +1,15 @@
-/**
- * Parameter Registry System
- *
- * Centralized parameter definitions with metadata for:
- * - Validation and range clamping
- * - Alias support for backward compatibility
- * - Visualizer target mapping
- * - Automatic parameter discovery
- *
- * Adopted from synther-refactored architecture
- * A Paul Phillips Manifestation
- */
+///
+/// Parameter Registry System
+///
+/// Centralized parameter definitions with metadata for:
+/// - Validation and range clamping
+/// - Alias support for backward compatibility
+/// - Visualizer target mapping
+/// - Automatic parameter discovery
+///
+/// Adopted from synther-refactored architecture
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 
@@ -194,7 +194,9 @@ class ParameterRegistry {
 
   /// Get all parameters in category
   static List<ParameterDescriptor> getCategory(String category) {
-    return _descriptors.values.where((desc) => desc.category == category).toList();
+    return _descriptors.values
+        .where((desc) => desc.category == category)
+        .toList();
   }
 
   /// Get all registered parameter names
@@ -312,7 +314,10 @@ void initializeDefaultParameterRegistry() {
     ParameterDescriptor(
       name: 'filterCutoff',
       range: ParameterRange(
-          min: 20.0, max: 20000.0, defaultValue: 1000.0, curve: CurveType.exponential),
+          min: 20.0,
+          max: 20000.0,
+          defaultValue: 1000.0,
+          curve: CurveType.exponential),
       visualizerTarget: '',
       aliases: ['cutoff', 'filter_cutoff', 'lpf_freq'],
       category: 'audio',
@@ -377,7 +382,11 @@ void initializeDefaultParameterRegistry() {
 
     ParameterDescriptor(
       name: 'envelopeAttack',
-      range: ParameterRange(min: 0.001, max: 5.0, defaultValue: 0.01, curve: CurveType.exponential),
+      range: ParameterRange(
+          min: 0.001,
+          max: 5.0,
+          defaultValue: 0.01,
+          curve: CurveType.exponential),
       visualizerTarget: '',
       aliases: ['attack', 'env_attack'],
       category: 'envelope',
@@ -386,7 +395,11 @@ void initializeDefaultParameterRegistry() {
 
     ParameterDescriptor(
       name: 'envelopeDecay',
-      range: ParameterRange(min: 0.001, max: 5.0, defaultValue: 0.1, curve: CurveType.exponential),
+      range: ParameterRange(
+          min: 0.001,
+          max: 5.0,
+          defaultValue: 0.1,
+          curve: CurveType.exponential),
       visualizerTarget: '',
       aliases: ['decay', 'env_decay'],
       category: 'envelope',
@@ -404,7 +417,11 @@ void initializeDefaultParameterRegistry() {
 
     ParameterDescriptor(
       name: 'envelopeRelease',
-      range: ParameterRange(min: 0.001, max: 10.0, defaultValue: 0.3, curve: CurveType.exponential),
+      range: ParameterRange(
+          min: 0.001,
+          max: 10.0,
+          defaultValue: 0.3,
+          curve: CurveType.exponential),
       visualizerTarget: '',
       aliases: ['release', 'env_release'],
       category: 'envelope',

@@ -1,15 +1,15 @@
-/**
- * Modulation Matrix System
- *
- * Flexible parameter routing system enabling:
- * - Multiple modulation sources → destinations
- * - User-configurable routing
- * - Preset-stored modulation configurations
- * - Depth aggregation for multiple sources
- *
- * Adopted from synther-refactored architecture
- * A Paul Phillips Manifestation
- */
+///
+/// Modulation Matrix System
+///
+/// Flexible parameter routing system enabling:
+/// - Multiple modulation sources → destinations
+/// - User-configurable routing
+/// - Preset-stored modulation configurations
+/// - Depth aggregation for multiple sources
+///
+/// Adopted from synther-refactored architecture
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:collection';
 
@@ -26,7 +26,8 @@ class ModulationRoute {
   });
 
   /// Route key for map storage
-  String get key => '${source.trim().toLowerCase()}->${destination.trim().toLowerCase()}';
+  String get key =>
+      '${source.trim().toLowerCase()}->${destination.trim().toLowerCase()}';
 
   /// Copy with modifications
   ModulationRoute copyWith({
@@ -60,7 +61,8 @@ class ModulationRoute {
   }
 
   @override
-  String toString() => '$source → $destination (${(amount * 100).toStringAsFixed(0)}%)';
+  String toString() =>
+      '$source → $destination (${(amount * 100).toStringAsFixed(0)}%)';
 }
 
 /// Modulation matrix managing all routing

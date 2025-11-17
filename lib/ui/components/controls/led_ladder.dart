@@ -1,22 +1,22 @@
-/**
- * LED Ladder
- *
- * Discrete step control with LED-style visualization. Perfect for
- * parameters with discrete values (filter types, waveforms, etc.).
- *
- * Features:
- * - Vertical LED bar visualization
- * - Discrete steps (tap to select)
- * - Drag to sweep through values
- * - Glow effect on active LEDs
- * - Audio-reactive brightness
- * - Labels for each step (optional)
- * - Color coding by value
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// LED Ladder
+///
+/// Discrete step control with LED-style visualization. Perfect for
+/// parameters with discrete values (filter types, waveforms, etc.).
+///
+/// Features:
+/// - Vertical LED bar visualization
+/// - Discrete steps (tap to select)
+/// - Drag to sweep through values
+/// - Glow effect on active LEDs
+/// - Audio-reactive brightness
+/// - Labels for each step (optional)
+/// - Color coding by value
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -136,8 +136,9 @@ class _LEDLadderState extends State<LEDLadder> {
     final stepHeight = widget.config.height / widget.config.stepCount;
 
     // Invert Y (top = highest value)
-    final step =
-        ((widget.config.height - y) / stepHeight).floor().clamp(0, widget.config.stepCount - 1);
+    final step = ((widget.config.height - y) / stepHeight)
+        .floor()
+        .clamp(0, widget.config.stepCount - 1);
 
     if (step != widget.value) {
       widget.onChanged?.call(step);
@@ -201,7 +202,8 @@ class _LEDLadderState extends State<LEDLadder> {
   }
 
   String _getValueLabel(int value) {
-    if (widget.config.stepLabels != null && value < widget.config.stepLabels!.length) {
+    if (widget.config.stepLabels != null &&
+        value < widget.config.stepLabels!.length) {
       return widget.config.stepLabels![value];
     }
     return '${value + 1}';
@@ -236,7 +238,8 @@ class _LEDLadderPainter extends CustomPainter {
     final ledWidth = size.width - 8; // 4px margin each side
 
     // Audio-reactive brightness
-    final brightnessFactor = audioFeatures != null ? 1.0 + (audioFeatures!.rms * 0.5) : 1.0;
+    final brightnessFactor =
+        audioFeatures != null ? 1.0 + (audioFeatures!.rms * 0.5) : 1.0;
 
     // Draw each LED
     for (int i = 0; i < stepCount; i++) {

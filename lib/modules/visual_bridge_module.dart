@@ -1,14 +1,14 @@
-/**
- * Visual Bridge Module - VIB3+ WebView Communication
- *
- * HYBRID WRAPPER: Wraps existing VisualProvider with professional
- * module infrastructure (logging, diagnostics, health monitoring).
- *
- * Manages WebView initialization, VIB3+ engine loading,
- * JavaScript bridge, and parameter synchronization.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Visual Bridge Module - VIB3+ WebView Communication
+///
+/// HYBRID WRAPPER: Wraps existing VisualProvider with professional
+/// module infrastructure (logging, diagnostics, health monitoring).
+///
+/// Manages WebView initialization, VIB3+ engine loading,
+/// JavaScript bridge, and parameter synchronization.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:webview_flutter/webview_flutter.dart';
 import '../core/synth_module.dart';
@@ -65,7 +65,9 @@ class VisualBridgeModule extends SynthModule {
 
   @override
   Map<String, dynamic> getDiagnostics() {
-    final uptime = _startTime != null ? DateTime.now().difference(_startTime!) : Duration.zero;
+    final uptime = _startTime != null
+        ? DateTime.now().difference(_startTime!)
+        : Duration.zero;
 
     return {
       'vib3Loaded': _isInitialized,
@@ -76,7 +78,8 @@ class VisualBridgeModule extends SynthModule {
       'parameterUpdates': _parameterUpdateCount,
       'systemSwitches': _systemSwitchCount,
       'geometrySwitches': _geometrySwitchCount,
-      'uptime': '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
+      'uptime':
+          '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
       'healthy': isHealthy,
     };
   }
@@ -165,7 +168,8 @@ class VisualBridgeModule extends SynthModule {
     if (!_isInitialized) return;
 
     if (geometryIndex < 0 || geometryIndex > 23) {
-      SynthLogger.warning('VisualBridge', 'Invalid geometry index: $geometryIndex');
+      SynthLogger.warning(
+          'VisualBridge', 'Invalid geometry index: $geometryIndex');
       return;
     }
 

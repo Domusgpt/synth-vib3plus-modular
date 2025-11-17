@@ -1,16 +1,16 @@
-/**
- * Collapsible Bezel Component
- *
- * Base widget for bottom bezel panels that slide up from the bottom edge.
- * Features smooth animations, glassmorphic styling, and lock functionality.
- *
- * Visual States:
- * - Collapsed: 56px height showing tab button
- * - Expanded: 300px height showing full content
- * - Locked: Long-press to keep panel open
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Collapsible Bezel Component
+///
+/// Base widget for bottom bezel panels that slide up from the bottom edge.
+/// Features smooth animations, glassmorphic styling, and lock functionality.
+///
+/// Visual States:
+/// - Collapsed: 56px height showing tab button
+/// - Expanded: 300px height showing full content
+/// - Locked: Long-press to keep panel open
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/material.dart';
 import '../theme/synth_theme.dart';
@@ -41,7 +41,8 @@ class CollapsibleBezel extends StatefulWidget {
   State<CollapsibleBezel> createState() => _CollapsibleBezelState();
 }
 
-class _CollapsibleBezelState extends State<CollapsibleBezel> with SingleTickerProviderStateMixin {
+class _CollapsibleBezelState extends State<CollapsibleBezel>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _heightAnimation;
   late Animation<double> _opacityAnimation;
@@ -141,7 +142,9 @@ class _CollapsibleBezelState extends State<CollapsibleBezel> with SingleTickerPr
                     children: [
                       Icon(
                         widget.icon,
-                        color: isExpanded ? widget.systemColors.primary : SynthTheme.textSecondary,
+                        color: isExpanded
+                            ? widget.systemColors.primary
+                            : SynthTheme.textSecondary,
                         size: 20,
                       ),
                       const SizedBox(width: SynthTheme.spacingSmall),
@@ -149,7 +152,8 @@ class _CollapsibleBezelState extends State<CollapsibleBezel> with SingleTickerPr
                         widget.label,
                         style: SynthTheme.textStyleBody.copyWith(
                           color: theme.getTextColor(isExpanded),
-                          fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal,
+                          fontWeight:
+                              isExpanded ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
                       if (_isLocked) ...[
@@ -163,8 +167,12 @@ class _CollapsibleBezelState extends State<CollapsibleBezel> with SingleTickerPr
                       // Expansion indicator
                       const Spacer(),
                       Icon(
-                        isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
-                        color: isExpanded ? widget.systemColors.primary : SynthTheme.textSecondary,
+                        isExpanded
+                            ? Icons.keyboard_arrow_down
+                            : Icons.keyboard_arrow_up,
+                        color: isExpanded
+                            ? widget.systemColors.primary
+                            : SynthTheme.textSecondary,
                         size: 20,
                       ),
                     ],
@@ -352,7 +360,8 @@ class BottomBezelContainer extends StatelessWidget {
     }
   }
 
-  Widget _getExpandedPanelContent(BuildContext context, UIStateProvider uiState) {
+  Widget _getExpandedPanelContent(
+      BuildContext context, UIStateProvider uiState) {
     final id = _getExpandedPanelId(uiState);
     switch (id) {
       case 'parameters':

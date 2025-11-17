@@ -1,15 +1,15 @@
-/**
- * Enhanced Parameter Mapping System
- *
- * Professional parameter mapping with:
- * - Musical scaling curves (exponential, logarithmic, S-curve)
- * - Velocity sensitivity
- * - Aftertouch/pressure support
- * - Smart parameter ranges optimized for human perception
- * - Preset-based mapping configurations
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Enhanced Parameter Mapping System
+///
+/// Professional parameter mapping with:
+/// - Musical scaling curves (exponential, logarithmic, S-curve)
+/// - Velocity sensitivity
+/// - Aftertouch/pressure support
+/// - Smart parameter ranges optimized for human perception
+/// - Preset-based mapping configurations
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'dart:math' as math;
 
@@ -60,9 +60,11 @@ class EnhancedMapping {
       }
       // Scale to account for dead zone
       if (normalized > 0.5) {
-        normalized = 0.5 + (normalized - 0.5 - deadZone / 2) / (0.5 - deadZone / 2);
+        normalized =
+            0.5 + (normalized - 0.5 - deadZone / 2) / (0.5 - deadZone / 2);
       } else {
-        normalized = 0.5 - (0.5 - normalized - deadZone / 2) / (0.5 - deadZone / 2);
+        normalized =
+            0.5 - (0.5 - normalized - deadZone / 2) / (0.5 - deadZone / 2);
       }
     } else {
       // Unipolar: 0 is start
@@ -362,7 +364,8 @@ class ScaleQuantizer {
   }
 
   /// Predefined scales
-  static const chromatic = ScaleQuantizer([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+  static const chromatic =
+      ScaleQuantizer([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
   static const major = ScaleQuantizer([0, 2, 4, 5, 7, 9, 11]);
   static const minor = ScaleQuantizer([0, 2, 3, 5, 7, 8, 10]);
   static const pentatonicMajor = ScaleQuantizer([0, 2, 4, 7, 9]);

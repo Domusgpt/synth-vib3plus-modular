@@ -1,11 +1,11 @@
-/**
- * Enhanced Logging System for Synth-VIB3+
- *
- * Provides comprehensive, emoji-enriched logging that matches
- * the VIB3+ JavaScript codebase's logging style.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Enhanced Logging System for Synth-VIB3+
+///
+/// Provides comprehensive, emoji-enriched logging that matches
+/// the VIB3+ JavaScript codebase's logging style.
+///
+/// A Paul Phillips Manifestation
+////
 
 import 'package:flutter/foundation.dart';
 
@@ -88,7 +88,8 @@ class SynthLogger {
   }
 
   static void noteOn(int noteNumber, double velocity) {
-    debugPrint('🎹 Note ON: $noteNumber (velocity: ${velocity.toStringAsFixed(2)})');
+    debugPrint(
+        '🎹 Note ON: $noteNumber (velocity: ${velocity.toStringAsFixed(2)})');
   }
 
   static void noteOff(int noteNumber) {
@@ -140,8 +141,10 @@ class SynthLogger {
     required bool audioToVisual,
     required bool visualToAudio,
   }) {
-    debugPrint('✅ Audio→Visual modulation: ${audioToVisual ? "ENABLED" : "disabled"}');
-    debugPrint('✅ Visual→Audio modulation: ${visualToAudio ? "ENABLED" : "disabled"}');
+    debugPrint(
+        '✅ Audio→Visual modulation: ${audioToVisual ? "ENABLED" : "disabled"}');
+    debugPrint(
+        '✅ Visual→Audio modulation: ${visualToAudio ? "ENABLED" : "disabled"}');
   }
 
   static void parameterUpdate(String param, dynamic value) {
@@ -200,7 +203,8 @@ class SynthLogger {
     required double complexity,
     required String synthesisMode,
   }) {
-    debugPrint('   $system: vertices=$vertices, complexity=$complexity ($synthesisMode)');
+    debugPrint(
+        '   $system: vertices=$vertices, complexity=$complexity ($synthesisMode)');
   }
 
   static void geometrySwitch(int from, int to) {
@@ -292,7 +296,8 @@ class SynthLogger {
   }
 
   static void tiltCalibrationComplete(double x, double y) {
-    debugPrint('✅ Calibration complete: X=${x.toStringAsFixed(2)}, Y=${y.toStringAsFixed(2)}');
+    debugPrint(
+        '✅ Calibration complete: X=${x.toStringAsFixed(2)}, Y=${y.toStringAsFixed(2)}');
   }
 
   static void tiltSensitivity(double sensitivity, double smoothing) {
