@@ -19,12 +19,12 @@ void main() {
 
   group('ParameterBridge - Initialization', () {
     test('should initialize with audio and visual providers', () {
-      final audioProvider = AudioProvider();
+      final audioProvider = MockAudioProvider();
       final visualProvider = MockVisualProvider();
 
       final bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
 
       expect(bridge.isRunning, isFalse, reason: 'Should not be running initially');
@@ -32,12 +32,12 @@ void main() {
     });
 
     test('should start 60 FPS update loop', () async {
-      final audioProvider = AudioProvider();
+      final audioProvider = MockAudioProvider();
       final visualProvider = MockVisualProvider();
 
       final bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
 
       bridge.start();
@@ -53,12 +53,12 @@ void main() {
     });
 
     test('should stop update loop', () async {
-      final audioProvider = AudioProvider();
+      final audioProvider = MockAudioProvider();
       final visualProvider = MockVisualProvider();
 
       final bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
 
       bridge.start();
@@ -70,16 +70,16 @@ void main() {
   });
 
   group('ParameterBridge - Audio to Visual Coupling', () {
-    late AudioProvider audioProvider;
+    late MockAudioProvider audioProvider;
     late MockVisualProvider visualProvider;
     late ParameterBridge bridge;
 
     setUp(() {
-      audioProvider = AudioProvider();
+      audioProvider = MockAudioProvider();
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
       bridge.start();
     });
@@ -140,16 +140,16 @@ void main() {
   });
 
   group('ParameterBridge - Visual to Audio Coupling', () {
-    late AudioProvider audioProvider;
+    late MockAudioProvider audioProvider;
     late MockVisualProvider visualProvider;
     late ParameterBridge bridge;
 
     setUp(() {
-      audioProvider = AudioProvider();
+      audioProvider = MockAudioProvider();
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
       bridge.start();
     });
@@ -218,16 +218,16 @@ void main() {
   });
 
   group('ParameterBridge - Mapping Presets', () {
-    late AudioProvider audioProvider;
+    late MockAudioProvider audioProvider;
     late MockVisualProvider visualProvider;
     late ParameterBridge bridge;
 
     setUp(() {
-      audioProvider = AudioProvider();
+      audioProvider = MockAudioProvider();
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
     });
 
@@ -274,16 +274,16 @@ void main() {
   });
 
   group('ParameterBridge - Performance', () {
-    late AudioProvider audioProvider;
+    late MockAudioProvider audioProvider;
     late MockVisualProvider visualProvider;
     late ParameterBridge bridge;
 
     setUp(() {
-      audioProvider = AudioProvider();
+      audioProvider = MockAudioProvider();
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
     });
 
@@ -336,16 +336,16 @@ void main() {
   });
 
   group('ParameterBridge - Edge Cases', () {
-    late AudioProvider audioProvider;
+    late MockAudioProvider audioProvider;
     late MockVisualProvider visualProvider;
     late ParameterBridge bridge;
 
     setUp(() {
-      audioProvider = AudioProvider();
+      audioProvider = MockAudioProvider();
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
     });
 
@@ -408,16 +408,16 @@ void main() {
   });
 
   group('ParameterBridge - All 72 Combinations Integration', () {
-    late AudioProvider audioProvider;
+    late MockAudioProvider audioProvider;
     late MockVisualProvider visualProvider;
     late ParameterBridge bridge;
 
     setUp(() {
-      audioProvider = AudioProvider();
+      audioProvider = MockAudioProvider();
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
       bridge.start();
     });
@@ -453,16 +453,16 @@ void main() {
   });
 
   group('ParameterBridge - Bidirectional Coupling Verification', () {
-    late AudioProvider audioProvider;
+    late MockAudioProvider audioProvider;
     late MockVisualProvider visualProvider;
     late ParameterBridge bridge;
 
     setUp(() {
-      audioProvider = AudioProvider();
+      audioProvider = MockAudioProvider();
       visualProvider = MockVisualProvider();
       bridge = ParameterBridge(
-        audioProvider: audioProvider,
-        visualProvider: visualProvider as dynamic,
+        audioProvider: audioProvider as dynamic,
+        visualProvider: visualProvider,
       );
       bridge.start();
     });
