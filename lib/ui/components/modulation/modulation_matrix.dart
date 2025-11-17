@@ -22,7 +22,6 @@
 
 library;
 
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';

@@ -25,7 +25,6 @@
 library;
 
 import 'dart:async';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../../theme/design_tokens.dart';

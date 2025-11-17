@@ -21,7 +21,6 @@ import 'package:provider/provider.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/visual_provider.dart';
 import '../theme/design_tokens.dart';
-import '../theme/synth_theme.dart';
 
 class ModulationIndicator extends StatefulWidget {
   final bool showAudioToVisual;

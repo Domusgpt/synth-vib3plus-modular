@@ -15,12 +15,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../theme/design_tokens.dart';
-import '../theme/synth_theme.dart';
 import '../utils/haptic_feedback.dart';
-import '../../providers/audio_provider.dart';
-import '../../providers/visual_provider.dart';
 
 class AdvancedSettingsPanel extends StatefulWidget {
   const AdvancedSettingsPanel({Key? key}) : super(key: key);

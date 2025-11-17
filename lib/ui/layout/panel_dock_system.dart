@@ -21,7 +21,6 @@ library;
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/design_tokens.dart';
-import 'flexible_layout.dart';
 
 // ============================================================================
 // DOCK ZONE

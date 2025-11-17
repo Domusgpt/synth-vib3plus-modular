@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
 
 // Providers
 import '../../providers/audio_provider.dart';
@@ -42,11 +41,9 @@ import '../components/presets/preset_browser.dart';
 import '../components/modulation/modulation_matrix.dart';
 import '../help/help_overlay.dart';
 import '../theme/design_tokens.dart';
-import '../../visual/vib34d_widget.dart';
 
 // Existing UI
 import 'synth_main_screen.dart';
-import '../theme/synth_theme.dart';
 import '../../core/synth_app_initializer.dart';
 
 /// Main integrated application

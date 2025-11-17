@@ -14,7 +14,6 @@ library;
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 /// Design token system for Synth-VIB3+ v3.0
 class DesignTokens {

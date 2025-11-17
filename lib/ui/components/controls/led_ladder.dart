@@ -20,7 +20,6 @@
 
 library;
 
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';

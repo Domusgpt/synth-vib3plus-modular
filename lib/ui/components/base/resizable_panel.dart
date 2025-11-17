@@ -25,7 +25,6 @@ import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
 import '../../layout/flexible_layout.dart';
 import '../../layout/resize_handle.dart';
-import 'reactive_component.dart';
 
 // ============================================================================
 // PANEL CONFIGURATION
