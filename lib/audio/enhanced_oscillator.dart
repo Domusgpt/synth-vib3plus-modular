@@ -52,7 +52,6 @@ class EnhancedOscillator {
   double syncPhase = 0.0;
 
   // Anti-aliasing
-  double _lastPhaseIncrement = 0.0;
 
   // Random number generator for noise
   final math.Random _random = math.Random();
@@ -67,7 +66,6 @@ class EnhancedOscillator {
     final phaseIncrement = frequency / sampleRate;
 
     // Store for anti-aliasing
-    _lastPhaseIncrement = phaseIncrement;
 
     // Handle sync
     if (enableSync) {

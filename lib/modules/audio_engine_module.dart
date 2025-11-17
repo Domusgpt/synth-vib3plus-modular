@@ -160,9 +160,7 @@ class AudioEngineModule extends SynthModule {
   void switchGeometry(int geometryIndex) {
     if (!_isInitialized) return;
 
-    final oldConfig = provider.getSynthesisConfig();
     provider.setGeometry(geometryIndex);
-    final newConfig = provider.getSynthesisConfig();
 
     SynthLogger.geometrySwitch(
       geometryIndex - 1 < 0 ? 0 : geometryIndex - 1,

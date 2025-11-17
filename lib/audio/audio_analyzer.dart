@@ -116,9 +116,6 @@ class AudioAnalyzer {
     final magnitudes = computeFFT(audioBuffer);
     final rms = computeRMS(audioBuffer);
 
-    // Detect transients
-    final isTransient = detectTransient(rms);
-
     return AudioFeatures(
       bassEnergy: getBandEnergy(magnitudes, bassMin, bassMax),
       midEnergy: getBandEnergy(magnitudes, midMin, midMax),

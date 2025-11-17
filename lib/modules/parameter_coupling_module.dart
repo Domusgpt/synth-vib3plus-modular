@@ -38,7 +38,6 @@ class ParameterCouplingModule extends SynthModule {
       ];
 
   late AudioEngineModule _audioModule;
-  late VisualBridgeModule _visualModule;
 
   late AudioToVisualModulator _audioToVisual;
   late VisualToAudioModulator _visualToAudio;
@@ -110,7 +109,6 @@ class ParameterCouplingModule extends SynthModule {
   /// Set module dependencies (called by ModuleManager after initialization)
   void setDependencies(AudioEngineModule audio, VisualBridgeModule visual) {
     _audioModule = audio;
-    _visualModule = visual;
 
     // Create modulators with the actual provider instances
     _audioToVisual = AudioToVisualModulator(

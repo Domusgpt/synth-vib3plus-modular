@@ -329,11 +329,8 @@ class SynthesizerEngine {
 
   // Portamento/Glide system (Hermite smoothstep interpolation)
   double _portamentoTime = 0.0; // seconds (0 = disabled)
-  double _glideStartFrequency = 440.0;
-  double _glideTargetFrequency = 440.0;
   double _glideCurrentFrequency = 440.0;
   DateTime? _glideStartTime;
-  bool _isGliding = false;
 
   // Legacy single-note tracking (for compatibility)
 
@@ -593,13 +590,6 @@ class SynthesizerEngine {
   /// Convert MIDI note to frequency
   double _midiToFrequency(int midiNote) {
     return 440.0 * math.pow(2.0, (midiNote - 69) / 12.0);
-  }
-
-  /// Smoothstep function for Hermite interpolation (from synther-refactored)
-  /// Provides smooth, natural-sounding pitch transitions
-  double _smoothStep(double t) {
-    final clamped = t.clamp(0.0, 1.0);
-    return clamped * clamped * (3.0 - 2.0 * clamped);
   }
 
   /// Update portamento/glide (called per sample when gliding is active)
