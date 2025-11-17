@@ -31,9 +31,9 @@ class ParameterCouplingModule extends SynthModule {
 
   @override
   List<Type> get dependencies => [
-    AudioEngineModule,
-    VisualBridgeModule,
-  ];
+        AudioEngineModule,
+        VisualBridgeModule,
+      ];
 
   late AudioEngineModule _audioModule;
   late VisualBridgeModule _visualModule;
@@ -68,19 +68,15 @@ class ParameterCouplingModule extends SynthModule {
 
   @override
   bool get isHealthy {
-    return _isRunning &&
-           _averageUpdateTime < 16.67; // Less than one frame at 60 FPS
+    return _isRunning && _averageUpdateTime < 16.67; // Less than one frame at 60 FPS
   }
 
   @override
   Map<String, dynamic> getDiagnostics() {
-    final uptime = _startTime != null
-        ? DateTime.now().difference(_startTime!)
-        : Duration.zero;
+    final uptime = _startTime != null ? DateTime.now().difference(_startTime!) : Duration.zero;
 
-    final actualRate = _updateCount > 0 && uptime.inSeconds > 0
-        ? _updateCount / uptime.inSeconds
-        : 0.0;
+    final actualRate =
+        _updateCount > 0 && uptime.inSeconds > 0 ? _updateCount / uptime.inSeconds : 0.0;
 
     return {
       'updateRate': '$_updateRate FPS (target)',
@@ -246,8 +242,7 @@ class ParameterCouplingModule extends SynthModule {
       // Performance warning if update takes too long
       if (elapsed > 16.67) {
         SynthLogger.performanceWarning(
-          'Parameter coupling update took ${elapsed.toStringAsFixed(2)}ms (>16.67ms)'
-        );
+            'Parameter coupling update took ${elapsed.toStringAsFixed(2)}ms (>16.67ms)');
       }
     } catch (e, stackTrace) {
       SynthLogger.error('ParameterCoupling', 'Update failed: $e');
@@ -266,7 +261,6 @@ class ParameterCouplingModule extends SynthModule {
       _updateDurations.removeAt(0);
     }
 
-    _averageUpdateTime = _updateDurations.reduce((a, b) => a + b) /
-                         _updateDurations.length;
+    _averageUpdateTime = _updateDurations.reduce((a, b) => a + b) / _updateDurations.length;
   }
 }

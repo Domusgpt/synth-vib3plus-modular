@@ -30,7 +30,7 @@ import '../ui/layout/panel_dock_system.dart';
 class LayoutState {
   final LayoutPreset currentPreset;
   final Map<String, PanelLayoutData> panels;
-  final bool isModified;  // Has been modified since loading preset
+  final bool isModified; // Has been modified since loading preset
   final LayoutBreakpoint breakpoint;
 
   const LayoutState({
@@ -275,7 +275,7 @@ class LayoutProvider extends ChangeNotifier {
     final panel = _state.panels[id];
     if (panel == null) return;
 
-    if (panel.visible == visible) return;  // No change
+    if (panel.visible == visible) return; // No change
 
     _saveToUndoStack();
 
@@ -330,8 +330,7 @@ class LayoutProvider extends ChangeNotifier {
   /// Suggest preset for breakpoint (internal)
   void _suggestPresetForBreakpoint(LayoutBreakpoint breakpoint) {
     // Find best matching factory preset for new breakpoint
-    final matchingPresets = FactoryPresets.getAll()
-        .where((p) => p.targetBreakpoint == breakpoint);
+    final matchingPresets = FactoryPresets.getAll().where((p) => p.targetBreakpoint == breakpoint);
 
     if (matchingPresets.isNotEmpty) {
       // Could show dialog to user asking if they want to switch

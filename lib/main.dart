@@ -17,7 +17,8 @@ void main() async {
 
   // Initialize parameter registry (centralized parameter definitions)
   initializeDefaultParameterRegistry();
-  debugPrint('✅ Parameter Registry initialized with ${ParameterRegistry.getAllNames().length} parameters');
+  debugPrint(
+      '✅ Parameter Registry initialized with ${ParameterRegistry.getAllNames().length} parameters');
 
   // Initialize modular architecture
   final modules = await initializeSynthModules();
@@ -48,4 +49,3 @@ class SynthVIB3App extends StatelessWidget {
     );
   }
 }
-

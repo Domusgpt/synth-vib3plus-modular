@@ -32,12 +32,12 @@ import '../base/reactive_component.dart';
 
 /// Types of modulation sources
 enum ModulationSourceType {
-  lfo,           // Low-frequency oscillator
-  envelope,      // ADSR envelope
+  lfo, // Low-frequency oscillator
+  envelope, // ADSR envelope
   audioReactive, // Audio analysis (RMS, spectral, etc.)
-  gesture,       // Touch/gesture input
-  sequencer,     // Step sequencer
-  randomizer,    // Random value generator
+  gesture, // Touch/gesture input
+  sequencer, // Step sequencer
+  randomizer, // Random value generator
 }
 
 /// Modulation source definition
@@ -46,7 +46,7 @@ class ModulationSource {
   final String label;
   final ModulationSourceType type;
   final Color color;
-  final double currentValue;  // 0-1 or -1 to 1
+  final double currentValue; // 0-1 or -1 to 1
 
   const ModulationSource({
     required this.id,
@@ -77,9 +77,9 @@ class ModulationSource {
 class ModulationTarget {
   final String id;
   final String label;
-  final String category;  // 'Oscillator', 'Filter', 'Effects', etc.
+  final String category; // 'Oscillator', 'Filter', 'Effects', etc.
   final Color color;
-  final double currentValue;  // Current parameter value (0-1)
+  final double currentValue; // Current parameter value (0-1)
   final double? minValue;
   final double? maxValue;
 
@@ -123,8 +123,8 @@ class ModulationConnection {
   final String id;
   final String sourceId;
   final String targetId;
-  final double strength;      // 0-1
-  final bool bipolar;         // -1 to 1 instead of 0 to 1
+  final double strength; // 0-1
+  final bool bipolar; // -1 to 1 instead of 0 to 1
   final bool enabled;
   final DateTime createdAt;
 
@@ -163,8 +163,8 @@ class ModulationConnection {
     if (!enabled) return targetBaseValue;
 
     final modAmount = bipolar
-        ? sourceValue * strength  // -1 to 1
-        : (sourceValue * 0.5 + 0.5) * strength;  // 0 to 1
+        ? sourceValue * strength // -1 to 1
+        : (sourceValue * 0.5 + 0.5) * strength; // 0 to 1
 
     return (targetBaseValue + modAmount).clamp(0.0, 1.0);
   }
@@ -203,8 +203,7 @@ class ModulationMatrix extends StatefulWidget {
   State<ModulationMatrix> createState() => _ModulationMatrixState();
 }
 
-class _ModulationMatrixState extends State<ModulationMatrix>
-    with SingleTickerProviderStateMixin {
+class _ModulationMatrixState extends State<ModulationMatrix> with SingleTickerProviderStateMixin {
   // Drag state
   String? _draggedSourceId;
   Offset? _dragPosition;
@@ -342,8 +341,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
           ),
 
           // Selected connection editor
-          if (_selectedConnectionId != null)
-            _buildConnectionEditor(),
+          if (_selectedConnectionId != null) _buildConnectionEditor(),
         ],
       ),
     );
@@ -417,9 +415,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
 
   Widget _buildSourceItem(ModulationSource source) {
     final isDragging = _draggedSourceId == source.id;
-    final connectionCount = widget.connections
-        .where((c) => c.sourceId == source.id)
-        .length;
+    final connectionCount = widget.connections.where((c) => c.sourceId == source.id).length;
 
     return GestureDetector(
       onPanStart: (details) {
@@ -435,9 +431,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
         margin: const EdgeInsets.only(bottom: DesignTokens.spacing2),
         padding: const EdgeInsets.all(DesignTokens.spacing2),
         decoration: BoxDecoration(
-          color: isDragging
-              ? source.color.withOpacity(0.3)
-              : Colors.white.withOpacity(0.05),
+          color: isDragging ? source.color.withOpacity(0.3) : Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           border: Border.all(
             color: isDragging ? source.color : source.color.withOpacity(0.3),
@@ -479,7 +473,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
             ClipRRect(
               borderRadius: BorderRadius.circular(2),
               child: LinearProgressIndicator(
-                value: (source.currentValue + 1) / 2,  // -1 to 1 → 0 to 1
+                value: (source.currentValue + 1) / 2, // -1 to 1 → 0 to 1
                 backgroundColor: Colors.white.withOpacity(0.1),
                 valueColor: AlwaysStoppedAnimation(source.color),
                 minHeight: 3,
@@ -541,9 +535,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
 
   Widget _buildTargetItem(ModulationTarget target) {
     final isHovered = _hoveredTargetId == target.id;
-    final connectionCount = widget.connections
-        .where((c) => c.targetId == target.id)
-        .length;
+    final connectionCount = widget.connections.where((c) => c.targetId == target.id).length;
 
     return MouseRegion(
       onEnter: (_) => _handleTargetHover(target.id),
@@ -557,9 +549,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
               : Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           border: Border.all(
-            color: isHovered
-                ? DesignTokens.stateActive
-                : target.color.withOpacity(0.3),
+            color: isHovered ? DesignTokens.stateActive : target.color.withOpacity(0.3),
             width: isHovered ? 2 : 1,
           ),
         ),
@@ -793,9 +783,12 @@ class _ConnectionPainter extends CustomPainter {
     final controlPoint2 = Offset(size.width * 0.7, end.dy);
 
     path.cubicTo(
-      controlPoint1.dx, controlPoint1.dy,
-      controlPoint2.dx, controlPoint2.dy,
-      end.dx, end.dy,
+      controlPoint1.dx,
+      controlPoint1.dy,
+      controlPoint2.dx,
+      controlPoint2.dy,
+      end.dx,
+      end.dy,
     );
 
     // Draw connection line
@@ -829,7 +822,7 @@ class _ConnectionPainter extends CustomPainter {
   @override
   bool shouldRepaint(_ConnectionPainter oldDelegate) {
     return oldDelegate.animationValue != animationValue ||
-           oldDelegate.selectedConnectionId != selectedConnectionId ||
-           oldDelegate.connections.length != connections.length;
+        oldDelegate.selectedConnectionId != selectedConnectionId ||
+        oldDelegate.connections.length != connections.length;
   }
 }

@@ -34,8 +34,7 @@ class OrbController extends StatefulWidget {
   State<OrbController> createState() => _OrbControllerState();
 }
 
-class _OrbControllerState extends State<OrbController>
-    with SingleTickerProviderStateMixin {
+class _OrbControllerState extends State<OrbController> with SingleTickerProviderStateMixin {
   Offset _position = Offset.zero; // Relative to origin (-1 to 1)
   bool _isDragging = false;
   late AnimationController _pulseController;
@@ -117,7 +116,8 @@ class _OrbControllerState extends State<OrbController>
     final vibratoDepth = (1.0 - position.dy) / 2.0; // Map -1..1 to 0..1
     audioProvider.setVibratoDepth(vibratoDepth);
 
-    debugPrint('🎛️ Orb: Pitch ${pitchBendSemitones.toStringAsFixed(2)}st, Vibrato ${vibratoDepth.toStringAsFixed(2)}');
+    debugPrint(
+        '🎛️ Orb: Pitch ${pitchBendSemitones.toStringAsFixed(2)}st, Vibrato ${vibratoDepth.toStringAsFixed(2)}');
   }
 
   // Update orb position from tilt sensor
@@ -140,7 +140,8 @@ class _OrbControllerState extends State<OrbController>
     // Sync with tilt if enabled
     if (uiState.tiltEnabled && tiltSensor.isEnabled) {
       final orientation = MediaQuery.of(context).orientation;
-      _updateFromTilt(tiltSensor.getTiltPositionForOrientation(orientation), uiState, audioProvider);
+      _updateFromTilt(
+          tiltSensor.getTiltPositionForOrientation(orientation), uiState, audioProvider);
     }
 
     final screenSize = MediaQuery.of(context).size;
@@ -190,9 +191,8 @@ class _OrbControllerState extends State<OrbController>
             child: AnimatedBuilder(
               animation: _pulseAnimation,
               builder: (context, child) {
-                final scale = uiState.tiltEnabled
-                    ? _pulseAnimation.value
-                    : (_isDragging ? 1.1 : 1.0);
+                final scale =
+                    uiState.tiltEnabled ? _pulseAnimation.value : (_isDragging ? 1.1 : 1.0);
 
                 return Transform.scale(
                   scale: scale,

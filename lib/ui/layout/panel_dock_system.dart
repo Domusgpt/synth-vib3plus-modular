@@ -27,10 +27,10 @@ import 'flexible_layout.dart';
 
 /// Docking zones
 enum DockZone {
-  top,      // Docked to top edge
-  bottom,   // Docked to bottom edge
-  left,     // Docked to left edge
-  right,    // Docked to right edge
+  top, // Docked to top edge
+  bottom, // Docked to bottom edge
+  left, // Docked to left edge
+  right, // Docked to right edge
   floating, // Not docked (free positioning)
 }
 
@@ -77,12 +77,12 @@ extension DockZoneExtension on DockZone {
 
 /// Docking system configuration
 class DockConfig {
-  final double snapDistance;        // Pixels from edge to trigger snap
-  final double magneticStrength;    // 0-1, how strong the magnetic pull is
+  final double snapDistance; // Pixels from edge to trigger snap
+  final double magneticStrength; // 0-1, how strong the magnetic pull is
   final bool enableCollisionDetection;
-  final bool enableAutoLayout;      // Auto-arrange docked panels
-  final double dockedPanelSize;     // Default size for docked panels
-  final EdgeInsets dockZoneMargin;  // Margin around dock zones
+  final bool enableAutoLayout; // Auto-arrange docked panels
+  final double dockedPanelSize; // Default size for docked panels
+  final EdgeInsets dockZoneMargin; // Margin around dock zones
 
   const DockConfig({
     this.snapDistance = 50.0,
@@ -130,7 +130,7 @@ class DockedPanelInfo {
   final String id;
   final DockZone zone;
   final Rect rect;
-  final int order;  // Order within dock zone (for auto-layout)
+  final int order; // Order within dock zone (for auto-layout)
 
   const DockedPanelInfo({
     required this.id,
@@ -198,9 +198,7 @@ class PanelDockSystem extends ChangeNotifier {
 
   /// Get all panels in dock zone
   List<DockedPanelInfo> getPanelsInZone(DockZone zone) {
-    return _panels.values
-        .where((panel) => panel.zone == zone)
-        .toList()
+    return _panels.values.where((panel) => panel.zone == zone).toList()
       ..sort((a, b) => a.order.compareTo(b.order));
   }
 
@@ -255,7 +253,7 @@ class PanelDockSystem extends ChangeNotifier {
 
     // Get panels in this zone
     final panelsInZone = getPanelsInZone(zone);
-    final order = panelsInZone.length;  // New panel goes at end
+    final order = panelsInZone.length; // New panel goes at end
 
     // Calculate position based on zone and order
     switch (zone) {
@@ -288,9 +286,7 @@ class PanelDockSystem extends ChangeNotifier {
 
       case DockZone.right:
         return Rect.fromLTWH(
-          containerSize.width -
-              config.dockZoneMargin.right -
-              config.dockedPanelSize,
+          containerSize.width - config.dockZoneMargin.right - config.dockedPanelSize,
           config.dockZoneMargin.top + (order * (config.dockedPanelSize + 8)),
           config.dockedPanelSize,
           containerSize.height - config.dockZoneMargin.vertical,
@@ -375,21 +371,20 @@ class PanelDockSystem extends ChangeNotifier {
 
     for (final offset in offsets) {
       final testRect = targetRect.shift(offset);
-      if (!hasCollision(testRect, excludePanelId: excludePanelId) &&
-          _isRectInBounds(testRect)) {
+      if (!hasCollision(testRect, excludePanelId: excludePanelId) && _isRectInBounds(testRect)) {
         return testRect;
       }
     }
 
-    return null;  // Couldn't find non-colliding position
+    return null; // Couldn't find non-colliding position
   }
 
   /// Check if rect is within container bounds
   bool _isRectInBounds(Rect rect) {
     return rect.left >= 0 &&
-           rect.top >= 0 &&
-           rect.right <= containerSize.width &&
-           rect.bottom <= containerSize.height;
+        rect.top >= 0 &&
+        rect.right <= containerSize.width &&
+        rect.bottom <= containerSize.height;
   }
 
   // ============================================================================
@@ -431,12 +426,10 @@ class PanelDockSystem extends ChangeNotifier {
   int get panelCount => _panels.length;
 
   /// Get number of docked panels
-  int get dockedPanelCount =>
-      _panels.values.where((p) => p.zone.isDocked).length;
+  int get dockedPanelCount => _panels.values.where((p) => p.zone.isDocked).length;
 
   /// Get number of floating panels
-  int get floatingPanelCount =>
-      _panels.values.where((p) => p.zone == DockZone.floating).length;
+  int get floatingPanelCount => _panels.values.where((p) => p.zone == DockZone.floating).length;
 
   /// Clear all panels
   void clear() {

@@ -32,8 +32,8 @@ class Particle {
   Offset velocity;
   Color color;
   double size;
-  double lifetime;      // Remaining lifetime in seconds
-  double maxLifetime;   // Initial lifetime
+  double lifetime; // Remaining lifetime in seconds
+  double maxLifetime; // Initial lifetime
   double opacity;
   double rotation;
   double rotationSpeed;
@@ -62,8 +62,8 @@ class Particle {
     final color = HSLColor.fromAHSL(1.0, hue, 0.8, 0.5).toColor();
 
     // Map velocity to size and speed
-    final size = 2.0 + (velocity * 8.0);  // 2-10px
-    final speed = 50.0 + (velocity * 150.0);  // 50-200 px/s
+    final size = 2.0 + (velocity * 8.0); // 2-10px
+    final speed = 50.0 + (velocity * 150.0); // 50-200 px/s
 
     // Random direction
     final angle = math.Random().nextDouble() * math.pi * 2;
@@ -77,7 +77,7 @@ class Particle {
       velocity: velocityVector,
       color: color,
       size: size,
-      lifetime: 1.0 + (velocity * 1.0),  // 1-2 seconds
+      lifetime: 1.0 + (velocity * 1.0), // 1-2 seconds
       type: ParticleType.note,
     )..rotationSpeed = (math.Random().nextDouble() - 0.5) * 4.0;
   }
@@ -115,7 +115,7 @@ class Particle {
       position: position,
       velocity: Offset(
         (random.nextDouble() - 0.5) * 20.0,
-        -20.0 - (random.nextDouble() * 30.0),  // Float upward
+        -20.0 - (random.nextDouble() * 30.0), // Float upward
       ),
       color: color,
       size: 1.0 + (random.nextDouble() * 3.0),
@@ -130,7 +130,7 @@ class Particle {
     position += velocity * dt;
 
     // Apply drag
-    velocity *= math.pow(0.95, dt * 60);  // Frame-independent
+    velocity *= math.pow(0.95, dt * 60); // Frame-independent
 
     // Update rotation
     rotation += rotationSpeed * dt;
@@ -175,9 +175,9 @@ class Particle {
 
 /// Particle type
 enum ParticleType {
-  note,     // Musical note trigger
-  burst,    // Explosion/impact
-  ambient,  // Background atmosphere
+  note, // Musical note trigger
+  burst, // Explosion/impact
+  ambient, // Background atmosphere
 }
 
 // ============================================================================

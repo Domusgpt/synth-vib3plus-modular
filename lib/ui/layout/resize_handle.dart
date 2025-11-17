@@ -39,9 +39,9 @@ extension ResizeDirectionExtension on ResizeDirection {
   /// Check if this is a corner handle
   bool get isCorner {
     return this == ResizeDirection.topLeft ||
-           this == ResizeDirection.topRight ||
-           this == ResizeDirection.bottomLeft ||
-           this == ResizeDirection.bottomRight;
+        this == ResizeDirection.topRight ||
+        this == ResizeDirection.bottomLeft ||
+        this == ResizeDirection.bottomRight;
   }
 
   /// Check if this is an edge handle
@@ -50,29 +50,29 @@ extension ResizeDirectionExtension on ResizeDirection {
   /// Check if this affects top edge
   bool get affectsTop {
     return this == ResizeDirection.topLeft ||
-           this == ResizeDirection.topCenter ||
-           this == ResizeDirection.topRight;
+        this == ResizeDirection.topCenter ||
+        this == ResizeDirection.topRight;
   }
 
   /// Check if this affects bottom edge
   bool get affectsBottom {
     return this == ResizeDirection.bottomLeft ||
-           this == ResizeDirection.bottomCenter ||
-           this == ResizeDirection.bottomRight;
+        this == ResizeDirection.bottomCenter ||
+        this == ResizeDirection.bottomRight;
   }
 
   /// Check if this affects left edge
   bool get affectsLeft {
     return this == ResizeDirection.topLeft ||
-           this == ResizeDirection.centerLeft ||
-           this == ResizeDirection.bottomLeft;
+        this == ResizeDirection.centerLeft ||
+        this == ResizeDirection.bottomLeft;
   }
 
   /// Check if this affects right edge
   bool get affectsRight {
     return this == ResizeDirection.topRight ||
-           this == ResizeDirection.centerRight ||
-           this == ResizeDirection.bottomRight;
+        this == ResizeDirection.centerRight ||
+        this == ResizeDirection.bottomRight;
   }
 
   /// Get mouse cursor for this direction
@@ -135,9 +135,13 @@ class _ResizeHandleState extends State<ResizeHandle> {
     }
 
     final isActive = _isHovering || _isDragging;
+    final constraints = _getPositionConstraints();
 
     return Positioned(
-      ..._getPositionConstraints(),
+      top: constraints['top'],
+      left: constraints['left'],
+      right: constraints['right'],
+      bottom: constraints['bottom'],
       child: MouseRegion(
         cursor: widget.direction.cursor,
         onEnter: (_) => setState(() => _isHovering = true),
@@ -154,9 +158,7 @@ class _ResizeHandleState extends State<ResizeHandle> {
                   ? widget.color.withOpacity(0.8)
                   : widget.color.withOpacity(0.4),
               border: Border.all(
-                color: isActive
-                    ? widget.color
-                    : widget.color.withOpacity(0.6),
+                color: isActive ? widget.color : widget.color.withOpacity(0.6),
                 width: isActive ? 2.0 : 1.0,
               ),
               borderRadius: widget.direction.isCorner

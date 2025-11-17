@@ -22,7 +22,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../base/reactive_component.dart';
-import 'enhanced_slider.dart';  // For ParameterType
+import 'enhanced_slider.dart'; // For ParameterType
 
 // ============================================================================
 // LED LADDER CONFIGURATION
@@ -36,7 +36,7 @@ class LEDLadderConfig {
   final bool showLabels;
   final List<String>? stepLabels;
   final bool enableDrag;
-  final bool colorCoded;  // Gradient from bottom to top
+  final bool colorCoded; // Gradient from bottom to top
 
   const LEDLadderConfig({
     this.stepCount = 8,
@@ -79,7 +79,7 @@ class LEDLadderConfig {
 class LEDLadder extends StatefulWidget {
   final LEDLadderConfig config;
   final String label;
-  final int value;             // 0 to stepCount-1
+  final int value; // 0 to stepCount-1
   final int defaultValue;
   final ValueChanged<int>? onChanged;
   final ParameterType parameterType;
@@ -136,9 +136,8 @@ class _LEDLadderState extends State<LEDLadder> {
     final stepHeight = widget.config.height / widget.config.stepCount;
 
     // Invert Y (top = highest value)
-    final step = ((widget.config.height - y) / stepHeight)
-        .floor()
-        .clamp(0, widget.config.stepCount - 1);
+    final step =
+        ((widget.config.height - y) / stepHeight).floor().clamp(0, widget.config.stepCount - 1);
 
     if (step != widget.value) {
       widget.onChanged?.call(step);
@@ -202,8 +201,7 @@ class _LEDLadderState extends State<LEDLadder> {
   }
 
   String _getValueLabel(int value) {
-    if (widget.config.stepLabels != null &&
-        value < widget.config.stepLabels!.length) {
+    if (widget.config.stepLabels != null && value < widget.config.stepLabels!.length) {
       return widget.config.stepLabels![value];
     }
     return '${value + 1}';
@@ -234,13 +232,11 @@ class _LEDLadderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final stepHeight = size.height / stepCount;
-    final ledHeight = stepHeight - 4;  // 4px gap
-    final ledWidth = size.width - 8;   // 4px margin each side
+    final ledHeight = stepHeight - 4; // 4px gap
+    final ledWidth = size.width - 8; // 4px margin each side
 
     // Audio-reactive brightness
-    final brightnessFactor = audioFeatures != null
-        ? 1.0 + (audioFeatures!.rms * 0.5)
-        : 1.0;
+    final brightnessFactor = audioFeatures != null ? 1.0 + (audioFeatures!.rms * 0.5) : 1.0;
 
     // Draw each LED
     for (int i = 0; i < stepCount; i++) {
@@ -254,8 +250,8 @@ class _LEDLadderPainter extends CustomPainter {
         // Gradient from red (bottom) to green (top)
         final t = i / (stepCount - 1);
         ledColor = Color.lerp(
-          const Color(0xFFFF3366),  // Red
-          const Color(0xFF00FF88),  // Green
+          const Color(0xFFFF3366), // Red
+          const Color(0xFF00FF88), // Green
           t,
         )!;
       } else {
@@ -269,7 +265,7 @@ class _LEDLadderPainter extends CustomPainter {
         Size(ledWidth, ledHeight),
         ledColor,
         isActive,
-        i == value,  // Highlight current value
+        i == value, // Highlight current value
         brightnessFactor,
       );
     }
@@ -290,15 +286,13 @@ class _LEDLadderPainter extends CustomPainter {
     );
 
     // Background (inactive state)
-    final bgPaint = Paint()
-      ..color = color.withOpacity(0.1);
+    final bgPaint = Paint()..color = color.withOpacity(0.1);
 
     canvas.drawRRect(rect, bgPaint);
 
     if (isActive) {
       // Active LED
-      final ledPaint = Paint()
-        ..color = color.withOpacity(0.8 * brightness);
+      final ledPaint = Paint()..color = color.withOpacity(0.8 * brightness);
 
       canvas.drawRRect(rect, ledPaint);
 
@@ -337,7 +331,7 @@ class _LEDLadderPainter extends CustomPainter {
   @override
   bool shouldRepaint(_LEDLadderPainter oldDelegate) {
     return oldDelegate.value != value ||
-           oldDelegate.isDragging != isDragging ||
-           oldDelegate.audioFeatures != audioFeatures;
+        oldDelegate.isDragging != isDragging ||
+        oldDelegate.audioFeatures != audioFeatures;
   }
 }

@@ -48,8 +48,7 @@ class HolographicSlider extends StatefulWidget {
   State<HolographicSlider> createState() => _HolographicSliderState();
 }
 
-class _HolographicSliderState extends State<HolographicSlider>
-    with SingleTickerProviderStateMixin {
+class _HolographicSliderState extends State<HolographicSlider> with SingleTickerProviderStateMixin {
   bool _isDragging = false;
   late AnimationController _glowController;
   late Animation<double> _glowAnimation;
@@ -186,19 +185,18 @@ class _HolographicSliderState extends State<HolographicSlider>
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 gradient: theme.getHolographicGradient(),
-                                boxShadow: _isDragging
-                                    ? theme.getGlow(GlowIntensity.active)
-                                    : null,
+                                boxShadow: _isDragging ? theme.getGlow(GlowIntensity.active) : null,
                               ),
                             ),
                           ),
 
                           // Thumb (position indicator)
                           Positioned(
-                            left: normalizedValue * (MediaQuery.of(context).size.width -
-                                    96 -
-                                    50 -
-                                    (widget.icon != null ? 24 : 0)) -
+                            left: normalizedValue *
+                                    (MediaQuery.of(context).size.width -
+                                        96 -
+                                        50 -
+                                        (widget.icon != null ? 24 : 0)) -
                                 8,
                             top: 2,
                             child: Container(
@@ -230,9 +228,7 @@ class _HolographicSliderState extends State<HolographicSlider>
               child: Text(
                 _formatValue(),
                 style: SynthTheme.textStyleValue(
-                  _isDragging
-                      ? widget.systemColors.primary
-                      : SynthTheme.textSecondary,
+                  _isDragging ? widget.systemColors.primary : SynthTheme.textSecondary,
                 ),
                 textAlign: TextAlign.right,
               ),
@@ -266,8 +262,7 @@ class VerticalHolographicSlider extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<VerticalHolographicSlider> createState() =>
-      _VerticalHolographicSliderState();
+  State<VerticalHolographicSlider> createState() => _VerticalHolographicSliderState();
 }
 
 class _VerticalHolographicSliderState extends State<VerticalHolographicSlider> {
@@ -297,9 +292,7 @@ class _VerticalHolographicSliderState extends State<VerticalHolographicSlider> {
           borderRadius: BorderRadius.circular(widget.width / 2),
           color: SynthTheme.cardBackground,
           border: Border.all(
-            color: _isDragging
-                ? widget.systemColors.primary
-                : SynthTheme.borderSubtle,
+            color: _isDragging ? widget.systemColors.primary : SynthTheme.borderSubtle,
             width: 2,
           ),
           boxShadow: _isDragging

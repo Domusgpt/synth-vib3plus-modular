@@ -23,11 +23,11 @@ import '../theme/design_tokens.dart';
 
 /// Audio features for reactive glassmorphism
 class AudioFeatures {
-  final double rms;               // 0-1, amplitude
-  final double spectralCentroid;  // 0-8000 Hz, brightness
-  final double bassEnergy;        // 0-1, low freq content
-  final double transient;         // 0-1, attack detection
-  final double dominantFreq;      // 0-8000 Hz, peak frequency
+  final double rms; // 0-1, amplitude
+  final double spectralCentroid; // 0-8000 Hz, brightness
+  final double bassEnergy; // 0-1, low freq content
+  final double transient; // 0-1, attack detection
+  final double dominantFreq; // 0-8000 Hz, peak frequency
 
   const AudioFeatures({
     this.rms = 0.0,
@@ -238,8 +238,7 @@ class GlassmorphicPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (title != null || trailing != null)
-            _buildHeader(),
+          if (title != null || trailing != null) _buildHeader(),
           Flexible(
             child: Padding(
               padding: padding ?? const EdgeInsets.all(DesignTokens.spacing3),
@@ -275,8 +274,7 @@ class GlassmorphicPanel extends StatelessWidget {
                 color: DesignTokens.stateActive,
               ),
             ),
-          if (trailing != null)
-            trailing!,
+          if (trailing != null) trailing!,
         ],
       ),
     );
@@ -336,26 +334,28 @@ class _GlassmorphicButtonState extends State<GlassmorphicButton> {
             : Colors.white.withOpacity(0.2);
 
     // Glow effect when active
-    final shadows = widget.isActive && !isDisabled
-        ? [DesignTokens.glowMedium(effectiveColor)]
-        : <BoxShadow>[];
+    final shadows =
+        widget.isActive && !isDisabled ? [DesignTokens.glowMedium(effectiveColor)] : <BoxShadow>[];
 
     return GestureDetector(
       onTapDown: isDisabled ? null : (_) => setState(() => _isPressed = true),
-      onTapUp: isDisabled ? null : (_) {
-        setState(() => _isPressed = false);
-        widget.onPressed?.call();
-      },
+      onTapUp: isDisabled
+          ? null
+          : (_) {
+              setState(() => _isPressed = false);
+              widget.onPressed?.call();
+            },
       onTapCancel: isDisabled ? null : () => setState(() => _isPressed = false),
       child: AnimatedContainer(
         duration: DesignTokens.micro,
         curve: DesignTokens.easeOut,
         width: widget.width,
         height: widget.height ?? DesignTokens.touchTargetMinimum,
-        padding: widget.padding ?? const EdgeInsets.symmetric(
-          horizontal: DesignTokens.spacing3,
-          vertical: DesignTokens.spacing2,
-        ),
+        padding: widget.padding ??
+            const EdgeInsets.symmetric(
+              horizontal: DesignTokens.spacing3,
+              vertical: DesignTokens.spacing2,
+            ),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),

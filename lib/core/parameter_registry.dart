@@ -194,9 +194,7 @@ class ParameterRegistry {
 
   /// Get all parameters in category
   static List<ParameterDescriptor> getCategory(String category) {
-    return _descriptors.values
-        .where((desc) => desc.category == category)
-        .toList();
+    return _descriptors.values.where((desc) => desc.category == category).toList();
   }
 
   /// Get all registered parameter names
@@ -313,7 +311,8 @@ void initializeDefaultParameterRegistry() {
 
     ParameterDescriptor(
       name: 'filterCutoff',
-      range: ParameterRange(min: 20.0, max: 20000.0, defaultValue: 1000.0, curve: CurveType.exponential),
+      range: ParameterRange(
+          min: 20.0, max: 20000.0, defaultValue: 1000.0, curve: CurveType.exponential),
       visualizerTarget: '',
       aliases: ['cutoff', 'filter_cutoff', 'lpf_freq'],
       category: 'audio',

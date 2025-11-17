@@ -61,15 +61,12 @@ class AudioEngineModule extends SynthModule {
 
   @override
   bool get isHealthy {
-    return _isInitialized &&
-           provider.currentFeatures != null;
+    return _isInitialized && provider.currentFeatures != null;
   }
 
   @override
   Map<String, dynamic> getDiagnostics() {
-    final uptime = _startTime != null
-        ? DateTime.now().difference(_startTime!)
-        : Duration.zero;
+    final uptime = _startTime != null ? DateTime.now().difference(_startTime!) : Duration.zero;
 
     return {
       'sampleRate': 44100,

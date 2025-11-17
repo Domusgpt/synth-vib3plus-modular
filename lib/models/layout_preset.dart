@@ -34,7 +34,7 @@ class PanelLayoutData {
   final DockZone dockZone;
   final int order;
   final bool visible;
-  final Map<String, dynamic>? customData;  // Panel-specific data
+  final Map<String, dynamic>? customData; // Panel-specific data
 
   const PanelLayoutData({
     required this.id,
@@ -121,7 +121,7 @@ class LayoutPreset {
   final List<PanelLayoutData> panels;
   final GridConfig gridConfig;
   final DockConfig dockConfig;
-  final bool isFactory;  // Factory preset vs user preset
+  final bool isFactory; // Factory preset vs user preset
   final DateTime createdAt;
   final DateTime modifiedAt;
 
@@ -250,7 +250,7 @@ class FactoryPresets {
         // XY Pad (center, 2x2)
         PanelLayoutData(
           id: 'xy_pad',
-          position: GridPosition(5, 10),  // Centered
+          position: GridPosition(5, 10), // Centered
           size: GridUnits.unit2x2,
           visible: true,
         ),

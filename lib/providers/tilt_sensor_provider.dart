@@ -229,9 +229,7 @@ class TiltSensorProvider with ChangeNotifier {
   bool get isDeviceLevel {
     // Device is level if Z acceleration is close to -9.8 m/s² (gravity)
     // and X/Y accelerations are near zero
-    return (_rawZ.abs() - 9.8).abs() < 2.0 &&
-           _rawX.abs() < 2.0 &&
-           _rawY.abs() < 2.0;
+    return (_rawZ.abs() - 9.8).abs() < 2.0 && _rawX.abs() < 2.0 && _rawY.abs() < 2.0;
   }
 
   @override

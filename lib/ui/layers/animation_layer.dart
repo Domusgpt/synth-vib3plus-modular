@@ -36,8 +36,8 @@ class AnimationLayerConfig {
   final bool enableParticles;
   final bool enableTrails;
   final bool enableModulationViz;
-  final double intensity;         // 0-1, scales all effects
-  final bool audioReactive;       // Enable audio reactivity
+  final double intensity; // 0-1, scales all effects
+  final bool audioReactive; // Enable audio reactivity
   final int maxParticles;
   final double trailLength;
   final double trailFadeTime;
@@ -95,7 +95,7 @@ class AnimationLayerConfig {
 class AnimationLayer extends StatefulWidget {
   final AnimationLayerConfig config;
   final Stream<AudioFeatures>? audioStream;
-  final Widget? child;  // Optional child widget (background)
+  final Widget? child; // Optional child widget (background)
 
   const AnimationLayer({
     Key? key,
@@ -108,9 +108,7 @@ class AnimationLayer extends StatefulWidget {
   State<AnimationLayer> createState() => AnimationLayerState();
 }
 
-class AnimationLayerState extends State<AnimationLayer>
-    with SingleTickerProviderStateMixin {
-
+class AnimationLayerState extends State<AnimationLayer> with SingleTickerProviderStateMixin {
   // Effect systems
   late ParticleSystem _particleSystem;
   late TrailSystem _trailSystem;
@@ -210,7 +208,7 @@ class AnimationLayerState extends State<AnimationLayer>
 
     // Calculate delta time
     final dt = _lastFrameTime == Duration.zero
-        ? 0.016  // ~60 FPS
+        ? 0.016 // ~60 FPS
         : (elapsed - _lastFrameTime).inMicroseconds / 1000000.0;
     _lastFrameTime = elapsed;
 
@@ -234,7 +232,8 @@ class AnimationLayerState extends State<AnimationLayer>
     final now = DateTime.now();
     final elapsed = now.difference(_lastFpsUpdate).inMilliseconds;
 
-    if (elapsed >= 1000) {  // Update every second
+    if (elapsed >= 1000) {
+      // Update every second
       _fps = _frameCount / (elapsed / 1000.0);
       _frameCount = 0;
       _lastFpsUpdate = now;
@@ -311,12 +310,12 @@ class AnimationLayerState extends State<AnimationLayer>
 
   /// Get performance stats
   Map<String, dynamic> get stats => {
-    'fps': _fps,
-    'particles': _particleSystem.activeCount,
-    'trails': _trailSystem.activeCount,
-    'trailPoints': _trailSystem.totalPoints,
-    'modulations': _modulationViz.activeCount,
-  };
+        'fps': _fps,
+        'particles': _particleSystem.activeCount,
+        'trails': _trailSystem.activeCount,
+        'trailPoints': _trailSystem.totalPoints,
+        'modulations': _modulationViz.activeCount,
+      };
 
   // ============================================================================
   // BUILD
@@ -327,8 +326,7 @@ class AnimationLayerState extends State<AnimationLayer>
     return Stack(
       children: [
         // Background child (e.g., VIB3+ visualization)
-        if (widget.child != null)
-          widget.child!,
+        if (widget.child != null) widget.child!,
 
         // Animation canvas
         Positioned.fill(
@@ -407,7 +405,7 @@ extension AnimationLayerContext on BuildContext {
 class AnimatedGestureDetector extends StatelessWidget {
   final Widget child;
   final Function(Offset)? onTapDown;
-  final Function(int, Offset, double)? onPanUpdate;  // pointerId, position, pressure
+  final Function(int, Offset, double)? onPanUpdate; // pointerId, position, pressure
   final Function(int)? onPanEnd;
   final Color? trailColor;
   final bool spawnParticlesOnTap;
@@ -445,7 +443,7 @@ class AnimatedGestureDetector extends StatelessWidget {
         }
       },
       onPanUpdate: (details) {
-        final pointerId = details.hashCode;  // Use hash as pointer ID
+        final pointerId = details.hashCode; // Use hash as pointer ID
         onPanUpdate?.call(pointerId, details.localPosition, 1.0);
 
         if (animationLayer != null) {

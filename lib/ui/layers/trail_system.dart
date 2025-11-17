@@ -30,9 +30,9 @@ import '../effects/glassmorphic_container.dart';
 /// Single point in a touch trail
 class TrailPoint {
   final Offset position;
-  final double pressure;    // 0-1, touch pressure
+  final double pressure; // 0-1, touch pressure
   final DateTime timestamp;
-  final double velocity;    // Speed at this point
+  final double velocity; // Speed at this point
 
   TrailPoint(
     this.position,
@@ -62,9 +62,9 @@ class TrailPoint {
 class TouchTrail {
   final List<TrailPoint> points = [];
   Color color;
-  double maxLength;      // Maximum points to keep
-  double fadeTime;       // Seconds before points disappear
-  double baseWidth;      // Base stroke width
+  double maxLength; // Maximum points to keep
+  double fadeTime; // Seconds before points disappear
+  double baseWidth; // Base stroke width
   bool enabled;
 
   TouchTrail({
@@ -280,13 +280,13 @@ class TouchTrail {
 
 /// Manages multiple trails (multi-touch support)
 class TrailSystem {
-  final Map<int, TouchTrail> _trails = {};  // Pointer ID → Trail
+  final Map<int, TouchTrail> _trails = {}; // Pointer ID → Trail
   Color defaultColor;
   double maxLength;
   double fadeTime;
   double baseWidth;
   bool enabled;
-  bool smoothRendering;  // Use bezier curves
+  bool smoothRendering; // Use bezier curves
 
   TrailSystem({
     this.defaultColor = DesignTokens.stateActive,

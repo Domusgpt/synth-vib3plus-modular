@@ -36,10 +36,10 @@ enum FilterType {
 
 /// ADSR Envelope for natural note articulation
 class ADSREnvelope {
-  double attack = 0.01;   // 10ms
-  double decay = 0.1;     // 100ms
-  double sustain = 0.7;   // 70% level
-  double release = 0.3;   // 300ms
+  double attack = 0.01; // 10ms
+  double decay = 0.1; // 100ms
+  double sustain = 0.7; // 70% level
+  double release = 0.3; // 300ms
 
   double _level = 0.0;
   double _time = 0.0;
@@ -306,7 +306,7 @@ class SynthesizerEngine {
 
   // Filter
   late final Filter filter;
-  late final ADSREnvelope filterEnvelope;  // Envelope for filter modulation
+  late final ADSREnvelope filterEnvelope; // Envelope for filter modulation
   double filterEnvelopeAmount = 0.0; // 0-1, how much envelope affects filter
 
   // Effects
@@ -319,8 +319,8 @@ class SynthesizerEngine {
   double stereoWidth = 1.0; // 0 = mono, 1 = full stereo
 
   // Modulation inputs (from visual system)
-  double _osc1FreqModulation = 0.0;  // ±2 semitones
-  double _osc2FreqModulation = 0.0;  // ±2 semitones
+  double _osc1FreqModulation = 0.0; // ±2 semitones
+  double _osc2FreqModulation = 0.0; // ±2 semitones
   double _filterCutoffModulation = 0.0; // ±40%
   double _wavetablePositionModulation = 0.0; // 0-1
 
@@ -626,8 +626,8 @@ class SynthesizerEngine {
     } else {
       // Apply smoothstep easing for natural pitch transition
       final eased = _smoothStep(progress);
-      _glideCurrentFrequency = _glideStartFrequency +
-        (_glideTargetFrequency - _glideStartFrequency) * eased;
+      _glideCurrentFrequency =
+          _glideStartFrequency + (_glideTargetFrequency - _glideStartFrequency) * eased;
     }
   }
 
@@ -788,8 +788,7 @@ class Reverb {
   final int _bufferSize;
   int _writePos = 0;
 
-  Reverb({required this.sampleRate})
-      : _bufferSize = (sampleRate * 0.1).round() {
+  Reverb({required this.sampleRate}) : _bufferSize = (sampleRate * 0.1).round() {
     _buffer = List<double>.filled(_bufferSize, 0.0);
   }
 
@@ -824,8 +823,7 @@ class Delay {
   final int _maxBufferSize;
   int _writePos = 0;
 
-  Delay({required this.sampleRate})
-      : _maxBufferSize = (sampleRate * 2.0).round() {
+  Delay({required this.sampleRate}) : _maxBufferSize = (sampleRate * 2.0).round() {
     _buffer = List<double>.filled(_maxBufferSize, 0.0);
   }
 

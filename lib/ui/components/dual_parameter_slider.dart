@@ -106,9 +106,7 @@ class DualParameterSlider extends StatelessWidget {
               min: logarithmic ? _valueToLog() : min,
               max: logarithmic ? math.log(max) : max,
               onChanged: (newValue) {
-                final actualValue = logarithmic
-                    ? math.exp(newValue)
-                    : newValue;
+                final actualValue = logarithmic ? math.exp(newValue) : newValue;
                 onChanged(actualValue);
               },
             ),

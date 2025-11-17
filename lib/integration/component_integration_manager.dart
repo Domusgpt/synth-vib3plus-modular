@@ -77,9 +77,9 @@ class RegisteredComponent {
 class ParameterBinding {
   final String componentId;
   final String parameterId;
-  final bool bidirectional;      // Two-way binding
-  final double sensitivity;      // 0.1-2.0
-  final Function(double)? transform;  // Value transformation
+  final bool bidirectional; // Two-way binding
+  final double sensitivity; // 0.1-2.0
+  final Function(double)? transform; // Value transformation
 
   const ParameterBinding({
     required this.componentId,
@@ -348,7 +348,9 @@ class ComponentIntegrationManager extends ChangeNotifier {
   }
 
   /// Spawn particles on interaction
-  void spawnInteractionParticles(String componentId, Offset position, {
+  void spawnInteractionParticles(
+    String componentId,
+    Offset position, {
     double intensity = 1.0,
     Color? color,
   }) {
@@ -394,7 +396,10 @@ class ComponentIntegrationManager extends ChangeNotifier {
   }
 
   /// Add trail for component
-  void addComponentTrail(String componentId, int pointerId, Offset position, {
+  void addComponentTrail(
+    String componentId,
+    int pointerId,
+    Offset position, {
     double pressure = 1.0,
   }) {
     if (animationLayer == null) return;
@@ -414,7 +419,7 @@ class ComponentIntegrationManager extends ChangeNotifier {
     if (component == null || animationLayer == null) return;
 
     // Get component position (would need to query the actual widget)
-    final sourcePosition = Offset(100, 100);  // Placeholder
+    final sourcePosition = Offset(100, 100); // Placeholder
 
     animationLayer!.addModulation(
       source: ModulationSource(
@@ -426,7 +431,7 @@ class ComponentIntegrationManager extends ChangeNotifier {
       target: ModulationTarget(
         id: binding.parameterId,
         label: binding.parameterId,
-        position: const Offset(200, 200),  // Placeholder
+        position: const Offset(200, 200), // Placeholder
       ),
       strength: binding.sensitivity,
     );
@@ -526,7 +531,7 @@ class ComponentIntegrationManager extends ChangeNotifier {
   /// Get current audio features
   AudioFeatures? getCurrentAudioFeatures() {
     // Would return the latest audio features
-    return null;  // Placeholder
+    return null; // Placeholder
   }
 
   /// Reset all components

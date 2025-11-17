@@ -198,12 +198,10 @@ class MappingPreset {
       'description': description,
       'audioReactiveEnabled': audioReactiveEnabled,
       'visualReactiveEnabled': visualReactiveEnabled,
-      'audioToVisualMappings': audioToVisualMappings.map(
-        (key, mapping) => MapEntry(key, _mappingToJson(mapping))
-      ),
-      'visualToAudioMappings': visualToAudioMappings.map(
-        (key, mapping) => MapEntry(key, _mappingToJson(mapping))
-      ),
+      'audioToVisualMappings':
+          audioToVisualMappings.map((key, mapping) => MapEntry(key, _mappingToJson(mapping))),
+      'visualToAudioMappings':
+          visualToAudioMappings.map((key, mapping) => MapEntry(key, _mappingToJson(mapping))),
     };
   }
 
@@ -214,12 +212,10 @@ class MappingPreset {
       description: json['description'] as String,
       audioReactiveEnabled: json['audioReactiveEnabled'] as bool,
       visualReactiveEnabled: json['visualReactiveEnabled'] as bool,
-      audioToVisualMappings: (json['audioToVisualMappings'] as Map<String, dynamic>).map(
-        (key, value) => MapEntry(key, _mappingFromJson(value))
-      ),
-      visualToAudioMappings: (json['visualToAudioMappings'] as Map<String, dynamic>).map(
-        (key, value) => MapEntry(key, _mappingFromJson(value))
-      ),
+      audioToVisualMappings: (json['audioToVisualMappings'] as Map<String, dynamic>)
+          .map((key, value) => MapEntry(key, _mappingFromJson(value))),
+      visualToAudioMappings: (json['visualToAudioMappings'] as Map<String, dynamic>)
+          .map((key, value) => MapEntry(key, _mappingFromJson(value))),
     );
   }
 

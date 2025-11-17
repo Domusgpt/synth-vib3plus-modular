@@ -89,9 +89,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
                 : Colors.white.withOpacity(0.05),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isSelected
-                  ? SynthTheme.quantumCyan
-                  : Colors.white.withOpacity(0.1),
+              color: isSelected ? SynthTheme.quantumCyan : Colors.white.withOpacity(0.1),
               width: isSelected ? 2 : 1,
             ),
           ),

@@ -84,7 +84,7 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
     if (_webViewController.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
       (_webViewController.platform as AndroidWebViewController)
-        .setMediaPlaybackRequiresUserGesture(false);
+          .setMediaPlaybackRequiresUserGesture(false);
     }
 
     // Enable universal file access for Android WebView to load bundled CSS/JS

@@ -31,8 +31,8 @@ import '../base/reactive_component.dart';
 
 /// Slider visual style
 enum SliderStyle {
-  linearHorizontal,  // Traditional horizontal
-  linearVertical,    // Traditional vertical
+  linearHorizontal, // Traditional horizontal
+  linearVertical, // Traditional vertical
 }
 
 // ============================================================================
@@ -41,27 +41,27 @@ enum SliderStyle {
 
 /// Parameter type for color coding
 enum ParameterType {
-  frequency,   // Blue
-  amplitude,   // Green
-  time,        // Yellow
-  modulation,  // Magenta
-  filter,      // Cyan
-  generic,     // White
+  frequency, // Blue
+  amplitude, // Green
+  time, // Yellow
+  modulation, // Magenta
+  filter, // Cyan
+  generic, // White
 }
 
 extension ParameterTypeExtension on ParameterType {
   Color get color {
     switch (this) {
       case ParameterType.frequency:
-        return const Color(0xFF00AAFF);  // Blue
+        return const Color(0xFF00AAFF); // Blue
       case ParameterType.amplitude:
-        return const Color(0xFF00FF88);  // Green
+        return const Color(0xFF00FF88); // Green
       case ParameterType.time:
-        return const Color(0xFFFFAA00);  // Yellow
+        return const Color(0xFFFFAA00); // Yellow
       case ParameterType.modulation:
-        return const Color(0xFFFF00FF);  // Magenta
+        return const Color(0xFFFF00FF); // Magenta
       case ParameterType.filter:
-        return const Color(0xFF00FFFF);  // Cyan
+        return const Color(0xFF00FFFF); // Cyan
       case ParameterType.generic:
         return Colors.white;
     }
@@ -80,7 +80,7 @@ class SliderConfig {
   final bool showModulation;
   final bool showRangeMarkers;
   final bool enableFineControl;
-  final double fineControlFactor;  // 0.1 = 10x precision
+  final double fineControlFactor; // 0.1 = 10x precision
   final double width;
   final double height;
 
@@ -133,14 +133,14 @@ class SliderConfig {
 class EnhancedSlider extends StatefulWidget {
   final SliderConfig config;
   final String label;
-  final double value;          // 0-1
-  final double defaultValue;   // 0-1
+  final double value; // 0-1
+  final double defaultValue; // 0-1
   final ValueChanged<double>? onChanged;
   final VoidCallback? onChangeStart;
   final VoidCallback? onChangeEnd;
-  final double modulationAmount;  // 0-1, for visualization
+  final double modulationAmount; // 0-1, for visualization
   final AudioFeatures? audioFeatures;
-  final String Function(double)? valueFormatter;  // Custom value display
+  final String Function(double)? valueFormatter; // Custom value display
 
   const EnhancedSlider({
     Key? key,
@@ -201,11 +201,9 @@ class _EnhancedSliderState extends State<EnhancedSlider> {
 
     final delta = widget.config.style == SliderStyle.linearHorizontal
         ? details.delta.dx
-        : -details.delta.dy;  // Invert for vertical
+        : -details.delta.dy; // Invert for vertical
 
-    final sensitivity = _isFineControl
-        ? widget.config.fineControlFactor
-        : 1.0;
+    final sensitivity = _isFineControl ? widget.config.fineControlFactor : 1.0;
 
     final newValue = (widget.value + (delta / width) * sensitivity).clamp(0.0, 1.0);
 
@@ -513,8 +511,7 @@ class _SliderPainter extends CustomPainter {
     canvas.drawCircle(position, outerRadius, outerPaint);
 
     // Inner fill
-    final innerPaint = Paint()
-      ..color = color.withOpacity(isDragging ? 0.8 : 0.6);
+    final innerPaint = Paint()..color = color.withOpacity(isDragging ? 0.8 : 0.6);
 
     canvas.drawCircle(position, outerRadius - 4, innerPaint);
 
@@ -549,9 +546,9 @@ class _SliderPainter extends CustomPainter {
   @override
   bool shouldRepaint(_SliderPainter oldDelegate) {
     return oldDelegate.value != value ||
-           oldDelegate.modulationAmount != modulationAmount ||
-           oldDelegate.isDragging != isDragging ||
-           oldDelegate.isFineControl != isFineControl ||
-           oldDelegate.audioFeatures != audioFeatures;
+        oldDelegate.modulationAmount != modulationAmount ||
+        oldDelegate.isDragging != isDragging ||
+        oldDelegate.isFineControl != isFineControl ||
+        oldDelegate.audioFeatures != audioFeatures;
   }
 }

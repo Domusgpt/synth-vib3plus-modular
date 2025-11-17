@@ -41,8 +41,7 @@ class CollapsibleBezel extends StatefulWidget {
   State<CollapsibleBezel> createState() => _CollapsibleBezelState();
 }
 
-class _CollapsibleBezelState extends State<CollapsibleBezel>
-    with SingleTickerProviderStateMixin {
+class _CollapsibleBezelState extends State<CollapsibleBezel> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _heightAnimation;
   late Animation<double> _opacityAnimation;
@@ -142,9 +141,7 @@ class _CollapsibleBezelState extends State<CollapsibleBezel>
                     children: [
                       Icon(
                         widget.icon,
-                        color: isExpanded
-                            ? widget.systemColors.primary
-                            : SynthTheme.textSecondary,
+                        color: isExpanded ? widget.systemColors.primary : SynthTheme.textSecondary,
                         size: 20,
                       ),
                       const SizedBox(width: SynthTheme.spacingSmall),
@@ -152,9 +149,7 @@ class _CollapsibleBezelState extends State<CollapsibleBezel>
                         widget.label,
                         style: SynthTheme.textStyleBody.copyWith(
                           color: theme.getTextColor(isExpanded),
-                          fontWeight: isExpanded
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+                          fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
                       if (_isLocked) ...[
@@ -168,12 +163,8 @@ class _CollapsibleBezelState extends State<CollapsibleBezel>
                       // Expansion indicator
                       const Spacer(),
                       Icon(
-                        isExpanded
-                            ? Icons.keyboard_arrow_down
-                            : Icons.keyboard_arrow_up,
-                        color: isExpanded
-                            ? widget.systemColors.primary
-                            : SynthTheme.textSecondary,
+                        isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+                        color: isExpanded ? widget.systemColors.primary : SynthTheme.textSecondary,
                         size: 20,
                       ),
                     ],
@@ -377,4 +368,3 @@ class BottomBezelContainer extends StatelessWidget {
     }
   }
 }
-

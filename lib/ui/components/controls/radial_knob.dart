@@ -23,7 +23,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../base/reactive_component.dart';
-import 'enhanced_slider.dart';  // For ParameterType
+import 'enhanced_slider.dart'; // For ParameterType
 
 // ============================================================================
 // KNOB CONFIGURATION
@@ -32,8 +32,8 @@ import 'enhanced_slider.dart';  // For ParameterType
 /// Radial knob configuration
 class KnobConfig {
   final double size;
-  final double minAngle;       // Radians
-  final double maxAngle;       // Radians
+  final double minAngle; // Radians
+  final double maxAngle; // Radians
   final bool showTicks;
   final int tickCount;
   final bool showValue;
@@ -42,8 +42,8 @@ class KnobConfig {
 
   const KnobConfig({
     this.size = 80.0,
-    this.minAngle = -2.356,  // -3π/4 (225°)
-    this.maxAngle = 2.356,   // 3π/4 (225°)
+    this.minAngle = -2.356, // -3π/4 (225°)
+    this.maxAngle = 2.356, // 3π/4 (225°)
     this.showTicks = true,
     this.tickCount = 11,
     this.showValue = true,
@@ -82,12 +82,12 @@ class KnobConfig {
 class RadialKnob extends StatefulWidget {
   final KnobConfig config;
   final String label;
-  final double value;          // 0-1
-  final double defaultValue;   // 0-1
+  final double value; // 0-1
+  final double defaultValue; // 0-1
   final ValueChanged<double>? onChanged;
   final VoidCallback? onChangeStart;
   final VoidCallback? onChangeEnd;
-  final double modulationAmount;  // 0-1
+  final double modulationAmount; // 0-1
   final ParameterType parameterType;
   final AudioFeatures? audioFeatures;
   final String Function(double)? valueFormatter;
@@ -441,9 +441,9 @@ class _KnobPainter extends CustomPainter {
   @override
   bool shouldRepaint(_KnobPainter oldDelegate) {
     return oldDelegate.value != value ||
-           oldDelegate.modulationAmount != modulationAmount ||
-           oldDelegate.isDragging != isDragging ||
-           oldDelegate.isFineControl != isFineControl ||
-           oldDelegate.audioFeatures != audioFeatures;
+        oldDelegate.modulationAmount != modulationAmount ||
+        oldDelegate.isDragging != isDragging ||
+        oldDelegate.isFineControl != isFineControl ||
+        oldDelegate.audioFeatures != audioFeatures;
   }
 }

@@ -180,7 +180,8 @@ class _IntegratedMainScreenState extends State<IntegratedMainScreen> {
         ChangeNotifierProvider(create: (_) => LayoutProvider()),
 
         // Integration manager (depends on other providers)
-        ChangeNotifierProxyProvider4<AudioProvider, VisualProvider, LayoutProvider, UIStateProvider, ComponentIntegrationManager>(
+        ChangeNotifierProxyProvider4<AudioProvider, VisualProvider, LayoutProvider, UIStateProvider,
+            ComponentIntegrationManager>(
           create: (context) => ComponentIntegrationManager(
             audioProvider: context.read<AudioProvider>(),
             visualProvider: context.read<VisualProvider>(),
@@ -190,7 +191,8 @@ class _IntegratedMainScreenState extends State<IntegratedMainScreen> {
             enableModulationViz: true,
           ),
           update: (context, audio, visual, layout, ui, previous) =>
-              previous ?? ComponentIntegrationManager(
+              previous ??
+              ComponentIntegrationManager(
                 audioProvider: audio,
                 visualProvider: visual,
                 layoutProvider: layout,
@@ -311,16 +313,13 @@ class _IntegratedMainContent extends StatelessWidget {
             ),
 
           // Full performance monitor
-          if (showPerformanceMonitor)
-            _buildFullPerformanceMonitor(context),
+          if (showPerformanceMonitor) _buildFullPerformanceMonitor(context),
 
           // Preset browser
-          if (showPresetBrowser)
-            _buildPresetBrowser(context),
+          if (showPresetBrowser) _buildPresetBrowser(context),
 
           // Modulation matrix
-          if (showModulationMatrix)
-            _buildModulationMatrix(context),
+          if (showModulationMatrix) _buildModulationMatrix(context),
 
           // Help overlay
           if (showHelp)

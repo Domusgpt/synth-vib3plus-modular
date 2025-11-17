@@ -202,7 +202,7 @@ class AudioAnalyzer {
   double detectPitch(Float32List audioBuffer) {
     // Autocorrelation method for pitch detection
     final minPeriod = (sampleRate / 1000.0).round(); // 1000 Hz max
-    final maxPeriod = (sampleRate / 60.0).round();   // 60 Hz min
+    final maxPeriod = (sampleRate / 60.0).round(); // 60 Hz min
 
     double maxCorrelation = 0.0;
     int bestPeriod = minPeriod;
@@ -241,8 +241,7 @@ class AudioAnalyzer {
       _transientTimestamps.add(now);
 
       // Clean up old timestamps (older than 1 second)
-      _transientTimestamps.removeWhere((timestamp) =>
-          now - timestamp > transientWindowMs);
+      _transientTimestamps.removeWhere((timestamp) => now - timestamp > transientWindowMs);
     }
 
     return isTransient;
@@ -253,8 +252,7 @@ class AudioAnalyzer {
     final now = DateTime.now().millisecondsSinceEpoch;
 
     // Clean up old timestamps
-    _transientTimestamps.removeWhere((timestamp) =>
-        now - timestamp > transientWindowMs);
+    _transientTimestamps.removeWhere((timestamp) => now - timestamp > transientWindowMs);
 
     return _transientTimestamps.length.toDouble();
   }
@@ -272,8 +270,7 @@ class AudioAnalyzer {
       totalEnergy += magnitudes[i];
 
       // Peak detection: local maximum
-      if (magnitudes[i] > magnitudes[i - 1] &&
-          magnitudes[i] > magnitudes[i + 1]) {
+      if (magnitudes[i] > magnitudes[i - 1] && magnitudes[i] > magnitudes[i + 1]) {
         peakEnergy += magnitudes[i];
       }
     }
@@ -304,16 +301,16 @@ class AudioAnalyzer {
 
 /// Audio features extracted from analysis
 class AudioFeatures {
-  final double bassEnergy;        // 20-250 Hz
-  final double midEnergy;         // 250-2000 Hz
-  final double highEnergy;        // 2000-8000 Hz
-  final double spectralCentroid;  // Brightness (Hz)
-  final double spectralFlux;      // Rate of timbre change
-  final double fundamentalFreq;   // Pitch (Hz)
-  final double rms;               // Amplitude
-  final double stereoWidth;       // Stereo spread (0-1)
-  final double transientDensity;  // Transients per second
-  final double noiseContent;      // 0=harmonic, 1=noisy
+  final double bassEnergy; // 20-250 Hz
+  final double midEnergy; // 250-2000 Hz
+  final double highEnergy; // 2000-8000 Hz
+  final double spectralCentroid; // Brightness (Hz)
+  final double spectralFlux; // Rate of timbre change
+  final double fundamentalFreq; // Pitch (Hz)
+  final double rms; // Amplitude
+  final double stereoWidth; // Stereo spread (0-1)
+  final double transientDensity; // Transients per second
+  final double noiseContent; // 0=harmonic, 1=noisy
 
   const AudioFeatures({
     required this.bassEnergy,
@@ -329,8 +326,7 @@ class AudioFeatures {
   });
 
   /// Compute overall energy (weighted average)
-  double get totalEnergy =>
-    (bassEnergy * 0.4) + (midEnergy * 0.35) + (highEnergy * 0.25);
+  double get totalEnergy => (bassEnergy * 0.4) + (midEnergy * 0.35) + (highEnergy * 0.25);
 
   /// Normalize all features to 0-1 range
   AudioFeatures normalize({
@@ -360,15 +356,15 @@ class AudioFeatures {
   @override
   String toString() {
     return 'AudioFeatures('
-           'bass: ${bassEnergy.toStringAsFixed(3)}, '
-           'mid: ${midEnergy.toStringAsFixed(3)}, '
-           'high: ${highEnergy.toStringAsFixed(3)}, '
-           'centroid: ${spectralCentroid.toStringAsFixed(1)} Hz, '
-           'flux: ${spectralFlux.toStringAsFixed(3)}, '
-           'pitch: ${fundamentalFreq.toStringAsFixed(1)} Hz, '
-           'rms: ${rms.toStringAsFixed(3)}, '
-           'width: ${stereoWidth.toStringAsFixed(3)}, '
-           'transients: ${transientDensity.toStringAsFixed(1)}/s, '
-           'noise: ${noiseContent.toStringAsFixed(3)})';
+        'bass: ${bassEnergy.toStringAsFixed(3)}, '
+        'mid: ${midEnergy.toStringAsFixed(3)}, '
+        'high: ${highEnergy.toStringAsFixed(3)}, '
+        'centroid: ${spectralCentroid.toStringAsFixed(1)} Hz, '
+        'flux: ${spectralFlux.toStringAsFixed(3)}, '
+        'pitch: ${fundamentalFreq.toStringAsFixed(1)} Hz, '
+        'rms: ${rms.toStringAsFixed(3)}, '
+        'width: ${stereoWidth.toStringAsFixed(3)}, '
+        'transients: ${transientDensity.toStringAsFixed(1)}/s, '
+        'noise: ${noiseContent.toStringAsFixed(3)})';
   }
 }

@@ -38,8 +38,7 @@ class XYPerformancePad extends StatefulWidget {
   State<XYPerformancePad> createState() => _XYPerformancePadState();
 }
 
-class _XYPerformancePadState extends State<XYPerformancePad>
-    with TickerProviderStateMixin {
+class _XYPerformancePadState extends State<XYPerformancePad> with TickerProviderStateMixin {
   // Track active touches (up to 8 simultaneous)
   final Map<int, TouchPoint> _activeTouches = {};
 
@@ -55,7 +54,8 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     super.dispose();
   }
 
-  void _handleTouchStart(PointerDownEvent event, UIStateProvider uiState, AudioProvider audioProvider, VisualProvider visualProvider) {
+  void _handleTouchStart(PointerDownEvent event, UIStateProvider uiState,
+      AudioProvider audioProvider, VisualProvider visualProvider) {
     if (_activeTouches.length >= 8) return; // Max 8 touches
 
     final touchId = event.pointer;
@@ -93,7 +93,8 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     debugPrint('🎹 Touch $touchId: Note $midiNote, Y-Param: ${yValue.toStringAsFixed(2)}');
   }
 
-  void _handleTouchMove(PointerMoveEvent event, UIStateProvider uiState, AudioProvider audioProvider, VisualProvider visualProvider) {
+  void _handleTouchMove(PointerMoveEvent event, UIStateProvider uiState,
+      AudioProvider audioProvider, VisualProvider visualProvider) {
     final touchId = event.pointer;
     if (!_activeTouches.containsKey(touchId)) return;
 
@@ -175,7 +176,8 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     return normalizedY;
   }
 
-  void _applyYAxisParameter(double value, UIStateProvider uiState, AudioProvider audioProvider, VisualProvider visualProvider) {
+  void _applyYAxisParameter(double value, UIStateProvider uiState, AudioProvider audioProvider,
+      VisualProvider visualProvider) {
     final yAxis = uiState.xyAxisY;
 
     switch (yAxis) {

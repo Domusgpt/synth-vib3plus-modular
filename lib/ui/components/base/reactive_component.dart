@@ -102,11 +102,11 @@ class VisualStyle {
 /// Audio reactivity configuration
 class AudioReactivity {
   final bool enabled;
-  final bool reactToRMS;         // Amplitude
-  final bool reactToSpectral;    // Frequency content
-  final bool reactToTransient;   // Attack detection
-  final bool reactToBass;        // Low frequency
-  final double sensitivity;      // 0-2, 1=normal
+  final bool reactToRMS; // Amplitude
+  final bool reactToSpectral; // Frequency content
+  final bool reactToTransient; // Attack detection
+  final bool reactToBass; // Low frequency
+  final double sensitivity; // 0-2, 1=normal
 
   const AudioReactivity({
     this.enabled = false,
@@ -168,7 +168,6 @@ abstract class ReactiveComponent extends StatefulWidget {
 /// Base state for reactive components
 abstract class ReactiveComponentState<T extends ReactiveComponent> extends State<T>
     with SingleTickerProviderStateMixin {
-
   // State tracking
   late ComponentState _state;
   AudioFeatures? _audioFeatures;
@@ -306,7 +305,7 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
         widget.audioReactivity.reactToTransient &&
         _audioFeatures != null) {
       intensity += DesignTokens.transientToGlow(_audioFeatures!.transient) *
-                   widget.audioReactivity.sensitivity;
+          widget.audioReactivity.sensitivity;
     }
 
     return intensity * widget.style.glowIntensity;
@@ -321,7 +320,7 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
         widget.audioReactivity.reactToBass &&
         _audioFeatures != null) {
       width = DesignTokens.bassEnergyToBorderWidth(_audioFeatures!.bassEnergy) *
-              widget.audioReactivity.sensitivity;
+          widget.audioReactivity.sensitivity;
     }
 
     return width;
@@ -335,9 +334,7 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
 
     return BoxDecoration(
       borderRadius: BorderRadius.circular(widget.style.borderRadius),
-      border: widget.style.showBorder
-          ? Border.all(color: color, width: borderWidth)
-          : null,
+      border: widget.style.showBorder ? Border.all(color: color, width: borderWidth) : null,
       boxShadow: widget.style.showGlow && glowIntensity > 0
           ? [
               BoxShadow(
@@ -477,8 +474,7 @@ mixin AudioReactiveMixin<T extends ReactiveComponent> on ReactiveComponentState<
 extension ComponentStateExtension on ComponentState {
   /// Check if component should respond to interaction
   bool get shouldRespondToTouch =>
-      functional == FunctionalState.active ||
-      functional == FunctionalState.inactive;
+      functional == FunctionalState.active || functional == FunctionalState.inactive;
 
   /// Check if component is in pressed state
   bool get isPressed => interaction == InteractionState.pressed;
@@ -487,7 +483,5 @@ extension ComponentStateExtension on ComponentState {
   bool get isDragging => interaction == InteractionState.dragging;
 
   /// Check if component has active audio
-  bool get hasActiveAudio =>
-      audio == AudioState.playing ||
-      audio == AudioState.modulating;
+  bool get hasActiveAudio => audio == AudioState.playing || audio == AudioState.modulating;
 }

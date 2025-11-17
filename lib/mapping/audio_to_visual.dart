@@ -122,8 +122,8 @@ class AudioToVisualModulator {
     final high = features['highEnergy'] ?? 0.0;
 
     return (bass - _lastLoggedBass).abs() > 0.1 ||
-           (mid - _lastLoggedMid).abs() > 0.1 ||
-           (high - _lastLoggedHigh).abs() > 0.1;
+        (mid - _lastLoggedMid).abs() > 0.1 ||
+        (high - _lastLoggedHigh).abs() > 0.1;
   }
 
   /// Log current modulation state for debugging
@@ -142,11 +142,11 @@ class AudioToVisualModulator {
     final glow = _mappings['rms_to_glowIntensity']?.map(rms) ?? 0.0;
 
     debugPrint('🎨 Audio→Visual: '
-      'bass=${(bass * 100).toStringAsFixed(0)}%→speed=${rotSpeed.toStringAsFixed(2)}x | '
-      'mid=${(mid * 100).toStringAsFixed(0)}%→tess=${tessellation.toStringAsFixed(0)} | '
-      'high=${(high * 100).toStringAsFixed(0)}%→bright=${brightness.toStringAsFixed(2)} | '
-      'centroid=${centroid.toStringAsFixed(0)}Hz→hue=${hue.toStringAsFixed(0)}° | '
-      'rms=${(rms * 100).toStringAsFixed(0)}%→glow=${glow.toStringAsFixed(2)}');
+        'bass=${(bass * 100).toStringAsFixed(0)}%→speed=${rotSpeed.toStringAsFixed(2)}x | '
+        'mid=${(mid * 100).toStringAsFixed(0)}%→tess=${tessellation.toStringAsFixed(0)} | '
+        'high=${(high * 100).toStringAsFixed(0)}%→bright=${brightness.toStringAsFixed(2)} | '
+        'centroid=${centroid.toStringAsFixed(0)}Hz→hue=${hue.toStringAsFixed(0)}° | '
+        'rms=${(rms * 100).toStringAsFixed(0)}%→glow=${glow.toStringAsFixed(2)}');
 
     _lastLoggedBass = bass;
     _lastLoggedMid = mid;

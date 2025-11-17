@@ -27,6 +27,9 @@ class VisualToAudioModulator {
   // Mapping configuration
   Map<String, ParameterMapping> _mappings = {};
 
+  // Debug tracking for geometry changes
+  int _lastGeometry = -1;
+
   VisualToAudioModulator({
     required this.audioProvider,
     required this.visualProvider,
@@ -40,7 +43,7 @@ class VisualToAudioModulator {
         sourceParam: 'rotationXW',
         targetParam: 'oscillator1Frequency',
         minRange: -2.0, // -2 semitones
-        maxRange: 2.0,  // +2 semitones
+        maxRange: 2.0, // +2 semitones
         curve: MappingCurve.sinusoidal,
       ),
       'rotationYW_to_osc2Freq': ParameterMapping(
@@ -53,8 +56,8 @@ class VisualToAudioModulator {
       'rotationZW_to_filterCutoff': ParameterMapping(
         sourceParam: 'rotationZW',
         targetParam: 'filterCutoff',
-        minRange: 0.0,  // 0% modulation
-        maxRange: 0.8,  // 80% modulation (±40%)
+        minRange: 0.0, // 0% modulation
+        maxRange: 0.8, // 80% modulation (±40%)
         curve: MappingCurve.sinusoidal,
       ),
       'morphParameter_to_wavetable': ParameterMapping(
@@ -74,8 +77,8 @@ class VisualToAudioModulator {
       'layerDepth_to_delay': ParameterMapping(
         sourceParam: 'layerDepth',
         targetParam: 'delayTime',
-        minRange: 0.0,    // 0ms
-        maxRange: 500.0,  // 500ms
+        minRange: 0.0, // 0ms
+        maxRange: 500.0, // 500ms
         curve: MappingCurve.linear,
       ),
     };
@@ -134,8 +137,8 @@ class VisualToAudioModulator {
     final rotZW = visualState['rotationZW'] ?? 0.0;
 
     return (rotXW - _lastLoggedRotXW).abs() > 0.05 ||
-           (rotYW - _lastLoggedRotYW).abs() > 0.05 ||
-           (rotZW - _lastLoggedRotZW).abs() > 0.05;
+        (rotYW - _lastLoggedRotYW).abs() > 0.05 ||
+        (rotZW - _lastLoggedRotZW).abs() > 0.05;
   }
 
   /// Log current modulation state for debugging
@@ -148,13 +151,14 @@ class VisualToAudioModulator {
     // Get mapped audio values
     final osc1Mod = _mappings['rotationXW_to_osc1Freq']?.map(rotXW) ?? 0.0;
     final osc2Mod = _mappings['rotationYW_to_osc2Freq']?.map(rotYW) ?? 0.0;
-    final filterMod = _mappings['rotationZW_to_filterCutoff']?.map(rotZW) ?? 0.0;
+    final filterMod =
+        _mappings['rotationZW_to_filterCutoff']?.map(rotZW) ?? 0.0;
 
     debugPrint('🔊 Visual→Audio: '
-      'rotXW=${rotXW.toStringAsFixed(2)}→osc1=${osc1Mod.toStringAsFixed(2)}st | '
-      'rotYW=${rotYW.toStringAsFixed(2)}→osc2=${osc2Mod.toStringAsFixed(2)}st | '
-      'rotZW=${rotZW.toStringAsFixed(2)}→filter=${(filterMod * 100).toStringAsFixed(0)}% | '
-      'morph=${morph.toStringAsFixed(2)}');
+        'rotXW=${rotXW.toStringAsFixed(2)}→osc1=${osc1Mod.toStringAsFixed(2)}st | '
+        'rotYW=${rotYW.toStringAsFixed(2)}→osc2=${osc2Mod.toStringAsFixed(2)}st | '
+        'rotZW=${rotZW.toStringAsFixed(2)}→filter=${(filterMod * 100).toStringAsFixed(0)}% | '
+        'morph=${morph.toStringAsFixed(2)}');
 
     _lastLoggedRotXW = rotXW;
     _lastLoggedRotYW = rotYW;
@@ -169,16 +173,23 @@ class VisualToAudioModulator {
     audioProvider.setGeometry(fullGeometry);
 
     // Debug logging (only on geometry changes)
-    static int _lastGeometry = -1;
     if (fullGeometry != _lastGeometry) {
       final coreIndex = fullGeometry ~/ 8;
       final baseGeometry = fullGeometry % 8;
       final coreNames = ['Direct', 'FM', 'Ring Mod'];
-      final geometryNames = ['Tetrahedron', 'Hypercube', 'Sphere', 'Torus',
-                             'Klein Bottle', 'Fractal', 'Wave', 'Crystal'];
+      final geometryNames = [
+        'Tetrahedron',
+        'Hypercube',
+        'Sphere',
+        'Torus',
+        'Klein Bottle',
+        'Fractal',
+        'Wave',
+        'Crystal'
+      ];
 
       debugPrint('🎯 Geometry Sync: $_lastGeometry → $fullGeometry '
-                 '(${coreNames[coreIndex]} ${geometryNames[baseGeometry]})');
+          '(${coreNames[coreIndex]} ${geometryNames[baseGeometry]})');
       _lastGeometry = fullGeometry;
     }
   }
@@ -227,7 +238,7 @@ class VisualToAudioModulator {
     if (vertexCount > 10000) return 16;
 
     final normalized = (math.log(vertexCount) - math.log(10)) /
-                       (math.log(10000) - math.log(10));
+        (math.log(10000) - math.log(10));
 
     return (1 + normalized * 15).round().clamp(1, 16);
   }
@@ -296,9 +307,12 @@ class VisualToAudioModulator {
       'layerDepth': visualProvider.getLayerSeparation(),
       'vertexCount': visualProvider.getActiveVertexCount(),
       'voiceCount': audioProvider.getVoiceCount(),
-      'osc1FreqMod': audioProvider.synthesizerEngine.oscillator1.frequencyModulation,
-      'osc2FreqMod': audioProvider.synthesizerEngine.oscillator2.frequencyModulation,
-      'filterCutoffMod': audioProvider.synthesizerEngine.filter.cutoffModulation,
+      'osc1FreqMod':
+          audioProvider.synthesizerEngine.oscillator1.frequencyModulation,
+      'osc2FreqMod':
+          audioProvider.synthesizerEngine.oscillator2.frequencyModulation,
+      'filterCutoffMod':
+          audioProvider.synthesizerEngine.filter.cutoffModulation,
     };
   }
 }

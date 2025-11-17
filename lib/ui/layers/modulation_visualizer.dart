@@ -29,11 +29,11 @@ import '../effects/glassmorphic_container.dart';
 
 /// Type of modulation source
 enum ModulationSourceType {
-  audio,      // Audio features (RMS, spectral, etc.)
-  visual,     // Visual parameters (rotation, morph, etc.)
-  lfo,        // LFO modulator
-  envelope,   // Envelope
-  manual,     // User control
+  audio, // Audio features (RMS, spectral, etc.)
+  visual, // Visual parameters (rotation, morph, etc.)
+  lfo, // LFO modulator
+  envelope, // Envelope
+  manual, // User control
 }
 
 /// Modulation source
@@ -41,8 +41,8 @@ class ModulationSource {
   final String id;
   final String label;
   final ModulationSourceType type;
-  final Offset position;    // Screen position
-  double currentValue;      // 0-1
+  final Offset position; // Screen position
+  double currentValue; // 0-1
 
   ModulationSource({
     required this.id,
@@ -73,7 +73,7 @@ class ModulationSource {
 class ModulationTarget {
   final String id;
   final String label;
-  final Offset position;    // Screen position
+  final Offset position; // Screen position
 
   ModulationTarget({
     required this.id,
@@ -90,9 +90,9 @@ class ModulationTarget {
 class ModulationConnection {
   final ModulationSource source;
   final ModulationTarget target;
-  double strength;          // 0-1, modulation depth
+  double strength; // 0-1, modulation depth
   bool enabled;
-  double animationPhase;    // 0-1, for animated particles
+  double animationPhase; // 0-1, for animated particles
 
   ModulationConnection({
     required this.source,
@@ -104,7 +104,7 @@ class ModulationConnection {
   /// Update animation
   void update(double dt) {
     if (!enabled) return;
-    animationPhase = (animationPhase + dt * 0.5) % 1.0;  // 2-second loop
+    animationPhase = (animationPhase + dt * 0.5) % 1.0; // 2-second loop
   }
 
   /// Get control point for bezier curve
@@ -113,7 +113,7 @@ class ModulationConnection {
     final midY = (source.position.dy + target.position.dy) / 2;
 
     // Arc upward for visual separation
-    final arcHeight = -50.0 - (strength * 50.0);  // Stronger = higher arc
+    final arcHeight = -50.0 - (strength * 50.0); // Stronger = higher arc
 
     return Offset(midX, midY + arcHeight);
   }
@@ -122,12 +122,8 @@ class ModulationConnection {
   Offset evaluateCurve(double t) {
     final t1 = 1.0 - t;
     return Offset(
-      t1 * t1 * source.position.dx +
-          2 * t1 * t * controlPoint.dx +
-          t * t * target.position.dx,
-      t1 * t1 * source.position.dy +
-          2 * t1 * t * controlPoint.dy +
-          t * t * target.position.dy,
+      t1 * t1 * source.position.dx + 2 * t1 * t * controlPoint.dx + t * t * target.position.dx,
+      t1 * t1 * source.position.dy + 2 * t1 * t * controlPoint.dy + t * t * target.position.dy,
     );
   }
 }
@@ -142,7 +138,7 @@ class ModulationVisualizer {
   bool enabled;
   bool showLabels;
   bool showParticles;
-  double particleCount;  // Particles per connection
+  double particleCount; // Particles per connection
 
   ModulationVisualizer({
     this.enabled = true,
@@ -158,17 +154,15 @@ class ModulationVisualizer {
   /// Add modulation connection
   void addConnection(ModulationConnection connection) {
     // Remove existing connection with same source/target
-    connections.removeWhere((c) =>
-        c.source.id == connection.source.id &&
-        c.target.id == connection.target.id);
+    connections.removeWhere(
+        (c) => c.source.id == connection.source.id && c.target.id == connection.target.id);
 
     connections.add(connection);
   }
 
   /// Remove connection
   void removeConnection(String sourceId, String targetId) {
-    connections.removeWhere((c) =>
-        c.source.id == sourceId && c.target.id == targetId);
+    connections.removeWhere((c) => c.source.id == sourceId && c.target.id == targetId);
   }
 
   /// Update connection strength
@@ -332,13 +326,8 @@ class ModulationVisualizer {
   }
 
   /// Paint single label
-  void _paintLabel(
-    Canvas canvas,
-    Offset position,
-    String text,
-    Color color,
-    {required bool isSource}
-  ) {
+  void _paintLabel(Canvas canvas, Offset position, String text, Color color,
+      {required bool isSource}) {
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -403,8 +392,8 @@ class ModulationVisualizer {
 
     canvas.drawArc(
       rect,
-      -math.pi / 2,  // Start at top
-      strength * 2 * math.pi,  // Arc based on strength
+      -math.pi / 2, // Start at top
+      strength * 2 * math.pi, // Arc based on strength
       false,
       arcPaint,
     );

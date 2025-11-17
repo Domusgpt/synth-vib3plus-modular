@@ -70,9 +70,9 @@ class GridConfig {
 
 /// Screen orientation breakpoint
 enum LayoutBreakpoint {
-  portrait,   // Height > width
-  landscape,  // Width > height
-  square,     // Width ≈ height
+  portrait, // Height > width
+  landscape, // Width > height
+  square, // Width ≈ height
 }
 
 /// Breakpoint utilities
@@ -91,16 +91,13 @@ class Breakpoints {
   }
 
   /// Check if portrait
-  static bool isPortrait(Size size) =>
-      getBreakpoint(size) == LayoutBreakpoint.portrait;
+  static bool isPortrait(Size size) => getBreakpoint(size) == LayoutBreakpoint.portrait;
 
   /// Check if landscape
-  static bool isLandscape(Size size) =>
-      getBreakpoint(size) == LayoutBreakpoint.landscape;
+  static bool isLandscape(Size size) => getBreakpoint(size) == LayoutBreakpoint.landscape;
 
   /// Check if square
-  static bool isSquare(Size size) =>
-      getBreakpoint(size) == LayoutBreakpoint.square;
+  static bool isSquare(Size size) => getBreakpoint(size) == LayoutBreakpoint.square;
 }
 
 // ============================================================================
@@ -109,8 +106,8 @@ class Breakpoints {
 
 /// Grid unit representation (columns × rows)
 class GridUnits {
-  final int columns;  // Width in grid columns
-  final int rows;     // Height in grid rows
+  final int columns; // Width in grid columns
+  final int rows; // Height in grid rows
 
   const GridUnits(this.columns, this.rows);
 
@@ -153,8 +150,8 @@ class GridUnits {
 
 /// Position in grid coordinates
 class GridPosition {
-  final int column;  // Column index (0-based)
-  final int row;     // Row index (0-based)
+  final int column; // Column index (0-based)
+  final int row; // Row index (0-based)
 
   const GridPosition(this.column, this.row);
 
@@ -162,8 +159,7 @@ class GridPosition {
   static const topLeft = GridPosition(0, 0);
 
   /// Center (approximate)
-  static GridPosition center(GridConfig config) =>
-      GridPosition(config.columns ~/ 2, 0);
+  static GridPosition center(GridConfig config) => GridPosition(config.columns ~/ 2, 0);
 
   @override
   bool operator ==(Object other) =>
@@ -204,13 +200,11 @@ class GridCalculator {
 
   /// Calculate size in pixels from grid units
   Size calculateSize(GridUnits units) {
-    final width = (columnWidth * units.columns) +
-        (config.gutterSize * (units.columns - 1));
+    final width = (columnWidth * units.columns) + (config.gutterSize * (units.columns - 1));
 
     // Assume square cells for row height
     final rowHeight = columnWidth;
-    final height = (rowHeight * units.rows) +
-        (config.gutterSize * (units.rows - 1));
+    final height = (rowHeight * units.rows) + (config.gutterSize * (units.rows - 1));
 
     return Size(width, height);
   }
@@ -222,9 +216,7 @@ class GridCalculator {
         (config.gutterSize * position.column);
 
     final rowHeight = columnWidth;
-    final y = config.padding.top +
-        (rowHeight * position.row) +
-        (config.gutterSize * position.row);
+    final y = config.padding.top + (rowHeight * position.row) + (config.gutterSize * position.row);
 
     return Offset(x, y);
   }
@@ -246,7 +238,7 @@ class GridCalculator {
     // Calculate row
     final rowHeight = columnWidth;
     final rowWithGutter = rowHeight + config.gutterSize;
-    final row = (adjustedY / rowWithGutter).round().clamp(0, 100);  // Max 100 rows
+    final row = (adjustedY / rowWithGutter).round().clamp(0, 100); // Max 100 rows
 
     return GridPosition(column, row);
   }
@@ -269,15 +261,12 @@ class GridCalculator {
   /// Convert pixel size to grid units
   GridUnits pixelToGridUnits(Size pixelSize) {
     final columnWithGutter = columnWidth + config.gutterSize;
-    final columns = ((pixelSize.width + config.gutterSize) / columnWithGutter)
-        .round()
-        .clamp(1, config.columns);
+    final columns =
+        ((pixelSize.width + config.gutterSize) / columnWithGutter).round().clamp(1, config.columns);
 
     final rowHeight = columnWidth;
     final rowWithGutter = rowHeight + config.gutterSize;
-    final rows = ((pixelSize.height + config.gutterSize) / rowWithGutter)
-        .round()
-        .clamp(1, 100);
+    final rows = ((pixelSize.height + config.gutterSize) / rowWithGutter).round().clamp(1, 100);
 
     return GridUnits(columns, rows);
   }
@@ -312,7 +301,7 @@ class GridCalculator {
       }
     }
 
-    return null;  // No available position found
+    return null; // No available position found
   }
 
   /// Get bounding rect for grid area
@@ -431,9 +420,7 @@ class _GridPainter extends CustomPainter {
     // Draw horizontal lines (rows) - show first 10
     final rowHeight = calculator.columnWidth;
     for (int row = 0; row <= 10; row++) {
-      final y = config.padding.top +
-          (rowHeight * row) +
-          (config.gutterSize * row);
+      final y = config.padding.top + (rowHeight * row) + (config.gutterSize * row);
 
       if (y > size.height) break;
 
@@ -493,9 +480,7 @@ extension GridUnitsExtension on GridUnits {
 
   /// Check if valid for given config
   bool isValidFor(GridConfig config) {
-    return columns > 0 &&
-           columns <= config.columns &&
-           rows > 0;
+    return columns > 0 && columns <= config.columns && rows > 0;
   }
 
   /// Scale by factor
@@ -510,9 +495,7 @@ extension GridUnitsExtension on GridUnits {
 extension GridPositionExtension on GridPosition {
   /// Check if valid for given config
   bool isValidFor(GridConfig config) {
-    return column >= 0 &&
-           column < config.columns &&
-           row >= 0;
+    return column >= 0 && column < config.columns && row >= 0;
   }
 
   /// Translate by delta

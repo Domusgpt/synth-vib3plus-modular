@@ -69,11 +69,11 @@ class DetectedGesture {
   final GestureType type;
   final int fingerCount;
   final Offset center;
-  final double distance;     // For pinch gestures
-  final double angle;        // For rotate gestures
-  final Offset velocity;     // For swipe gestures
-  final double pressure;     // Average pressure
-  final Duration duration;   // Gesture duration
+  final double distance; // For pinch gestures
+  final double angle; // For rotate gestures
+  final Offset velocity; // For swipe gestures
+  final double pressure; // Average pressure
+  final Duration duration; // Gesture duration
   final DateTime timestamp;
   final Map<String, dynamic> metadata;
 
@@ -104,10 +104,10 @@ class GestureRecognitionSystem {
   final Map<GestureType, void Function(DetectedGesture)> _handlers = {};
 
   // Configuration
-  double pinchThreshold = 20.0;       // Pixels
-  double rotateThreshold = 0.1;       // Radians (~5.7°)
-  double swipeThreshold = 100.0;      // Pixels per second
-  double longPressDuration = 500.0;   // Milliseconds
+  double pinchThreshold = 20.0; // Pixels
+  double rotateThreshold = 0.1; // Radians (~5.7°)
+  double swipeThreshold = 100.0; // Pixels per second
+  double longPressDuration = 500.0; // Milliseconds
   int maxSimultaneousTouches = 5;
 
   // State tracking
@@ -293,7 +293,7 @@ class GestureRecognitionSystem {
         metadata: {'scale': scale},
       ));
 
-      _initialDistance = currentDistance;  // Update for next frame
+      _initialDistance = currentDistance; // Update for next frame
     }
   }
 
@@ -313,7 +313,7 @@ class GestureRecognitionSystem {
         metadata: {'totalAngle': currentAngle},
       ));
 
-      _initialAngle = currentAngle;  // Update for next frame
+      _initialAngle = currentAngle; // Update for next frame
     }
   }
 
@@ -411,9 +411,8 @@ class GestureRecognitionSystem {
 
   void _updateGestureMetrics() {
     _initialCenter = _calculateCenter();
-    _initialDistance = _activeTouches.length == 2
-        ? _calculateDistance()
-        : _calculateAverageDistance();
+    _initialDistance =
+        _activeTouches.length == 2 ? _calculateDistance() : _calculateAverageDistance();
     _initialAngle = _activeTouches.length == 2 ? _calculateAngle() : null;
   }
 

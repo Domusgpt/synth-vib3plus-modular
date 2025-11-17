@@ -30,25 +30,25 @@ class SystemColors {
 
   /// Quantum system: Pure harmonic (Cyan)
   static const quantum = SystemColors(
-    primary: Color(0xFF00FFFF),   // Cyan
+    primary: Color(0xFF00FFFF), // Cyan
     secondary: Color(0xFF88CCFF), // Ice Blue
-    accent: Color(0xFF0088FF),    // Electric Blue
+    accent: Color(0xFF0088FF), // Electric Blue
     name: 'Quantum',
   );
 
   /// Faceted system: Geometric hybrid (Magenta)
   static const faceted = SystemColors(
-    primary: Color(0xFFFF00FF),   // Magenta
+    primary: Color(0xFFFF00FF), // Magenta
     secondary: Color(0xFFFF88FF), // Pink
-    accent: Color(0xFF8800FF),    // Deep Purple
+    accent: Color(0xFF8800FF), // Deep Purple
     name: 'Faceted',
   );
 
   /// Holographic system: Spectral rich (Amber)
   static const holographic = SystemColors(
-    primary: Color(0xFFFFAA00),   // Amber
+    primary: Color(0xFFFFAA00), // Amber
     secondary: Color(0xFFFFCC44), // Gold
-    accent: Color(0xFFFF8800),    // Orange
+    accent: Color(0xFFFF8800), // Orange
     name: 'Holographic',
   );
 
@@ -69,9 +69,9 @@ class SystemColors {
 
 /// Glow intensity levels
 enum GlowIntensity {
-  inactive,  // Level 1
-  active,    // Level 2
-  engaged,   // Level 3
+  inactive, // Level 1
+  active, // Level 2
+  engaged, // Level 3
 }
 
 /// Theme extension for Synth-VIB3+ specific styling

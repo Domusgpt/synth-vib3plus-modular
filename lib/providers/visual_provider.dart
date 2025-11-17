@@ -40,23 +40,23 @@ class VisualProvider with ChangeNotifier {
   double _rotationVelocityZW = 0.0;
 
   // Visual parameters
-  double _rotationSpeed = 1.0;       // Base rotation speed multiplier
-  int _tessellationDensity = 5;      // Subdivision level (3-8)
-  double _vertexBrightness = 0.8;    // Vertex intensity (0-1)
-  double _hueShift = 180.0;          // Color hue offset (0-360°)
-  double _glowIntensity = 1.0;       // Bloom/glow amount (0-3)
-  double _rgbSplitAmount = 0.0;      // Chromatic aberration (0-10)
+  double _rotationSpeed = 1.0; // Base rotation speed multiplier
+  int _tessellationDensity = 5; // Subdivision level (3-8)
+  double _vertexBrightness = 0.8; // Vertex intensity (0-1)
+  double _hueShift = 180.0; // Color hue offset (0-360°)
+  double _glowIntensity = 1.0; // Bloom/glow amount (0-3)
+  double _rgbSplitAmount = 0.0; // Chromatic aberration (0-10)
 
   // Geometry state (ENHANCED FOR 72-COMBINATION MATRIX)
-  int _activeVertexCount = 120;      // Current vertex count
-  double _morphParameter = 0.0;       // Geometry morph (0-1)
-  int _currentGeometry = 0;           // Base geometry index (0-7)
-  int _fullGeometryIndex = 0;         // Full geometry index (0-23) for 72-combination matrix
-  double _geometryComplexity = 0.5;   // Complexity measure (0-1)
+  int _activeVertexCount = 120; // Current vertex count
+  double _morphParameter = 0.0; // Geometry morph (0-1)
+  int _currentGeometry = 0; // Base geometry index (0-7)
+  int _fullGeometryIndex = 0; // Full geometry index (0-23) for 72-combination matrix
+  double _geometryComplexity = 0.5; // Complexity measure (0-1)
 
   // Projection parameters
-  double _projectionDistance = 8.0;   // Camera distance (5-15)
-  double _layerSeparation = 2.0;      // Holographic layer depth (0-5)
+  double _projectionDistance = 8.0; // Camera distance (5-15)
+  double _layerSeparation = 2.0; // Holographic layer depth (0-5)
 
   // WebView controller (for JavaScript bridge)
   WebViewController? _webViewController;
@@ -109,15 +109,15 @@ class VisualProvider with ChangeNotifier {
     _fullGeometryIndex = newSystemOffset + _currentGeometry;
 
     debugPrint('🔄 System Switching: $previousSystem → $systemName');
-    debugPrint('   Full Geometry Updated: ${_getSystemOffset(previousSystem) + _currentGeometry} → $_fullGeometryIndex');
+    debugPrint(
+        '   Full Geometry Updated: ${_getSystemOffset(previousSystem) + _currentGeometry} → $_fullGeometryIndex');
 
     // Update JavaScript system via WebView
     // VIB3+ uses window.switchSystem(), not window.vib34d.switchSystem()
     if (_webViewController != null) {
       try {
-        await _webViewController!.runJavaScript(
-          'if (window.switchSystem) { window.switchSystem("$systemName"); }'
-        );
+        await _webViewController!
+            .runJavaScript('if (window.switchSystem) { window.switchSystem("$systemName"); }');
         debugPrint('✅ VIB3+ system switched to $systemName');
       } catch (e) {
         debugPrint('❌ Error switching VIB3+ system: $e');
@@ -246,11 +246,9 @@ class VisualProvider with ChangeNotifier {
 
   /// Get rotation velocity (for advanced modulation)
   double getRotationVelocity() {
-    return math.sqrt(
-      _rotationVelocityXW * _rotationVelocityXW +
-      _rotationVelocityYW * _rotationVelocityYW +
-      _rotationVelocityZW * _rotationVelocityZW
-    );
+    return math.sqrt(_rotationVelocityXW * _rotationVelocityXW +
+        _rotationVelocityYW * _rotationVelocityYW +
+        _rotationVelocityZW * _rotationVelocityZW);
   }
 
   /// Get morph parameter (for wavetable modulation)
@@ -310,7 +308,8 @@ class VisualProvider with ChangeNotifier {
 
     if (previousGeometry != _currentGeometry) {
       debugPrint('🔷 Base Geometry: $previousGeometry → $_currentGeometry');
-      debugPrint('   Full Geometry: $_fullGeometryIndex (System: $_currentSystem, Offset: $systemOffset)');
+      debugPrint(
+          '   Full Geometry: $_fullGeometryIndex (System: $_currentSystem, Offset: $systemOffset)');
     }
 
     _updateJavaScriptParameter('geometry', _currentGeometry);
@@ -337,7 +336,7 @@ class VisualProvider with ChangeNotifier {
     _fullGeometryIndex = clampedIndex;
 
     // Calculate derived values
-    final coreIndex = clampedIndex ~/ 8;  // 0, 1, or 2
+    final coreIndex = clampedIndex ~/ 8; // 0, 1, or 2
     final baseGeometry = clampedIndex % 8; // 0-7
 
     // Determine target system based on core
@@ -371,9 +370,9 @@ class VisualProvider with ChangeNotifier {
   int _getSystemOffset(String system) {
     switch (system.toLowerCase()) {
       case 'quantum':
-        return 0;  // Base core (Direct synthesis)
+        return 0; // Base core (Direct synthesis)
       case 'faceted':
-        return 8;  // Hypersphere core (FM synthesis)
+        return 8; // Hypersphere core (FM synthesis)
       case 'holographic':
         return 16; // Hypertetrahedron core (Ring modulation)
       default:
@@ -384,32 +383,42 @@ class VisualProvider with ChangeNotifier {
   /// Map core index to visual system name
   String _coreToSystem(int coreIndex) {
     switch (coreIndex) {
-      case 0: return 'quantum';     // Base → Quantum
-      case 1: return 'faceted';     // Hypersphere → Faceted
-      case 2: return 'holographic'; // Hypertetrahedron → Holographic
-      default: return 'quantum';
+      case 0:
+        return 'quantum'; // Base → Quantum
+      case 1:
+        return 'faceted'; // Hypersphere → Faceted
+      case 2:
+        return 'holographic'; // Hypertetrahedron → Holographic
+      default:
+        return 'quantum';
     }
   }
 
   // Helper arrays for debug output
   static const _coreNames = ['Direct', 'FM', 'Ring Mod'];
   static const _geometryNames = [
-    'Tetrahedron', 'Hypercube', 'Sphere', 'Torus',
-    'Klein Bottle', 'Fractal', 'Wave', 'Crystal'
+    'Tetrahedron',
+    'Hypercube',
+    'Sphere',
+    'Torus',
+    'Klein Bottle',
+    'Fractal',
+    'Wave',
+    'Crystal'
   ];
 
   /// Get vertex count for specific geometry
   int _getVertexCountForGeometry(int index) {
     // Approximate vertex counts for different 4D geometries
     const vertexCounts = [
-      16,   // 0: Tesseract (hypercube)
-      120,  // 1: 120-cell
-      600,  // 2: 600-cell
-      8,    // 3: 16-cell
-      24,   // 4: 24-cell
-      50,   // 5: Torus
-      100,  // 6: Sphere
-      32,   // 7: Klein bottle
+      16, // 0: Tesseract (hypercube)
+      120, // 1: 120-cell
+      600, // 2: 600-cell
+      8, // 3: 16-cell
+      24, // 4: 24-cell
+      50, // 5: Torus
+      100, // 6: Sphere
+      32, // 7: Klein bottle
     ];
 
     return index < vertexCounts.length ? vertexCounts[index] : 100;
@@ -422,8 +431,7 @@ class VisualProvider with ChangeNotifier {
 
     try {
       await _webViewController!.runJavaScript(
-        'if (window.updateParameter) { window.updateParameter("$name", $value); }'
-      );
+          'if (window.updateParameter) { window.updateParameter("$name", $value); }');
     } catch (e) {
       debugPrint('⚠️  Error updating JS parameter $name: $e');
     }
@@ -608,9 +616,8 @@ class VisualProvider with ChangeNotifier {
     }
 
     try {
-      _webViewController!.runJavaScript(
-        'if (window.updateParameter) { window.updateParameter("$key", $value); }'
-      );
+      _webViewController!
+          .runJavaScript('if (window.updateParameter) { window.updateParameter("$key", $value); }');
     } catch (e) {
       debugPrint('⚠️ Failed to update VIB3+ parameter $key: $e');
     }
@@ -626,13 +633,10 @@ class VisualProvider with ChangeNotifier {
 
     try {
       // Convert parameters to JSON-like object
-      final paramsJson = params.entries
-          .map((e) => '"${e.key}": ${e.value}')
-          .join(', ');
+      final paramsJson = params.entries.map((e) => '"${e.key}": ${e.value}').join(', ');
 
       await _webViewController!.runJavaScript(
-        'if (window.updateParameters) { window.updateParameters({$paramsJson}); }'
-      );
+          'if (window.updateParameters) { window.updateParameters({$paramsJson}); }');
 
       debugPrint('📦 Batch updated ${params.length} parameters');
     } catch (e) {
@@ -721,9 +725,7 @@ class VisualProvider with ChangeNotifier {
     if (_webViewController == null) return;
 
     try {
-      await _webViewController!.runJavaScript(
-        'if (window.toggleDebug) { window.toggleDebug(); }'
-      );
+      await _webViewController!.runJavaScript('if (window.toggleDebug) { window.toggleDebug(); }');
       debugPrint('🐛 Toggled Smart Canvas debug overlay');
     } catch (e) {
       debugPrint('⚠️ Failed to toggle debug: $e');

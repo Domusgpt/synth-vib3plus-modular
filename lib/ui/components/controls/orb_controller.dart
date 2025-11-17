@@ -31,10 +31,10 @@ import '../base/reactive_component.dart';
 
 /// Orb diameter sizes
 enum OrbSize {
-  small,   // 80px
-  medium,  // 120px
-  large,   // 160px
-  xl,      // 200px
+  small, // 80px
+  medium, // 120px
+  large, // 160px
+  xl, // 200px
 }
 
 extension OrbSizeExtension on OrbSize {
@@ -59,9 +59,9 @@ extension OrbSizeExtension on OrbSize {
 /// Orb controller configuration
 class OrbConfig {
   final OrbSize size;
-  final double range;           // ±semitones (1-12)
+  final double range; // ±semitones (1-12)
   final bool autoReturn;
-  final double returnSpeed;     // 0.1-1.0, higher = faster
+  final double returnSpeed; // 0.1-1.0, higher = faster
   final bool showCrosshairs;
   final bool showConnectionLine;
   final bool showValue;
@@ -114,7 +114,7 @@ class OrbConfig {
 /// Enhanced orb controller
 class OrbController extends StatefulWidget {
   final OrbConfig config;
-  final ValueChanged<Offset>? onPositionChange;  // -1 to 1 for X/Y
+  final ValueChanged<Offset>? onPositionChange; // -1 to 1 for X/Y
   final ValueChanged<double>? onPitchBendChange;
   final ValueChanged<double>? onVibratoChange;
   final VoidCallback? onTouchStart;
@@ -140,9 +140,8 @@ class OrbController extends StatefulWidget {
   State<OrbController> createState() => _OrbControllerState();
 }
 
-class _OrbControllerState extends State<OrbController>
-    with SingleTickerProviderStateMixin {
-  Offset _position = Offset.zero;  // -1 to 1
+class _OrbControllerState extends State<OrbController> with SingleTickerProviderStateMixin {
+  Offset _position = Offset.zero; // -1 to 1
   bool _isDragging = false;
   late AnimationController _returnController;
 
@@ -190,9 +189,7 @@ class _OrbControllerState extends State<OrbController>
 
     // Clamp to circle
     final distance = localPosition.distance;
-    final clamped = distance > radius
-        ? localPosition / distance * radius
-        : localPosition;
+    final clamped = distance > radius ? localPosition / distance * radius : localPosition;
 
     // Normalize to -1 to 1
     setState(() {
@@ -345,7 +342,7 @@ class _OrbControllerState extends State<OrbController>
 // ============================================================================
 
 class _OrbPainter extends CustomPainter {
-  final Offset position;  // -1 to 1
+  final Offset position; // -1 to 1
   final bool isDragging;
   final Color color;
   final double glowIntensity;
@@ -371,10 +368,11 @@ class _OrbPainter extends CustomPainter {
     final radius = size.width / 2;
 
     // Current orb position (in pixels)
-    final orbPosition = center + Offset(
-      position.dx * radius * 0.8,
-      position.dy * radius * 0.8,
-    );
+    final orbPosition = center +
+        Offset(
+          position.dx * radius * 0.8,
+          position.dy * radius * 0.8,
+        );
 
     // Draw crosshairs
     if (showCrosshairs) {
@@ -539,8 +537,8 @@ class _OrbPainter extends CustomPainter {
   @override
   bool shouldRepaint(_OrbPainter oldDelegate) {
     return oldDelegate.position != position ||
-           oldDelegate.isDragging != isDragging ||
-           oldDelegate.glowIntensity != glowIntensity ||
-           oldDelegate.audioFeatures != audioFeatures;
+        oldDelegate.isDragging != isDragging ||
+        oldDelegate.glowIntensity != glowIntensity ||
+        oldDelegate.audioFeatures != audioFeatures;
   }
 }

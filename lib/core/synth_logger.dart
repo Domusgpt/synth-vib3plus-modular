@@ -79,7 +79,8 @@ class SynthLogger {
     required int bufferSize,
     required int channels,
   }) {
-    debugPrint('📊 PCM setup: $sampleRate Hz, $bufferSize samples, ${channels == 1 ? "mono" : "stereo"}');
+    debugPrint(
+        '📊 PCM setup: $sampleRate Hz, $bufferSize samples, ${channels == 1 ? "mono" : "stereo"}');
   }
 
   static void audioReady() {
@@ -193,7 +194,8 @@ class SynthLogger {
     debugPrint('✅ VIB3+ system switched to $system');
   }
 
-  static void systemInfo(String system, {
+  static void systemInfo(
+    String system, {
     required int vertices,
     required double complexity,
     required String synthesisMode,

@@ -261,10 +261,7 @@ class AudioPresetData {
       pitchBendRange: json['pitchBendRange'] ?? 2.0,
       vibratoDepth: json['vibratoDepth'] ?? 0.0,
       noiseAmount: json['noiseAmount'] ?? 0.0,
-      lfos: (json['lfos'] as List?)
-              ?.map((lfo) => LFOPresetData.fromJson(lfo))
-              .toList() ??
-          [],
+      lfos: (json['lfos'] as List?)?.map((lfo) => LFOPresetData.fromJson(lfo)).toList() ?? [],
       masterVolume: json['masterVolume'] ?? 0.7,
       stereoWidth: json['stereoWidth'] ?? 1.0,
     );
@@ -412,8 +409,7 @@ class MappingPresetData {
       visualToAudioEnabled: json['visualToAudioEnabled'] ?? true,
       audioToVisualStrength: json['audioToVisualStrength'] ?? 1.0,
       visualToAudioStrength: json['visualToAudioStrength'] ?? 1.0,
-      mappingEnabled:
-          Map<String, bool>.from(json['mappingEnabled'] ?? {}),
+      mappingEnabled: Map<String, bool>.from(json['mappingEnabled'] ?? {}),
     );
   }
 }

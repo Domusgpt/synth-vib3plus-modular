@@ -24,38 +24,38 @@ import 'dart:typed_data';
 
 /// Visual system types (from VIB3+)
 enum VisualSystem {
-  quantum,      // Pure harmonic synthesis
-  faceted,      // Geometric hybrid synthesis
-  holographic,  // Spectral rich synthesis
+  quantum, // Pure harmonic synthesis
+  faceted, // Geometric hybrid synthesis
+  holographic, // Spectral rich synthesis
 }
 
 /// Polytope core types (determines synthesis branch)
 enum PolytopeCor {
-  base,              // Direct synthesis (geometries 0-7)
-  hypersphere,       // FM synthesis (geometries 8-15)
-  hypertetrahedron,  // Ring modulation (geometries 16-23)
+  base, // Direct synthesis (geometries 0-7)
+  hypersphere, // FM synthesis (geometries 8-15)
+  hypertetrahedron, // Ring modulation (geometries 16-23)
 }
 
 /// Base geometry types (determines voice character)
 enum BaseGeometry {
-  tetrahedron,  // 0: Fundamental - pure tone, minimal complexity
-  hypercube,    // 1: Complex - rich harmonics, detuned chorusing
-  sphere,       // 2: Smooth - filtered warm tones
-  torus,        // 3: Cyclic - rhythmic modulation
-  kleinBottle,  // 4: Twisted - stereo movement, spatial
-  fractal,      // 5: Recursive - evolving complexity
-  wave,         // 6: Flowing - sweeping evolving timbres
-  crystal,      // 7: Crystalline - bright percussive attacks
+  tetrahedron, // 0: Fundamental - pure tone, minimal complexity
+  hypercube, // 1: Complex - rich harmonics, detuned chorusing
+  sphere, // 2: Smooth - filtered warm tones
+  torus, // 3: Cyclic - rhythmic modulation
+  kleinBottle, // 4: Twisted - stereo movement, spatial
+  fractal, // 5: Recursive - evolving complexity
+  wave, // 6: Flowing - sweeping evolving timbres
+  crystal, // 7: Crystalline - bright percussive attacks
 }
 
 /// Sound family characteristics (from visual system) - MUSICALLY TUNED
 class SoundFamily {
   final String name;
   final List<double> waveformMix; // [sine, square, triangle, saw]
-  final double filterQ;           // Resonance (tuned for musicality)
-  final double noiseLevel;        // 0-1 (very low for musical clarity)
-  final double reverbMix;         // 0-1 (musical ambience)
-  final double brightness;        // Spectral tilt (0-1)
+  final double filterQ; // Resonance (tuned for musicality)
+  final double noiseLevel; // 0-1 (very low for musical clarity)
+  final double reverbMix; // 0-1 (musical ambience)
+  final double brightness; // Spectral tilt (0-1)
   final List<double> harmonicAmplitudes; // First 8 harmonics
 
   const SoundFamily({
@@ -71,33 +71,33 @@ class SoundFamily {
   // Quantum system: Pure harmonic - optimized for clarity and consonance
   static const quantum = SoundFamily(
     name: 'Quantum/Pure',
-    waveformMix: [0.85, 0.0, 0.15, 0.0],  // Mostly sine with triangle warmth
-    filterQ: 8.0,                           // High resonance for clarity
-    noiseLevel: 0.005,                      // Minimal noise
-    reverbMix: 0.20,                        // Light reverb
-    brightness: 0.7,                        // Bright but not harsh
+    waveformMix: [0.85, 0.0, 0.15, 0.0], // Mostly sine with triangle warmth
+    filterQ: 8.0, // High resonance for clarity
+    noiseLevel: 0.005, // Minimal noise
+    reverbMix: 0.20, // Light reverb
+    brightness: 0.7, // Bright but not harsh
     harmonicAmplitudes: [1.0, 0.5, 0.33, 0.25, 0.20, 0.17, 0.14, 0.13], // Musical harmonics
   );
 
   // Faceted system: Geometric hybrid - balanced for musical richness
   static const faceted = SoundFamily(
     name: 'Faceted/Geometric',
-    waveformMix: [0.35, 0.40, 0.25, 0.0],  // Balanced warm spectrum
-    filterQ: 5.5,                            // Moderate resonance
-    noiseLevel: 0.01,                        // Very low noise
-    reverbMix: 0.30,                         // Medium reverb
-    brightness: 0.6,                         // Balanced spectrum
+    waveformMix: [0.35, 0.40, 0.25, 0.0], // Balanced warm spectrum
+    filterQ: 5.5, // Moderate resonance
+    noiseLevel: 0.01, // Very low noise
+    reverbMix: 0.30, // Medium reverb
+    brightness: 0.6, // Balanced spectrum
     harmonicAmplitudes: [1.0, 0.7, 0.5, 0.35, 0.25, 0.18, 0.13, 0.10], // Rich but controlled
   );
 
   // Holographic system: Spectral rich - complex but musical
   static const holographic = SoundFamily(
     name: 'Holographic/Rich',
-    waveformMix: [0.25, 0.10, 0.15, 0.50],  // Saw-based with warmth
-    filterQ: 4.0,                             // Lower resonance for smoothness
-    noiseLevel: 0.02,                         // Low noise for clarity
-    reverbMix: 0.45,                          // High reverb for depth
-    brightness: 0.5,                          // Warm rich spectrum
+    waveformMix: [0.25, 0.10, 0.15, 0.50], // Saw-based with warmth
+    filterQ: 4.0, // Lower resonance for smoothness
+    noiseLevel: 0.02, // Low noise for clarity
+    reverbMix: 0.45, // High reverb for depth
+    brightness: 0.5, // Warm rich spectrum
     harmonicAmplitudes: [1.0, 0.8, 0.6, 0.45, 0.35, 0.27, 0.21, 0.16], // Complex harmonics
   );
 }
@@ -109,11 +109,11 @@ class VoiceCharacter {
   final double releaseMs;
   final double reverbMix;
   final int harmonicCount;
-  final double detuneCents;          // Musical detuning in cents
+  final double detuneCents; // Musical detuning in cents
   final bool hasPhaseModulation;
   final bool hasChorusEffect;
   final bool hasFilterSweep;
-  final double harmonicSpread;       // How spread out harmonics are (0-1)
+  final double harmonicSpread; // How spread out harmonics are (0-1)
 
   const VoiceCharacter({
     required this.name,
@@ -134,8 +134,8 @@ class VoiceCharacter {
     releaseMs: 250.0,
     reverbMix: 0.15,
     harmonicCount: 3,
-    detuneCents: 0.0,              // Perfect tuning
-    harmonicSpread: 0.3,           // Tight harmonics
+    detuneCents: 0.0, // Perfect tuning
+    harmonicSpread: 0.3, // Tight harmonics
   );
 
   static const hypercube = VoiceCharacter(
@@ -144,9 +144,9 @@ class VoiceCharacter {
     releaseMs: 400.0,
     reverbMix: 0.28,
     harmonicCount: 6,
-    detuneCents: 8.0,              // Subtle chorusing (musical interval)
+    detuneCents: 8.0, // Subtle chorusing (musical interval)
     hasChorusEffect: true,
-    harmonicSpread: 0.7,           // Wide harmonic spread
+    harmonicSpread: 0.7, // Wide harmonic spread
   );
 
   static const sphere = VoiceCharacter(
@@ -156,7 +156,7 @@ class VoiceCharacter {
     reverbMix: 0.25,
     harmonicCount: 4,
     detuneCents: 0.0,
-    harmonicSpread: 0.4,           // Controlled spread
+    harmonicSpread: 0.4, // Controlled spread
   );
 
   static const torus = VoiceCharacter(
@@ -165,7 +165,7 @@ class VoiceCharacter {
     releaseMs: 200.0,
     reverbMix: 0.20,
     harmonicCount: 5,
-    detuneCents: 5.0,              // Slight shimmer
+    detuneCents: 5.0, // Slight shimmer
     hasPhaseModulation: true,
     hasFilterSweep: true,
     harmonicSpread: 0.6,
@@ -177,9 +177,9 @@ class VoiceCharacter {
     releaseMs: 300.0,
     reverbMix: 0.35,
     harmonicCount: 5,
-    detuneCents: 12.0,             // More chorusing (near quarter-tone)
+    detuneCents: 12.0, // More chorusing (near quarter-tone)
     hasChorusEffect: true,
-    harmonicSpread: 0.8,           // Very wide
+    harmonicSpread: 0.8, // Very wide
   );
 
   static const fractal = VoiceCharacter(
@@ -188,8 +188,8 @@ class VoiceCharacter {
     releaseMs: 500.0,
     reverbMix: 0.38,
     harmonicCount: 8,
-    detuneCents: 7.0,              // Golden ratio detuning
-    harmonicSpread: 0.9,           // Maximum spread
+    detuneCents: 7.0, // Golden ratio detuning
+    harmonicSpread: 0.9, // Maximum spread
   );
 
   static const wave = VoiceCharacter(
@@ -198,7 +198,7 @@ class VoiceCharacter {
     releaseMs: 450.0,
     reverbMix: 0.42,
     harmonicCount: 6,
-    detuneCents: 3.0,              // Gentle shimmer
+    detuneCents: 3.0, // Gentle shimmer
     hasFilterSweep: true,
     harmonicSpread: 0.7,
   );
@@ -209,8 +209,8 @@ class VoiceCharacter {
     releaseMs: 150.0,
     reverbMix: 0.48,
     harmonicCount: 5,
-    detuneCents: 0.0,              // Perfect tuning for clarity
-    harmonicSpread: 0.5,           // Balanced
+    detuneCents: 0.0, // Perfect tuning for clarity
+    harmonicSpread: 0.5, // Balanced
   );
 }
 
@@ -219,7 +219,7 @@ class SynthesisBranchManager {
   final double sampleRate;
 
   // Current state
-  int _currentGeometry = 0;        // 0-23
+  int _currentGeometry = 0; // 0-23
   VisualSystem _visualSystem = VisualSystem.quantum;
 
   // Derived state
@@ -251,8 +251,8 @@ class SynthesisBranchManager {
     _currentGeometry = geometry;
 
     // Calculate core and base geometry
-    final coreIndex = geometry ~/ 8;  // Integer division
-    final baseIndex = geometry % 8;   // Modulo
+    final coreIndex = geometry ~/ 8; // Integer division
+    final baseIndex = geometry % 8; // Modulo
 
     // Update core (determines synthesis branch)
     _currentCore = PolytopeCor.values[coreIndex];
@@ -263,7 +263,8 @@ class SynthesisBranchManager {
     // Update voice character
     _currentVoiceCharacter = _getVoiceCharacter(_currentBaseGeometry);
 
-    print('🎵 Geometry $geometry: ${_currentCore.name} core, ${_currentBaseGeometry.name} geometry');
+    print(
+        '🎵 Geometry $geometry: ${_currentCore.name} core, ${_currentBaseGeometry.name} geometry');
   }
 
   /// Set visual system (updates sound family)
@@ -367,7 +368,10 @@ class SynthesisBranchManager {
       double sample = 0.0;
 
       // Generate harmonics based on sound family
-      for (int h = 0; h < _currentVoiceCharacter.harmonicCount && h < _currentSoundFamily.harmonicAmplitudes.length; h++) {
+      for (int h = 0;
+          h < _currentVoiceCharacter.harmonicCount &&
+              h < _currentSoundFamily.harmonicAmplitudes.length;
+          h++) {
         final harmonicNumber = h + 1;
         final harmonicPhase = _phase1 * harmonicNumber;
         final harmonicAmp = _currentSoundFamily.harmonicAmplitudes[h];

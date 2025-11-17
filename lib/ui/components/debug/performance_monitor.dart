@@ -36,13 +36,13 @@ import '../../effects/glassmorphic_container.dart';
 /// Performance metrics snapshot
 class PerformanceMetrics {
   final double fps;
-  final double audioLatency;      // Milliseconds
-  final double memoryUsage;        // MB
-  final double cpuUsage;           // 0-1
+  final double audioLatency; // Milliseconds
+  final double memoryUsage; // MB
+  final double cpuUsage; // 0-1
   final int activeVoices;
   final int particleCount;
   final double parameterUpdateRate; // Hz
-  final double webViewLatency;     // Milliseconds
+  final double webViewLatency; // Milliseconds
   final DateTime timestamp;
 
   const PerformanceMetrics({
@@ -57,20 +57,11 @@ class PerformanceMetrics {
     required this.timestamp,
   });
 
-  bool get isHealthy =>
-      fps >= 55 &&
-      audioLatency < 15 &&
-      parameterUpdateRate >= 55;
+  bool get isHealthy => fps >= 55 && audioLatency < 15 && parameterUpdateRate >= 55;
 
-  bool get hasWarnings =>
-      fps < 55 ||
-      audioLatency >= 15 ||
-      parameterUpdateRate < 55;
+  bool get hasWarnings => fps < 55 || audioLatency >= 15 || parameterUpdateRate < 55;
 
-  bool get hasCriticalIssues =>
-      fps < 30 ||
-      audioLatency >= 30 ||
-      parameterUpdateRate < 30;
+  bool get hasCriticalIssues => fps < 30 || audioLatency >= 30 || parameterUpdateRate < 30;
 }
 
 // ============================================================================
@@ -80,7 +71,7 @@ class PerformanceMetrics {
 /// Tracks performance metrics over time
 class PerformanceTracker {
   final List<PerformanceMetrics> _history = [];
-  static const int maxHistoryLength = 300;  // 5 minutes at 60 FPS
+  static const int maxHistoryLength = 300; // 5 minutes at 60 FPS
 
   // FPS tracking
   final List<double> _frameTimes = [];
@@ -245,11 +236,11 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
   }
 
   // Placeholder implementations - would connect to actual providers
-  double _estimateMemoryUsage() => 0.0;  // TODO: Implement
-  double _estimateCpuUsage() => 0.0;     // TODO: Implement
-  int _getActiveVoices() => 0;           // TODO: Implement
-  int _getParticleCount() => 0;          // TODO: Implement
-  double _getWebViewLatency() => 0.0;    // TODO: Implement
+  double _estimateMemoryUsage() => 0.0; // TODO: Implement
+  double _estimateCpuUsage() => 0.0; // TODO: Implement
+  int _getActiveVoices() => 0; // TODO: Implement
+  int _getParticleCount() => 0; // TODO: Implement
+  double _getWebViewLatency() => 0.0; // TODO: Implement
 
   @override
   Widget build(BuildContext context) {
@@ -276,8 +267,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
             ),
 
           // Warnings
-          if (widget.showWarnings && _currentMetrics!.hasWarnings)
-            _buildWarnings(),
+          if (widget.showWarnings && _currentMetrics!.hasWarnings) _buildWarnings(),
         ],
       ),
     );
@@ -341,15 +331,21 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           const SizedBox(height: DesignTokens.spacing2),
           Row(
             children: [
-              Expanded(child: _buildMetricCard('Update Rate', _currentMetrics!.parameterUpdateRate, 'Hz', 60)),
+              Expanded(
+                  child: _buildMetricCard(
+                      'Update Rate', _currentMetrics!.parameterUpdateRate, 'Hz', 60)),
               const SizedBox(width: DesignTokens.spacing2),
-              Expanded(child: _buildMetricCard('Voices', _currentMetrics!.activeVoices.toDouble(), '', 8)),
+              Expanded(
+                  child:
+                      _buildMetricCard('Voices', _currentMetrics!.activeVoices.toDouble(), '', 8)),
             ],
           ),
           const SizedBox(height: DesignTokens.spacing2),
           Row(
             children: [
-              Expanded(child: _buildMetricCard('Particles', _currentMetrics!.particleCount.toDouble(), '', 500)),
+              Expanded(
+                  child: _buildMetricCard(
+                      'Particles', _currentMetrics!.particleCount.toDouble(), '', 500)),
               const SizedBox(width: DesignTokens.spacing2),
               Expanded(child: _buildMetricCard('Memory', _currentMetrics!.memoryUsage, 'MB', 200)),
             ],
@@ -500,7 +496,8 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
       warnings.add('High audio latency: ${_currentMetrics!.audioLatency.toStringAsFixed(1)}ms');
     }
     if (_currentMetrics!.parameterUpdateRate < 55) {
-      warnings.add('Low parameter update rate: ${_currentMetrics!.parameterUpdateRate.toStringAsFixed(1)} Hz');
+      warnings.add(
+          'Low parameter update rate: ${_currentMetrics!.parameterUpdateRate.toStringAsFixed(1)} Hz');
     }
 
     return Container(
@@ -524,9 +521,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           Row(
             children: [
               Icon(
-                _currentMetrics!.hasCriticalIssues
-                    ? Icons.error
-                    : Icons.warning,
+                _currentMetrics!.hasCriticalIssues ? Icons.error : Icons.warning,
                 color: _currentMetrics!.hasCriticalIssues
                     ? DesignTokens.stateError
                     : DesignTokens.stateWarning,
@@ -547,14 +542,14 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           ),
           const SizedBox(height: DesignTokens.spacing2),
           ...warnings.map((warning) => Padding(
-            padding: const EdgeInsets.only(bottom: DesignTokens.spacing1),
-            child: Text(
-              '• $warning',
-              style: DesignTokens.labelSmall.copyWith(
-                color: Colors.white.withOpacity(0.8),
-              ),
-            ),
-          )),
+                padding: const EdgeInsets.only(bottom: DesignTokens.spacing1),
+                child: Text(
+                  '• $warning',
+                  style: DesignTokens.labelSmall.copyWith(
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                ),
+              )),
         ],
       ),
     );

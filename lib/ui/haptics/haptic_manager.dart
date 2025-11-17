@@ -28,13 +28,13 @@ import 'package:flutter/foundation.dart';
 
 /// Standard haptic feedback types
 enum HapticType {
-  light,        // Subtle tap
-  medium,       // Standard impact
-  heavy,        // Strong impact
-  selection,    // Selection change
-  error,        // Error indication
-  success,      // Success confirmation
-  warning,      // Warning indication
+  light, // Subtle tap
+  medium, // Standard impact
+  heavy, // Strong impact
+  selection, // Selection change
+  error, // Error indication
+  success, // Success confirmation
+  warning, // Warning indication
 }
 
 // ============================================================================
@@ -63,7 +63,7 @@ class HapticPattern {
 class HapticPulse {
   final Duration delay;
   final Duration duration;
-  final double intensity;  // 0-1
+  final double intensity; // 0-1
   final HapticType type;
 
   const HapticPulse({
@@ -90,12 +90,12 @@ class HapticManager {
 
   // Configuration
   bool _enabled = true;
-  double _intensity = 1.0;  // Global intensity multiplier (0.1-2.0)
+  double _intensity = 1.0; // Global intensity multiplier (0.1-2.0)
 
   // Batching
   final List<_QueuedHaptic> _queue = [];
   Timer? _processTimer;
-  static const Duration _batchInterval = Duration(milliseconds: 16);  // ~60 FPS
+  static const Duration _batchInterval = Duration(milliseconds: 16); // ~60 FPS
 
   // Rate limiting
   DateTime? _lastHapticTime;
@@ -198,8 +198,7 @@ class HapticManager {
 
     // Rate limiting
     final now = DateTime.now();
-    if (_lastHapticTime != null &&
-        now.difference(_lastHapticTime!) < _minInterval) {
+    if (_lastHapticTime != null && now.difference(_lastHapticTime!) < _minInterval) {
       return;
     }
     _lastHapticTime = now;

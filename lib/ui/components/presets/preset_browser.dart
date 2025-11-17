@@ -99,12 +99,12 @@ class PresetMetadata {
   final String author;
   final PresetCategory category;
   final List<String> tags;
-  final int geometryIndex;  // 0-23
-  final String visualSystem;  // Quantum, Faceted, Holographic
-  final String synthesisType;  // Direct, FM, Ring Mod
+  final int geometryIndex; // 0-23
+  final String visualSystem; // Quantum, Faceted, Holographic
+  final String synthesisType; // Direct, FM, Ring Mod
   final bool isFactory;
   final bool isFavorite;
-  final double rating;  // 0-5
+  final double rating; // 0-5
   final DateTime createdAt;
   final DateTime? lastUsed;
   final int useCount;
@@ -167,7 +167,16 @@ class PresetMetadata {
     final coreIndex = geometryIndex ~/ 8;
     final baseIndex = geometryIndex % 8;
     final coreNames = ['Base', 'Hypersphere', 'Hypertetrahedron'];
-    final baseNames = ['Tetrahedron', 'Hypercube', 'Sphere', 'Torus', 'Klein Bottle', 'Fractal', 'Wave', 'Crystal'];
+    final baseNames = [
+      'Tetrahedron',
+      'Hypercube',
+      'Sphere',
+      'Torus',
+      'Klein Bottle',
+      'Fractal',
+      'Wave',
+      'Crystal'
+    ];
     return '${coreNames[coreIndex]} ${baseNames[baseIndex]}';
   }
 }
@@ -289,7 +298,7 @@ class PresetBrowser extends StatefulWidget {
 class _PresetBrowserState extends State<PresetBrowser> {
   PresetFilter _filter = const PresetFilter();
   final TextEditingController _searchController = TextEditingController();
-  String _sortBy = 'name';  // name, date, rating, recent
+  String _sortBy = 'name'; // name, date, rating, recent
   final Set<String> _selectedPresets = {};
 
   @override
@@ -345,8 +354,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
           ),
 
           // Action bar
-          if (_selectedPresets.isNotEmpty)
-            _buildActionBar(),
+          if (_selectedPresets.isNotEmpty) _buildActionBar(),
         ],
       ),
     );
@@ -553,9 +561,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
           vertical: DesignTokens.spacing1,
         ),
         decoration: BoxDecoration(
-          color: isActive
-              ? effectiveColor.withOpacity(0.3)
-              : Colors.white.withOpacity(0.05),
+          color: isActive ? effectiveColor.withOpacity(0.3) : Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           border: Border.all(
             color: isActive ? effectiveColor : Colors.white.withOpacity(0.2),
@@ -566,7 +572,8 @@ class _PresetBrowserState extends State<PresetBrowser> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 14, color: isActive ? effectiveColor : Colors.white.withOpacity(0.6)),
+              Icon(icon,
+                  size: 14, color: isActive ? effectiveColor : Colors.white.withOpacity(0.6)),
               const SizedBox(width: DesignTokens.spacing1),
             ],
             Text(
@@ -649,9 +656,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
           color: Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
           border: Border.all(
-            color: isSelected
-                ? DesignTokens.stateActive
-                : preset.category.color.withOpacity(0.3),
+            color: isSelected ? DesignTokens.stateActive : preset.category.color.withOpacity(0.3),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -701,7 +706,9 @@ class _PresetBrowserState extends State<PresetBrowser> {
                           icon: Icon(
                             preset.isFavorite ? Icons.favorite : Icons.favorite_border,
                             size: 16,
-                            color: preset.isFavorite ? DesignTokens.stateActive : Colors.white.withOpacity(0.4),
+                            color: preset.isFavorite
+                                ? DesignTokens.stateActive
+                                : Colors.white.withOpacity(0.4),
                           ),
                           onPressed: () {
                             widget.onPresetFavorited?.call(preset);

@@ -54,8 +54,7 @@ class _VisualizationPanelState extends State<VisualizationPanel> {
           const SizedBox(height: 8),
 
           // Modulation indicators
-          if (_showModulations)
-            const CompactModulationIndicator(),
+          if (_showModulations) const CompactModulationIndicator(),
         ],
       ),
     );
@@ -101,14 +100,10 @@ class _VisualizationPanelState extends State<VisualizationPanel> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected
-                ? Colors.cyan.withOpacity(0.3)
-                : Colors.white.withOpacity(0.1),
+            color: isSelected ? Colors.cyan.withOpacity(0.3) : Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
-              color: isSelected
-                  ? Colors.cyan.withOpacity(0.6)
-                  : Colors.white.withOpacity(0.2),
+              color: isSelected ? Colors.cyan.withOpacity(0.6) : Colors.white.withOpacity(0.2),
               width: isSelected ? 2 : 1,
             ),
           ),

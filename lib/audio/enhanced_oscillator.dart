@@ -279,8 +279,7 @@ class LFOSystem {
   final List<LFO> lfos;
 
   LFOSystem({required this.sampleRate, int lfoCount = 3})
-      : lfos = List.generate(
-            lfoCount, (_) => LFO(sampleRate: sampleRate));
+      : lfos = List.generate(lfoCount, (_) => LFO(sampleRate: sampleRate));
 
   /// Get LFO by index
   LFO getLFO(int index) => lfos[index.clamp(0, lfos.length - 1)];

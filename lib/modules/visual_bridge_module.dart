@@ -65,9 +65,7 @@ class VisualBridgeModule extends SynthModule {
 
   @override
   Map<String, dynamic> getDiagnostics() {
-    final uptime = _startTime != null
-        ? DateTime.now().difference(_startTime!)
-        : Duration.zero;
+    final uptime = _startTime != null ? DateTime.now().difference(_startTime!) : Duration.zero;
 
     return {
       'vib3Loaded': _isInitialized,

@@ -101,17 +101,20 @@ extension HelpContextExtension on HelpContext {
         return [
           const HelpTopic(
             title: 'Multi-Touch Control',
-            content: 'Use multiple fingers simultaneously for polyphonic control. Each touch point controls independent frequency and filter parameters.',
+            content:
+                'Use multiple fingers simultaneously for polyphonic control. Each touch point controls independent frequency and filter parameters.',
             icon: Icons.touch_app,
           ),
           const HelpTopic(
             title: 'Trails',
-            content: 'Touch trails visualize your movement and provide visual feedback for parameter changes.',
+            content:
+                'Touch trails visualize your movement and provide visual feedback for parameter changes.',
             icon: Icons.gesture,
           ),
           const HelpTopic(
             title: 'Grid Snapping',
-            content: 'Enable grid snapping for quantized note values. Useful for melodic performance.',
+            content:
+                'Enable grid snapping for quantized note values. Useful for melodic performance.',
             icon: Icons.grid_on,
           ),
         ];
@@ -119,7 +122,8 @@ extension HelpContextExtension on HelpContext {
         return [
           const HelpTopic(
             title: 'Pitch Bend',
-            content: 'Drag horizontally to bend pitch. Range is configurable from ±1 to ±12 semitones.',
+            content:
+                'Drag horizontally to bend pitch. Range is configurable from ±1 to ±12 semitones.',
             icon: Icons.tune,
           ),
           const HelpTopic(
@@ -129,7 +133,8 @@ extension HelpContextExtension on HelpContext {
           ),
           const HelpTopic(
             title: 'Auto-Return',
-            content: 'Release to automatically return to center. Disable in settings for manual control.',
+            content:
+                'Release to automatically return to center. Disable in settings for manual control.',
             icon: Icons.settings_backup_restore,
           ),
         ];
@@ -137,12 +142,14 @@ extension HelpContextExtension on HelpContext {
         return [
           const HelpTopic(
             title: 'Creating Connections',
-            content: 'Drag from a source (left) to a target (right) to create a modulation connection.',
+            content:
+                'Drag from a source (left) to a target (right) to create a modulation connection.',
             icon: Icons.cable,
           ),
           const HelpTopic(
             title: 'Adjusting Strength',
-            content: 'Click a connection to select it, then adjust the strength slider at the bottom.',
+            content:
+                'Click a connection to select it, then adjust the strength slider at the bottom.',
             icon: Icons.tune,
           ),
           const HelpTopic(
@@ -204,7 +211,7 @@ class HelpTopic {
 class WalkthroughStep {
   final String title;
   final String description;
-  final Offset? targetPosition;  // Position to highlight
+  final Offset? targetPosition; // Position to highlight
   final Size? targetSize;
   final IconData? icon;
   final VoidCallback? action;
@@ -240,8 +247,7 @@ class HelpOverlay extends StatefulWidget {
   State<HelpOverlay> createState() => _HelpOverlayState();
 }
 
-class _HelpOverlayState extends State<HelpOverlay>
-    with SingleTickerProviderStateMixin {
+class _HelpOverlayState extends State<HelpOverlay> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -270,7 +276,7 @@ class _HelpOverlayState extends State<HelpOverlay>
     return topics.where((topic) {
       final query = _searchQuery.toLowerCase();
       return topic.title.toLowerCase().contains(query) ||
-             topic.content.toLowerCase().contains(query);
+          topic.content.toLowerCase().contains(query);
     }).toList();
   }
 
@@ -285,9 +291,7 @@ class _HelpOverlayState extends State<HelpOverlay>
           child: Center(
             child: GestureDetector(
               onTap: () {}, // Prevent closing when tapping content
-              child: widget.showWalkthrough
-                  ? _buildWalkthrough()
-                  : _buildHelpContent(),
+              child: widget.showWalkthrough ? _buildWalkthrough() : _buildHelpContent(),
             ),
           ),
         ),
@@ -694,8 +698,7 @@ class FeatureHighlight extends StatefulWidget {
   State<FeatureHighlight> createState() => _FeatureHighlightState();
 }
 
-class _FeatureHighlightState extends State<FeatureHighlight>
-    with SingleTickerProviderStateMixin {
+class _FeatureHighlightState extends State<FeatureHighlight> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override

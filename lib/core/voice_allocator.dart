@@ -152,8 +152,7 @@ class VoiceAllocator {
     for (final voiceId in voiceIds) {
       final voice = _voicesById[voiceId];
       if (voice != null && !voice.released) {
-        if (mostRecent == null ||
-            voice.startedAt.isAfter(mostRecent.startedAt)) {
+        if (mostRecent == null || voice.startedAt.isAfter(mostRecent.startedAt)) {
           mostRecent = voice;
         }
       }
@@ -194,10 +193,7 @@ class VoiceAllocator {
   List<VoiceState> getVoicesForNote(int note) {
     final voiceIds = _voicesByNote[note];
     if (voiceIds == null) return [];
-    return voiceIds
-        .map((id) => _voicesById[id])
-        .whereType<VoiceState>()
-        .toList();
+    return voiceIds.map((id) => _voicesById[id]).whereType<VoiceState>().toList();
   }
 
   /// Get active voice count

@@ -112,13 +112,13 @@ class TouchPoint {
 
 /// What parameter to control with X/Y axes
 enum XYParameter {
-  frequency,    // Pitch
+  frequency, // Pitch
   filterCutoff, // Filter
-  oscMix,       // Oscillator mix
-  fmDepth,      // FM modulation
-  ringMod,      // Ring modulation
-  reverbMix,    // Reverb amount
-  custom,       // User-defined
+  oscMix, // Oscillator mix
+  fmDepth, // FM modulation
+  ringMod, // Ring modulation
+  reverbMix, // Reverb amount
+  custom, // User-defined
 }
 
 // ============================================================================
@@ -156,8 +156,7 @@ class XYPerformancePad extends StatefulWidget {
   State<XYPerformancePad> createState() => _XYPerformancePadState();
 }
 
-class _XYPerformancePadState extends State<XYPerformancePad>
-    with SingleTickerProviderStateMixin {
+class _XYPerformancePadState extends State<XYPerformancePad> with SingleTickerProviderStateMixin {
   final Map<int, TouchPoint> _activeTouches = {};
   late AnimationController _pulseController;
 
@@ -292,15 +291,13 @@ class _XYPerformancePadState extends State<XYPerformancePad>
               child: Stack(
                 children: [
                   // Grid overlay
-                  if (widget.config.showGrid)
-                    _buildGrid(constraints.biggest),
+                  if (widget.config.showGrid) _buildGrid(constraints.biggest),
 
                   // Touch indicators
                   ..._buildTouchIndicators(constraints.biggest),
 
                   // Label
-                  if (widget.label != null)
-                    _buildLabel(),
+                  if (widget.label != null) _buildLabel(),
 
                   // Parameter indicators
                   _buildParameterIndicators(),

@@ -70,7 +70,7 @@ class AudioProvider with ChangeNotifier {
     // Setup PCM audio output (static method)
     await FlutterPcmSound.setup(
       sampleRate: sampleRate.toInt(),
-      channelCount: 1,  // Mono
+      channelCount: 1, // Mono
     );
 
     // Set feed callback to handle buffer requests
