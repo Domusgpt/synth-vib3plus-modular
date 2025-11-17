@@ -114,8 +114,20 @@ class VisualProvider with ChangeNotifier {
         );
         debugPrint('✅ Called VIB3+ native switchSystem("$systemName")');
 
-        // Wait for system to fully initialize (Android WebGL needs more time)
+        // Wait for CanvasManager to create fresh canvases (it creates them with z-index 1-5)
         await Future.delayed(const Duration(milliseconds: 500));
+
+        // CRITICAL: Override CanvasManager's low z-index values (1-5) to force canvases above Flutter widgets
+        await _webViewController!.runJavaScript('''
+          const allCanvases = document.querySelectorAll('canvas');
+          console.log(`🎯 Found \${allCanvases.length} canvases, setting z-index to 9999`);
+          allCanvases.forEach((canvas, i) => {
+            canvas.style.zIndex = '9999';  // Override CanvasManager's low z-index
+            console.log(`✅ Canvas \${canvas.id || i}: z-index set to 9999`);
+          });
+        ''');
+        debugPrint('✅ Canvas z-index overridden to 9999');
+
         await _injectAllParameters();
         debugPrint('✅ Parameters injected to $systemName');
       } catch (e) {

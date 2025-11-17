@@ -85,10 +85,25 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
             debugPrint('📄 Page loaded: $url');
             await _injectHelperFunctions();
 
-            // Let VIB3+ load naturally - it defaults to faceted
-            // NO system switch on startup - just wait for VIB3+ to be ready
+            // Let VIB3+ load naturally - it defaults to faceted and creates initial canvases
             debugPrint('✅ VIB3+ loaded - waiting for default system (faceted)');
-            await Future.delayed(const Duration(milliseconds: 300));
+            await Future.delayed(const Duration(milliseconds: 800));
+
+            // CRITICAL: Override initial canvas z-index values
+            // VIB3+ CanvasManager creates canvases with z-index 1-5 (too low for Flutter WebView)
+            try {
+              await _webViewController.runJavaScript('''
+                const allCanvases = document.querySelectorAll('canvas');
+                console.log(`🎯 Initial load: Found \${allCanvases.length} canvases, setting z-index to 9999`);
+                allCanvases.forEach((canvas, i) => {
+                  canvas.style.zIndex = '9999';
+                  console.log(`✅ Canvas \${canvas.id || i}: z-index set to 9999`);
+                });
+              ''');
+              debugPrint('✅ Initial canvas z-index overridden to 9999');
+            } catch (e) {
+              debugPrint('❌ Error setting initial z-index: $e');
+            }
 
             setState(() {
               _isLoading = false;
