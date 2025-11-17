@@ -5,7 +5,9 @@
 /// all system modules in dependency order with professional logging.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'synth_module.dart';
 import 'synth_logger.dart';

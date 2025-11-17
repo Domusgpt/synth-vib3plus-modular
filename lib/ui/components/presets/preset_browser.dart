@@ -19,7 +19,9 @@
 /// Part of the Integration Layer (Phase 3.5)
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';

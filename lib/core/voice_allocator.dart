@@ -10,7 +10,9 @@
 ///
 /// Adopted from synther-refactored architecture
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 /// Voice state for polyphony management
 class VoiceState {

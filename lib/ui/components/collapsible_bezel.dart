@@ -10,7 +10,9 @@
 /// - Locked: Long-press to keep panel open
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../theme/synth_theme.dart';

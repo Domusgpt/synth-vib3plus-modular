@@ -10,7 +10,9 @@
 /// - Expanded: 120px height, detailed controls
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

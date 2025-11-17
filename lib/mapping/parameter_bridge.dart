@@ -9,7 +9,9 @@
 ///
 /// A Paul Phillips Manifestation
 /// Paul@clearseassolutions.com
-////
+///
+
+library;
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';

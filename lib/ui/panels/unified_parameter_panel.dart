@@ -11,7 +11,9 @@
 /// - Base value (user control) ± Audio modulation (automatic)
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -8,7 +8,9 @@
 /// JavaScript bridge, and parameter synchronization.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:webview_flutter/webview_flutter.dart';
 import '../core/synth_module.dart';

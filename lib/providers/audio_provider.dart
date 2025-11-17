@@ -13,7 +13,9 @@
 /// - Current audio feature state
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:async';
 import 'dart:math';

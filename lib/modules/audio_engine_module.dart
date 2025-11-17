@@ -8,7 +8,9 @@
 /// and audio performance monitoring.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import '../core/synth_module.dart';
 import '../core/synth_logger.dart';

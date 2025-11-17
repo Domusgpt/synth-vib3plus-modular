@@ -9,7 +9,9 @@
 ///
 /// Adopted from synther-refactored architecture
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:math' as math;
 

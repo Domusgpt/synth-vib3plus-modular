@@ -11,7 +11,9 @@
 /// - State: Inactive (60% opacity) → Active (100%) → Engaged (glow + scale)
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../theme/synth_theme.dart';

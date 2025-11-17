@@ -10,7 +10,9 @@
 /// - Import/export
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:convert';
 import 'package:flutter/foundation.dart';

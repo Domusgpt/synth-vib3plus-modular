@@ -14,7 +14,9 @@
 /// comprehensive system integration.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

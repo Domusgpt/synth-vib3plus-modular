@@ -14,7 +14,9 @@
 /// - Responsive: Adapts to portrait/landscape/tablet
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

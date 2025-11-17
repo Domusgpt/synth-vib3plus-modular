@@ -11,7 +11,9 @@
 /// - Holographic Layer Depth → Delay Time
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/foundation.dart';
 import 'dart:math' as math;

@@ -14,7 +14,9 @@
 /// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../theme/design_tokens.dart';

@@ -11,7 +11,9 @@
 /// - Compact layout for bottom bezel
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../components/audio_visualizer.dart';

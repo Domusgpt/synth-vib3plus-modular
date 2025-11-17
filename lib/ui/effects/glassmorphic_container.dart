@@ -15,7 +15,9 @@
 /// Part of the Next-Generation UI Redesign (v3.0)
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:ui';
 import 'package:flutter/material.dart';

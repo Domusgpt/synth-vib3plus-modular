@@ -19,7 +19,9 @@
 /// Part of the Integration Layer (Phase 3.5)
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';

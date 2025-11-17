@@ -17,7 +17,9 @@
 /// Or update lib/main.dart to import from ui/screens/integrated_main_screen.dart
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'core/synth_app_initializer.dart';

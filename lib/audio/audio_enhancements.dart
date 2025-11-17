@@ -9,7 +9,9 @@
 /// - Voice spreading/unison effects
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:math' as math;
 import 'dart:typed_data';

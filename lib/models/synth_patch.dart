@@ -5,7 +5,9 @@
 /// saved, loaded, and recalled.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import '../audio/synthesizer_engine.dart';
 

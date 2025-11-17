@@ -9,7 +9,9 @@
 /// - Sync and sub-oscillator support
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:math' as math;
 import 'audio_enhancements.dart';

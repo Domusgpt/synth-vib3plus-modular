@@ -10,7 +10,9 @@
 /// - Visual feedback shows base value + current modulation
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../theme/synth_theme.dart';

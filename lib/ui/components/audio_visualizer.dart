@@ -12,7 +12,9 @@
 /// - Smooth animations and transitions
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';

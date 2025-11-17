@@ -15,7 +15,9 @@
 /// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:convert';
 import 'package:flutter/material.dart';

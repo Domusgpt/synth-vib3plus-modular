@@ -8,7 +8,9 @@
 /// comprehensive state management for the entire application.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

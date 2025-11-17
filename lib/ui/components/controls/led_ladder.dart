@@ -16,7 +16,9 @@
 /// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';

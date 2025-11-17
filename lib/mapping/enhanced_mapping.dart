@@ -9,7 +9,9 @@
 /// - Preset-based mapping configurations
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:math' as math;
 

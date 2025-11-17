@@ -5,7 +5,9 @@
 /// multi-touch XY pad, orb controller, and collapsible UI.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'core/synth_app_initializer.dart';

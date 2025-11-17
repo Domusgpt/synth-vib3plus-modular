@@ -5,7 +5,9 @@
 /// for all system modules. Inspired by VIB3+ JavaScript architecture.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/foundation.dart';
 

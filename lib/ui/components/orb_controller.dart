@@ -11,7 +11,9 @@
 /// - Tilt mode: Pulsing indicator + auto-movement
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -10,7 +10,9 @@
 /// across all UI components.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/material.dart';
 

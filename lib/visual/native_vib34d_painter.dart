@@ -5,7 +5,9 @@
 /// No WebView, no JavaScript - just native Canvas rendering
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';

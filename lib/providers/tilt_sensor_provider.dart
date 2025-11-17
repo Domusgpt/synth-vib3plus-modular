@@ -12,7 +12,9 @@
 /// - Auto-calibrate on startup
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';

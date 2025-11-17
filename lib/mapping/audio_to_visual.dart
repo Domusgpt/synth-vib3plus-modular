@@ -10,7 +10,9 @@
 /// - Stereo Width → RGB Split Amount
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/foundation.dart';
 import 'dart:typed_data';

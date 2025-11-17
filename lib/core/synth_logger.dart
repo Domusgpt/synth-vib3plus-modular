@@ -5,7 +5,9 @@
 /// the VIB3+ JavaScript codebase's logging style.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'package:flutter/foundation.dart';
 

@@ -5,7 +5,9 @@
 /// that can be saved, loaded, and shared.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import '../mapping/audio_to_visual.dart';
 

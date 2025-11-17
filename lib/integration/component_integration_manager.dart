@@ -18,7 +18,9 @@
 /// This is the "nervous system" of the application.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';

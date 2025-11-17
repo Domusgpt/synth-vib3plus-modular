@@ -5,7 +5,9 @@
 /// that can be saved, loaded, and recalled.
 ///
 /// A Paul Phillips Manifestation
-////
+///
+
+library;
 
 class VisualState {
   final String name;
