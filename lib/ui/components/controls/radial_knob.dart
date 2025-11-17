@@ -312,14 +312,14 @@ class _KnobPainter extends CustomPainter {
   void _drawBackground(Canvas canvas, Offset center, double radius) {
     // Outer circle
     final outerPaint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
+      ..color = Colors.white.withValues(alpha: 0.05)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, radius - 4, outerPaint);
 
     // Border
     final borderPaint = Paint()
-      ..color = color.withOpacity(isDragging ? 0.8 : 0.4)
+      ..color = color.withValues(alpha: isDragging ? 0.8 : 0.4)
       ..strokeWidth = isDragging ? 3.0 : 2.0
       ..style = PaintingStyle.stroke;
 
@@ -328,7 +328,7 @@ class _KnobPainter extends CustomPainter {
 
   void _drawTicks(Canvas canvas, Offset center, double radius) {
     final tickPaint = Paint()
-      ..color = color.withOpacity(0.3)
+      ..color = color.withValues(alpha: 0.3)
       ..strokeWidth = 1.0
       ..strokeCap = StrokeCap.round;
 
@@ -359,7 +359,7 @@ class _KnobPainter extends CustomPainter {
     final modRange = (config.maxAngle - config.minAngle) * modulationAmount / 2;
 
     final modPaint = Paint()
-      ..color = DesignTokens.stateWarning.withOpacity(0.3)
+      ..color = DesignTokens.stateWarning.withValues(alpha: 0.3)
       ..strokeWidth = 8.0
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -378,8 +378,8 @@ class _KnobPainter extends CustomPainter {
     final arcPaint = Paint()
       ..shader = SweepGradient(
         colors: [
-          color.withOpacity(0.3),
-          color.withOpacity(0.8),
+          color.withValues(alpha: 0.3),
+          color.withValues(alpha: 0.8),
         ],
         startAngle: config.minAngle,
         endAngle: config.minAngle + (config.maxAngle - config.minAngle) * value,
@@ -431,8 +431,8 @@ class _KnobPainter extends CustomPainter {
     final glowPaint = Paint()
       ..shader = RadialGradient(
         colors: [
-          color.withOpacity(audioFeatures!.rms * 0.5),
-          color.withOpacity(0.0),
+          color.withValues(alpha: audioFeatures!.rms * 0.5),
+          color.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromCircle(
         center: center,

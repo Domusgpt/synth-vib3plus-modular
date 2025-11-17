@@ -101,7 +101,7 @@ class GlassmorphicContainer extends StatelessWidget {
             padding: padding,
             decoration: BoxDecoration(
               color: effectiveConfig.backgroundColor
-                  .withOpacity(effectiveConfig.opacity),
+                  .withValues(alpha: effectiveConfig.opacity),
               borderRadius: borderRadius ??
                   BorderRadius.circular(DesignTokens.radiusMedium),
               border: Border.all(
@@ -130,7 +130,7 @@ class GlassmorphicContainer extends StatelessWidget {
       // Color based on dominant frequency
       final glowColor = _getFrequencyColor(audioFeatures!.dominantFreq);
       shadows.add(BoxShadow(
-        color: glowColor.withOpacity(glowIntensity / 10.0),
+        color: glowColor.withValues(alpha: glowIntensity / 10.0),
         blurRadius: glowIntensity,
         spreadRadius: glowIntensity / 2,
       ));
@@ -248,7 +248,7 @@ class GlassmorphicPanel extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -308,11 +308,11 @@ class _GlassmorphicButtonState extends State<GlassmorphicButton> {
     if (isDisabled) {
       backgroundColor = DesignTokens.stateDisabled;
     } else if (_isPressed) {
-      backgroundColor = DesignTokens.pressed.withOpacity(0.3);
+      backgroundColor = DesignTokens.pressed.withValues(alpha: 0.3);
     } else if (widget.isActive) {
-      backgroundColor = effectiveColor.withOpacity(0.2);
+      backgroundColor = effectiveColor.withValues(alpha: 0.2);
     } else {
-      backgroundColor = Colors.white.withOpacity(0.1);
+      backgroundColor = Colors.white.withValues(alpha: 0.1);
     }
 
     // Border color
@@ -320,7 +320,7 @@ class _GlassmorphicButtonState extends State<GlassmorphicButton> {
         ? DesignTokens.stateDisabled
         : widget.isActive
             ? effectiveColor
-            : Colors.white.withOpacity(0.2);
+            : Colors.white.withValues(alpha: 0.2);
 
     // Glow effect when active
     final shadows = widget.isActive && !isDisabled
@@ -386,7 +386,7 @@ class GlassmorphicModal extends StatelessWidget {
         GestureDetector(
           onTap: barrierDismissible ? onDismiss : null,
           child: Container(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
           ),
         ),
         // Modal content

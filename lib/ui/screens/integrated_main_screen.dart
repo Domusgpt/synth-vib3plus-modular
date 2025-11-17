@@ -390,15 +390,15 @@ class _IntegratedMainContent extends StatelessWidget {
         width: 56,
         height: 56,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
-            color: color.withOpacity(0.5),
+            color: color.withValues(alpha: 0.5),
             width: 2,
           ),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.3),
+              color: color.withValues(alpha: 0.3),
               blurRadius: 12,
               spreadRadius: 2,
             ),
@@ -415,7 +415,7 @@ class _IntegratedMainContent extends StatelessWidget {
 
   Widget _buildFullPerformanceMonitor(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withValues(alpha: 0.8),
       child: Center(
         child: Stack(
           children: [
@@ -445,7 +445,7 @@ class _IntegratedMainContent extends StatelessWidget {
 
   Widget _buildPresetBrowser(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withValues(alpha: 0.8),
       child: Center(
         child: Stack(
           children: [
@@ -482,7 +482,7 @@ class _IntegratedMainContent extends StatelessWidget {
 
   Widget _buildModulationMatrix(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withValues(alpha: 0.8),
       child: Center(
         child: Stack(
           children: [

@@ -271,7 +271,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
             width: constraints.maxWidth,
             height: constraints.maxHeight,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
               border: Border.all(
                 color: effectiveColor,
@@ -280,7 +280,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
               boxShadow: glowIntensity > 0
                   ? [
                       BoxShadow(
-                        color: effectiveColor.withOpacity(glowIntensity / 10),
+                        color: effectiveColor.withValues(alpha: glowIntensity / 10),
                         blurRadius: glowIntensity,
                         spreadRadius: glowIntensity / 2,
                       ),
@@ -319,7 +319,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     return CustomPaint(
       size: size,
       painter: _GridPainter(
-        color: widget.config.gridColor.withOpacity(widget.config.gridOpacity),
+        color: widget.config.gridColor.withValues(alpha: widget.config.gridOpacity),
         divisions: 8,
       ),
     );
@@ -348,14 +348,14 @@ class _XYPerformancePadState extends State<XYPerformancePad>
                 height: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: color.withOpacity(0.3),
+                  color: color.withValues(alpha: 0.3),
                   border: Border.all(
                     color: color,
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: color.withOpacity(0.5),
+                      color: color.withValues(alpha: 0.5),
                       blurRadius: 10,
                       spreadRadius: 2,
                     ),
@@ -393,7 +393,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
           vertical: DesignTokens.spacing1,
         ),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          color: Colors.black.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
         ),
         child: Text(
@@ -432,7 +432,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
         vertical: DesignTokens.spacing1,
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
       ),
       child: Text(
@@ -506,7 +506,7 @@ class _GridPainter extends CustomPainter {
 
     // Center crosshair
     final centerPaint = Paint()
-      ..color = color.withOpacity(0.5)
+      ..color = color.withValues(alpha: 0.5)
       ..strokeWidth = 2.0;
 
     canvas.drawLine(

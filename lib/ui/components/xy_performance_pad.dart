@@ -294,7 +294,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
         vertical: SynthTheme.spacingSmall,
       ),
       decoration: BoxDecoration(
-        color: SynthTheme.panelBackground.withOpacity(0.8),
+        color: SynthTheme.panelBackground.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
         border: Border.all(color: SynthTheme.borderSubtle),
       ),
@@ -422,7 +422,7 @@ class TouchIndicatorPainter extends CustomPainter {
         final rippleOpacity = (1.0 - rippleAnimation.value / 80.0) * 0.5;
 
         final ripplePaint = Paint()
-          ..color = systemColors.primary.withOpacity(rippleOpacity)
+          ..color = systemColors.primary.withValues(alpha: rippleOpacity)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.0;
 
@@ -431,11 +431,11 @@ class TouchIndicatorPainter extends CustomPainter {
 
       // Touch indicator (sustaining note)
       final indicatorPaint = Paint()
-        ..color = systemColors.primary.withOpacity(0.8)
+        ..color = systemColors.primary.withValues(alpha: 0.8)
         ..style = PaintingStyle.fill;
 
       final glowPaint = Paint()
-        ..color = systemColors.primary.withOpacity(0.3)
+        ..color = systemColors.primary.withValues(alpha: 0.3)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
 
       // Glow
@@ -507,7 +507,7 @@ class XYGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
-      ..color = systemColors.primary.withOpacity(0.1)
+      ..color = systemColors.primary.withValues(alpha: 0.1)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -526,7 +526,7 @@ class XYGridPainter extends CustomPainter {
 
     // Octave markers (thicker lines)
     final octaveMarkerPaint = Paint()
-      ..color = systemColors.primary.withOpacity(0.3)
+      ..color = systemColors.primary.withValues(alpha: 0.3)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 

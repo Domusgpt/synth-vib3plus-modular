@@ -157,10 +157,10 @@ class _ResizeHandleState extends State<ResizeHandle> {
             height: widget.size,
             decoration: BoxDecoration(
               color: isActive
-                  ? widget.color.withOpacity(0.8)
-                  : widget.color.withOpacity(0.4),
+                  ? widget.color.withValues(alpha: 0.8)
+                  : widget.color.withValues(alpha: 0.4),
               border: Border.all(
-                color: isActive ? widget.color : widget.color.withOpacity(0.6),
+                color: isActive ? widget.color : widget.color.withValues(alpha: 0.6),
                 width: isActive ? 2.0 : 1.0,
               ),
               borderRadius: widget.direction.isCorner
@@ -169,7 +169,7 @@ class _ResizeHandleState extends State<ResizeHandle> {
               boxShadow: isActive
                   ? [
                       BoxShadow(
-                        color: widget.color.withOpacity(0.5),
+                        color: widget.color.withValues(alpha: 0.5),
                         blurRadius: 8,
                         spreadRadius: 2,
                       ),
@@ -395,7 +395,7 @@ class ResizePreviewOverlay extends StatelessWidget {
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
           ),
           child: Center(
             child: Text(

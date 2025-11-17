@@ -357,7 +357,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -372,7 +372,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
           Text(
             '${widget.connections.length} connections',
             style: DesignTokens.labelSmall.copyWith(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
             ),
           ),
         ],
@@ -387,7 +387,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
       decoration: BoxDecoration(
         border: Border(
           right: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -400,7 +400,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
             child: Text(
               'SOURCES',
               style: DesignTokens.labelSmall.copyWith(
-                color: Colors.white.withOpacity(0.6),
+                color: Colors.white.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -437,11 +437,11 @@ class _ModulationMatrixState extends State<ModulationMatrix>
         padding: const EdgeInsets.all(DesignTokens.spacing2),
         decoration: BoxDecoration(
           color: isDragging
-              ? source.color.withOpacity(0.3)
-              : Colors.white.withOpacity(0.05),
+              ? source.color.withValues(alpha: 0.3)
+              : Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           border: Border.all(
-            color: isDragging ? source.color : source.color.withOpacity(0.3),
+            color: isDragging ? source.color : source.color.withValues(alpha: 0.3),
             width: isDragging ? 2 : 1,
           ),
         ),
@@ -481,7 +481,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
               borderRadius: BorderRadius.circular(2),
               child: LinearProgressIndicator(
                 value: (source.currentValue + 1) / 2, // -1 to 1 → 0 to 1
-                backgroundColor: Colors.white.withOpacity(0.1),
+                backgroundColor: Colors.white.withValues(alpha: 0.1),
                 valueColor: AlwaysStoppedAnimation(source.color),
                 minHeight: 3,
               ),
@@ -492,7 +492,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
                 child: Text(
                   '$connectionCount connection${connectionCount > 1 ? 's' : ''}',
                   style: DesignTokens.labelSmall.copyWith(
-                    color: Colors.white.withOpacity(0.4),
+                    color: Colors.white.withValues(alpha: 0.4),
                     fontSize: 9,
                   ),
                 ),
@@ -510,7 +510,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
       decoration: BoxDecoration(
         border: Border(
           left: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -523,7 +523,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
             child: Text(
               'TARGETS',
               style: DesignTokens.labelSmall.copyWith(
-                color: Colors.white.withOpacity(0.6),
+                color: Colors.white.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -553,13 +553,13 @@ class _ModulationMatrixState extends State<ModulationMatrix>
         padding: const EdgeInsets.all(DesignTokens.spacing2),
         decoration: BoxDecoration(
           color: isHovered
-              ? DesignTokens.stateActive.withOpacity(0.2)
-              : Colors.white.withOpacity(0.05),
+              ? DesignTokens.stateActive.withValues(alpha: 0.2)
+              : Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           border: Border.all(
             color: isHovered
                 ? DesignTokens.stateActive
-                : target.color.withOpacity(0.3),
+                : target.color.withValues(alpha: 0.3),
             width: isHovered ? 2 : 1,
           ),
         ),
@@ -577,7 +577,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
             Text(
               target.category,
               style: DesignTokens.labelSmall.copyWith(
-                color: Colors.white.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.4),
                 fontSize: 9,
               ),
             ),
@@ -587,7 +587,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
               borderRadius: BorderRadius.circular(2),
               child: LinearProgressIndicator(
                 value: target.currentValue,
-                backgroundColor: Colors.white.withOpacity(0.1),
+                backgroundColor: Colors.white.withValues(alpha: 0.1),
                 valueColor: AlwaysStoppedAnimation(target.color),
                 minHeight: 3,
               ),
@@ -598,7 +598,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
                 child: Text(
                   '$connectionCount modulator${connectionCount > 1 ? 's' : ''}',
                   style: DesignTokens.labelSmall.copyWith(
-                    color: Colors.white.withOpacity(0.4),
+                    color: Colors.white.withValues(alpha: 0.4),
                     fontSize: 9,
                   ),
                 ),
@@ -643,10 +643,10 @@ class _ModulationMatrixState extends State<ModulationMatrix>
     return Container(
       padding: const EdgeInsets.all(DesignTokens.spacing3),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
         border: Border(
           top: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -664,7 +664,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.close, size: 16),
-                color: Colors.white.withOpacity(0.6),
+                color: Colors.white.withValues(alpha: 0.6),
                 onPressed: () {
                   setState(() {
                     _selectedConnectionId = null;
@@ -683,7 +683,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
                     Text(
                       'Strength',
                       style: DesignTokens.labelSmall.copyWith(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Colors.white.withValues(alpha: 0.6),
                       ),
                     ),
                     Slider(
@@ -702,7 +702,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
                   Text(
                     'Bipolar',
                     style: DesignTokens.labelSmall.copyWith(
-                      color: Colors.white.withOpacity(0.6),
+                      color: Colors.white.withValues(alpha: 0.6),
                     ),
                   ),
                   Switch(
@@ -720,7 +720,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
                 icon: const Icon(Icons.delete, size: 16),
                 label: const Text('Delete'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: DesignTokens.stateError.withOpacity(0.3),
+                  backgroundColor: DesignTokens.stateError.withValues(alpha: 0.3),
                   foregroundColor: DesignTokens.stateError,
                 ),
               ),
@@ -805,8 +805,8 @@ class _ConnectionPainter extends CustomPainter {
 
     // Draw connection line
     final paint = Paint()
-      ..color = source.color.withOpacity(
-        isSelected ? 0.8 : connection.strength * 0.5,
+      ..color = source.color.withValues(
+        alpha: isSelected ? 0.8 : connection.strength * 0.5,
       )
       ..strokeWidth = isSelected ? 3.0 : 2.0
       ..style = PaintingStyle.stroke;

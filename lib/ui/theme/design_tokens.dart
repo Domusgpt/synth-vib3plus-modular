@@ -262,19 +262,19 @@ class DesignTokens {
   // ============================================================================
 
   static BoxShadow shadowSmall(Color color) => BoxShadow(
-        color: color.withOpacity(0.2),
+        color: color.withValues(alpha: 0.2),
         blurRadius: 4,
         offset: const Offset(0, 2),
       );
 
   static BoxShadow shadowMedium(Color color) => BoxShadow(
-        color: color.withOpacity(0.3),
+        color: color.withValues(alpha: 0.3),
         blurRadius: 8,
         offset: const Offset(0, 4),
       );
 
   static BoxShadow shadowLarge(Color color) => BoxShadow(
-        color: color.withOpacity(0.4),
+        color: color.withValues(alpha: 0.4),
         blurRadius: 16,
         offset: const Offset(0, 8),
       );
@@ -284,25 +284,25 @@ class DesignTokens {
   // ============================================================================
 
   static BoxShadow glowSubtle(Color color) => BoxShadow(
-        color: color.withOpacity(0.3),
+        color: color.withValues(alpha: 0.3),
         blurRadius: 4,
         spreadRadius: 0,
       );
 
   static BoxShadow glowMedium(Color color) => BoxShadow(
-        color: color.withOpacity(0.5),
+        color: color.withValues(alpha: 0.5),
         blurRadius: 8,
         spreadRadius: 2,
       );
 
   static BoxShadow glowStrong(Color color) => BoxShadow(
-        color: color.withOpacity(0.7),
+        color: color.withValues(alpha: 0.7),
         blurRadius: 16,
         spreadRadius: 4,
       );
 
   static BoxShadow glowIntense(Color color) => BoxShadow(
-        color: color.withOpacity(0.9),
+        color: color.withValues(alpha: 0.9),
         blurRadius: 24,
         spreadRadius: 6,
       );
@@ -483,9 +483,9 @@ class DesignTokens {
       center: Alignment.center,
       radius: 0.5 + (rms * 0.5), // Expand with audio
       colors: [
-        centerColor.withOpacity(opacity),
-        centerColor.withOpacity(opacity * 0.5),
-        centerColor.withOpacity(0.0),
+        centerColor.withValues(alpha: opacity),
+        centerColor.withValues(alpha: opacity * 0.5),
+        centerColor.withValues(alpha: 0.0),
       ],
       stops: const [0.0, 0.5, 1.0],
     );

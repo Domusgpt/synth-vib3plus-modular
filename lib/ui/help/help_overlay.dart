@@ -290,7 +290,7 @@ class _HelpOverlayState extends State<HelpOverlay>
       child: GestureDetector(
         onTap: widget.onClose,
         child: Container(
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.withValues(alpha: 0.8),
           child: Center(
             child: GestureDetector(
               onTap: () {}, // Prevent closing when tapping content
@@ -338,7 +338,7 @@ class _HelpOverlayState extends State<HelpOverlay>
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -355,7 +355,7 @@ class _HelpOverlayState extends State<HelpOverlay>
           IconButton(
             icon: const Icon(Icons.close),
             onPressed: widget.onClose,
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
           ),
         ],
       ),
@@ -376,7 +376,7 @@ class _HelpOverlayState extends State<HelpOverlay>
         decoration: InputDecoration(
           hintText: 'Search help topics...',
           hintStyle: DesignTokens.bodyMedium.copyWith(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha: 0.4),
           ),
           prefixIcon: const Icon(Icons.search, size: 20),
           suffixIcon: _searchQuery.isNotEmpty
@@ -391,7 +391,7 @@ class _HelpOverlayState extends State<HelpOverlay>
                 )
               : null,
           filled: true,
-          fillColor: Colors.white.withOpacity(0.05),
+          fillColor: Colors.white.withValues(alpha: 0.05),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           ),
@@ -405,10 +405,10 @@ class _HelpOverlayState extends State<HelpOverlay>
       margin: const EdgeInsets.symmetric(horizontal: DesignTokens.spacing3),
       padding: const EdgeInsets.all(DesignTokens.spacing3),
       decoration: BoxDecoration(
-        color: DesignTokens.quantum.withOpacity(0.1),
+        color: DesignTokens.quantum.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
         border: Border.all(
-          color: DesignTokens.quantum.withOpacity(0.3),
+          color: DesignTokens.quantum.withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -424,7 +424,7 @@ class _HelpOverlayState extends State<HelpOverlay>
           Text(
             widget.context.description,
             style: DesignTokens.labelMedium.copyWith(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
             ),
           ),
         ],
@@ -443,13 +443,13 @@ class _HelpOverlayState extends State<HelpOverlay>
             Icon(
               Icons.search_off,
               size: 64,
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
             ),
             const SizedBox(height: DesignTokens.spacing3),
             Text(
               'No help topics found',
               style: DesignTokens.labelLarge.copyWith(
-                color: Colors.white.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.4),
               ),
             ),
           ],
@@ -481,7 +481,7 @@ class _HelpOverlayState extends State<HelpOverlay>
                   Container(
                     padding: const EdgeInsets.all(DesignTokens.spacing2),
                     decoration: BoxDecoration(
-                      color: DesignTokens.quantum.withOpacity(0.2),
+                      color: DesignTokens.quantum.withValues(alpha: 0.2),
                       borderRadius:
                           BorderRadius.circular(DesignTokens.radiusSmall),
                     ),
@@ -504,7 +504,7 @@ class _HelpOverlayState extends State<HelpOverlay>
               Text(
                 topic.content,
                 style: DesignTokens.bodyMedium.copyWith(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
               ),
               if (topic.keyboardShortcuts != null) ...[
@@ -518,10 +518,10 @@ class _HelpOverlayState extends State<HelpOverlay>
                         vertical: DesignTokens.spacing1,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Text(
@@ -560,7 +560,7 @@ class _HelpOverlayState extends State<HelpOverlay>
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -660,7 +660,7 @@ class RichTooltip extends StatelessWidget {
               Text(
                 message,
                 style: DesignTokens.labelMedium.copyWith(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
               ),
             ],
@@ -668,10 +668,10 @@ class RichTooltip extends StatelessWidget {
         ),
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.9),
+        color: Colors.black.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
         border: Border.all(
-          color: (color ?? DesignTokens.quantum).withOpacity(0.5),
+          color: (color ?? DesignTokens.quantum).withValues(alpha: 0.5),
         ),
       ),
       child: child,
@@ -731,7 +731,7 @@ class _FeatureHighlightState extends State<FeatureHighlight>
         GestureDetector(
           onTap: widget.onDismiss,
           child: Container(
-            color: Colors.black.withOpacity(0.7),
+            color: Colors.black.withValues(alpha: 0.7),
           ),
         ),
 
@@ -748,8 +748,8 @@ class _FeatureHighlightState extends State<FeatureHighlight>
                   height: widget.size.height,
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: DesignTokens.stateActive.withOpacity(
-                        0.5 + (_controller.value * 0.5),
+                      color: DesignTokens.stateActive.withValues(
+                        alpha: 0.5 + (_controller.value * 0.5),
                       ),
                       width: 3,
                     ),
@@ -758,7 +758,7 @@ class _FeatureHighlightState extends State<FeatureHighlight>
                     boxShadow: [
                       BoxShadow(
                         color: DesignTokens.stateActive
-                            .withOpacity(_controller.value * 0.5),
+                            .withValues(alpha: _controller.value * 0.5),
                         blurRadius: 20,
                         spreadRadius: 5,
                       ),

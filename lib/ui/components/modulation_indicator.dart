@@ -65,10 +65,10 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: DesignTokens.quantum.withOpacity(0.3),
+          color: DesignTokens.quantum.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -121,10 +121,10 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.green
-                    .withOpacity(0.5 + _pulseController.value * 0.5),
+                    .withValues(alpha: 0.5 + _pulseController.value * 0.5),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.green.withOpacity(0.5),
+                    color: Colors.green.withValues(alpha: 0.5),
                     blurRadius: 4 + _pulseController.value * 4,
                   ),
                 ],
@@ -257,7 +257,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
             child: Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: widget.compact ? 9 : 10,
               ),
               overflow: TextOverflow.ellipsis,
@@ -272,7 +272,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
                 Container(
                   height: widget.compact ? 12 : 16,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -284,7 +284,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          color.withOpacity(0.6),
+                          color.withValues(alpha: 0.6),
                           color,
                         ],
                       ),
@@ -292,7 +292,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
                       boxShadow: value > 0.3
                           ? [
                               BoxShadow(
-                                color: color.withOpacity(0.4),
+                                color: color.withValues(alpha: 0.4),
                                 blurRadius: 4,
                               ),
                             ]
@@ -329,7 +329,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
         child: Text(
           message,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
             fontSize: 11,
             fontStyle: FontStyle.italic,
           ),

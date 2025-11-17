@@ -84,13 +84,13 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
           margin: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
             color: isSelected
-                ? DesignTokens.quantum.withOpacity(0.2)
-                : Colors.white.withOpacity(0.05),
+                ? DesignTokens.quantum.withValues(alpha: 0.2)
+                : Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isSelected
                   ? DesignTokens.quantum
-                  : Colors.white.withOpacity(0.1),
+                  : Colors.white.withValues(alpha: 0.1),
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -496,7 +496,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
                 Text(
                   description,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                     fontSize: 10,
                   ),
                 ),
@@ -548,9 +548,9 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: DesignTokens.quantum,
-              inactiveTrackColor: Colors.white.withOpacity(0.1),
+              inactiveTrackColor: Colors.white.withValues(alpha: 0.1),
               thumbColor: DesignTokens.quantum,
-              overlayColor: DesignTokens.quantum.withOpacity(0.2),
+              overlayColor: DesignTokens.quantum.withValues(alpha: 0.2),
             ),
             child: Slider(
               value: value,
@@ -570,7 +570,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
                   .map((label) => Text(
                         label,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.4),
+                          color: Colors.white.withValues(alpha: 0.4),
                           fontSize: 9,
                         ),
                       ))
@@ -590,7 +590,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               fontSize: 12,
             ),
           ),

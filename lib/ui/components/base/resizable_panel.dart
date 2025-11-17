@@ -349,7 +349,7 @@ class ResizablePanelState extends State<ResizablePanel> {
                           vertical: DesignTokens.spacing1,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
+                          color: Colors.black.withValues(alpha: 0.7),
                           borderRadius:
                               BorderRadius.circular(DesignTokens.radiusSmall),
                         ),

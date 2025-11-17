@@ -290,13 +290,13 @@ class _LEDLadderPainter extends CustomPainter {
     );
 
     // Background (inactive state)
-    final bgPaint = Paint()..color = color.withOpacity(0.1);
+    final bgPaint = Paint()..color = color.withValues(alpha: 0.1);
 
     canvas.drawRRect(rect, bgPaint);
 
     if (isActive) {
       // Active LED
-      final ledPaint = Paint()..color = color.withOpacity(0.8 * brightness);
+      final ledPaint = Paint()..color = color.withValues(alpha: 0.8 * brightness);
 
       canvas.drawRRect(rect, ledPaint);
 
@@ -304,8 +304,8 @@ class _LEDLadderPainter extends CustomPainter {
       final glowPaint = Paint()
         ..shader = RadialGradient(
           colors: [
-            color.withOpacity(0.6 * brightness),
-            color.withOpacity(0.0),
+            color.withValues(alpha: 0.6 * brightness),
+            color.withValues(alpha: 0.0),
           ],
         ).createShader(rect.outerRect)
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, isCurrent ? 4 : 2);
@@ -315,7 +315,7 @@ class _LEDLadderPainter extends CustomPainter {
       // Current value highlight
       if (isCurrent) {
         final highlightPaint = Paint()
-          ..color = Colors.white.withOpacity(0.4)
+          ..color = Colors.white.withValues(alpha: 0.4)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.0;
 
@@ -325,7 +325,7 @@ class _LEDLadderPainter extends CustomPainter {
 
     // Border
     final borderPaint = Paint()
-      ..color = isActive ? color : color.withOpacity(0.3)
+      ..color = isActive ? color : color.withValues(alpha: 0.3)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 

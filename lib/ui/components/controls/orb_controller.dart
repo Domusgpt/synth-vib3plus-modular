@@ -318,9 +318,9 @@ class _OrbControllerState extends State<OrbController>
         vertical: DesignTokens.spacing1,
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -405,7 +405,7 @@ class _OrbPainter extends CustomPainter {
 
   void _drawCrosshairs(Canvas canvas, Offset center, double radius) {
     final paint = Paint()
-      ..color = color.withOpacity(0.3)
+      ..color = color.withValues(alpha: 0.3)
       ..strokeWidth = 1.0;
 
     // Horizontal
@@ -425,7 +425,7 @@ class _OrbPainter extends CustomPainter {
 
   void _drawConnectionLine(Canvas canvas, Offset center, Offset orbPosition) {
     final paint = Paint()
-      ..color = color.withOpacity(isDragging ? 0.6 : 0.3)
+      ..color = color.withValues(alpha: isDragging ? 0.6 : 0.3)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
@@ -439,9 +439,9 @@ class _OrbPainter extends CustomPainter {
     final glowPaint = Paint()
       ..shader = RadialGradient(
         colors: [
-          color.withOpacity(0.5),
-          color.withOpacity(0.2),
-          color.withOpacity(0.0),
+          color.withValues(alpha: 0.5),
+          color.withValues(alpha: 0.2),
+          color.withValues(alpha: 0.0),
         ],
         stops: const [0.0, 0.5, 1.0],
       ).createShader(Rect.fromCircle(
@@ -479,8 +479,8 @@ class _OrbPainter extends CustomPainter {
         center: const Alignment(-0.3, -0.3),
         radius: 0.5,
         colors: [
-          Colors.white.withOpacity(0.6),
-          Colors.white.withOpacity(0.0),
+          Colors.white.withValues(alpha: 0.6),
+          Colors.white.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromCircle(
         center: position,
@@ -503,8 +503,8 @@ class _OrbPainter extends CustomPainter {
     final paint = Paint()
       ..shader = RadialGradient(
         colors: [
-          color.withOpacity(0.8),
-          color.withOpacity(0.4),
+          color.withValues(alpha: 0.8),
+          color.withValues(alpha: 0.4),
         ],
       ).createShader(Rect.fromCircle(
         center: position,
@@ -524,7 +524,7 @@ class _OrbPainter extends CustomPainter {
 
   void _drawCenterIndicator(Canvas canvas, Offset center) {
     final paint = Paint()
-      ..color = color.withOpacity(0.5)
+      ..color = color.withValues(alpha: 0.5)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, 4, paint);

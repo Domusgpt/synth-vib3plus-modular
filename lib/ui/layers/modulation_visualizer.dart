@@ -274,9 +274,9 @@ class ModulationVisualizer {
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        sourceColor.withOpacity((0.7 * opacity).clamp(0.0, 1.0)),
-        sourceColor.withOpacity((0.5 * opacity).clamp(0.0, 1.0)),
-        targetColor.withOpacity((0.3 * opacity).clamp(0.0, 1.0)),
+        sourceColor.withValues(alpha: (0.7 * opacity).clamp(0.0, 1.0)),
+        sourceColor.withValues(alpha: (0.5 * opacity).clamp(0.0, 1.0)),
+        targetColor.withValues(alpha: (0.3 * opacity).clamp(0.0, 1.0)),
       ],
       stops: const [0.0, 0.5, 1.0],
     ).createShader(Rect.fromPoints(
@@ -299,7 +299,7 @@ class ModulationVisualizer {
       final opacity = connection.strength * (1.0 - (t - 0.5).abs() * 2);
 
       final paint = Paint()
-        ..color = color.withOpacity(opacity.clamp(0.0, 1.0))
+        ..color = color.withValues(alpha: opacity.clamp(0.0, 1.0))
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, particleSize);
 
       canvas.drawCircle(position, particleSize, paint);
@@ -362,7 +362,7 @@ class ModulationVisualizer {
     );
 
     final bgPaint = Paint()
-      ..color = Colors.black.withOpacity(0.7)
+      ..color = Colors.black.withValues(alpha: 0.7)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
 
     canvas.drawRRect(
@@ -386,14 +386,14 @@ class ModulationVisualizer {
 
     // Background circle
     final bgPaint = Paint()
-      ..color = Colors.black.withOpacity(0.7)
+      ..color = Colors.black.withValues(alpha: 0.7)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(position, size / 2, bgPaint);
 
     // Strength arc
     final arcPaint = Paint()
-      ..color = DesignTokens.stateActive.withOpacity(0.8)
+      ..color = DesignTokens.stateActive.withValues(alpha: 0.8)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;

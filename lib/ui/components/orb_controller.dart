@@ -168,7 +168,7 @@ class _OrbControllerState extends State<OrbController>
           child: CustomPaint(
             size: const Size(40, 40),
             painter: CrosshairPainter(
-              color: widget.systemColors.primary.withOpacity(0.3),
+              color: widget.systemColors.primary.withValues(alpha: 0.3),
             ),
           ),
         ),
@@ -229,7 +229,7 @@ class _OrbControllerState extends State<OrbController>
                           uiState.tiltEnabled
                               ? Icons.screen_rotation
                               : Icons.control_camera,
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                           size: 40,
                         ),
 
@@ -262,7 +262,7 @@ class _OrbControllerState extends State<OrbController>
               size: const Size(120, 120),
               painter: RangeIndicatorPainter(
                 pitchBendRange: uiState.orbPitchBendRange,
-                color: widget.systemColors.primary.withOpacity(0.2),
+                color: widget.systemColors.primary.withValues(alpha: 0.2),
               ),
             ),
           ),
@@ -324,7 +324,7 @@ class ConnectionLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withOpacity(0.5)
+      ..color = color.withValues(alpha: 0.5)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
@@ -332,7 +332,7 @@ class ConnectionLinePainter extends CustomPainter {
 
     // Add glow effect
     final glowPaint = Paint()
-      ..color = color.withOpacity(0.2)
+      ..color = color.withValues(alpha: 0.2)
       ..strokeWidth = 8.0
       ..style = PaintingStyle.stroke
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);

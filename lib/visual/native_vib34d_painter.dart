@@ -53,7 +53,7 @@ class NativeVIB34DPainter extends CustomPainter {
   void _drawBackgroundLayer(
       Canvas canvas, double cx, double cy, double radius) {
     final paint = Paint()
-      ..color = Colors.cyan.withOpacity(0.1 + bass * 0.1)
+      ..color = Colors.cyan.withValues(alpha: 0.1 + bass * 0.1)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
@@ -65,7 +65,7 @@ class NativeVIB34DPainter extends CustomPainter {
   /// Layer 2: Shadow depth field
   void _drawShadowLayer(Canvas canvas, double cx, double cy, double radius) {
     final paint = Paint()
-      ..color = Colors.purple.withOpacity(0.15 + mid * 0.15)
+      ..color = Colors.purple.withValues(alpha: 0.15 + mid * 0.15)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
@@ -78,7 +78,7 @@ class NativeVIB34DPainter extends CustomPainter {
   /// Layer 3: Main content (tesseract/hypercube)
   void _drawContentLayer(Canvas canvas, double cx, double cy, double radius) {
     final paint = Paint()
-      ..color = Colors.cyan.withOpacity(0.4 + energy * 0.3)
+      ..color = Colors.cyan.withValues(alpha: 0.4 + energy * 0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5;
 
@@ -90,7 +90,7 @@ class NativeVIB34DPainter extends CustomPainter {
   /// Layer 4: Highlight particles
   void _drawHighlightLayer(Canvas canvas, double cx, double cy, double radius) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.6 + high * 0.3)
+      ..color = Colors.white.withValues(alpha: 0.6 + high * 0.3)
       ..style = PaintingStyle.fill;
 
     // Rotating particles around vertices
@@ -111,9 +111,9 @@ class NativeVIB34DPainter extends CustomPainter {
   void _drawAccentLayer(Canvas canvas, double cx, double cy, double radius) {
     // RGB chromatic aberration effect
     final colors = [
-      Colors.red.withOpacity(0.3),
-      Colors.green.withOpacity(0.3),
-      Colors.blue.withOpacity(0.3),
+      Colors.red.withValues(alpha: 0.3),
+      Colors.green.withValues(alpha: 0.3),
+      Colors.blue.withValues(alpha: 0.3),
     ];
 
     for (int i = 0; i < 3; i++) {

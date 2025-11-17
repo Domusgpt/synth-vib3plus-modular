@@ -284,7 +284,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -375,10 +375,10 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
     return Container(
       padding: const EdgeInsets.all(DesignTokens.spacing2),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
         border: Border.all(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -388,7 +388,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           Text(
             label,
             style: DesignTokens.labelSmall.copyWith(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: DesignTokens.spacing1),
@@ -409,7 +409,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
                   child: Text(
                     unit,
                     style: DesignTokens.labelSmall.copyWith(
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha: 0.4),
                     ),
                   ),
                 ),
@@ -418,7 +418,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           const SizedBox(height: DesignTokens.spacing1),
           LinearProgressIndicator(
             value: (value / target).clamp(0.0, 1.0),
-            backgroundColor: Colors.white.withOpacity(0.1),
+            backgroundColor: Colors.white.withValues(alpha: 0.1),
             valueColor: AlwaysStoppedAnimation(color),
             minHeight: 2,
           ),
@@ -467,7 +467,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           child: Text(
             'Collecting $label data...',
             style: DesignTokens.labelSmall.copyWith(
-              color: Colors.white.withOpacity(0.4),
+              color: Colors.white.withValues(alpha: 0.4),
             ),
           ),
         ),
@@ -482,7 +482,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           Text(
             label,
             style: DesignTokens.labelSmall.copyWith(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: DesignTokens.spacing2),
@@ -519,8 +519,8 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
       padding: const EdgeInsets.all(DesignTokens.spacing3),
       decoration: BoxDecoration(
         color: _currentMetrics!.hasCriticalIssues
-            ? DesignTokens.stateError.withOpacity(0.2)
-            : DesignTokens.stateWarning.withOpacity(0.2),
+            ? DesignTokens.stateError.withValues(alpha: 0.2)
+            : DesignTokens.stateWarning.withValues(alpha: 0.2),
         border: Border(
           top: BorderSide(
             color: _currentMetrics!.hasCriticalIssues
@@ -563,7 +563,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
                 child: Text(
                   '• $warning',
                   style: DesignTokens.labelSmall.copyWith(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               )),
@@ -600,7 +600,7 @@ class _GraphPainter extends CustomPainter {
     if (values.isEmpty) return;
 
     final paint = Paint()
-      ..color = color.withOpacity(0.6)
+      ..color = color.withValues(alpha: 0.6)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
@@ -609,8 +609,8 @@ class _GraphPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          color.withOpacity(0.3),
-          color.withOpacity(0.0),
+          color.withValues(alpha: 0.3),
+          color.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
@@ -647,7 +647,7 @@ class _GraphPainter extends CustomPainter {
 
     // Draw target line
     final targetPaint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
+      ..color = Colors.white.withValues(alpha: 0.3)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -685,10 +685,10 @@ class CompactPerformanceOverlay extends StatelessWidget {
         vertical: DesignTokens.spacing1,
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
         border: Border.all(
-          color: _getHealthColor().withOpacity(0.5),
+          color: _getHealthColor().withValues(alpha: 0.5),
           width: 1,
         ),
       ),
@@ -723,7 +723,7 @@ class CompactPerformanceOverlay extends StatelessWidget {
         Text(
           label,
           style: DesignTokens.labelSmall.copyWith(
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
             fontSize: 9,
           ),
         ),

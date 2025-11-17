@@ -366,7 +366,7 @@ class _SliderPainter extends CustomPainter {
 
     // Background track
     final trackPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withValues(alpha: 0.1)
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
@@ -378,7 +378,7 @@ class _SliderPainter extends CustomPainter {
 
     // Value fill
     final fillPaint = Paint()
-      ..color = color.withOpacity(0.6)
+      ..color = color.withValues(alpha: 0.6)
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
@@ -413,7 +413,7 @@ class _SliderPainter extends CustomPainter {
 
     // Background track
     final trackPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withValues(alpha: 0.1)
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
@@ -425,7 +425,7 @@ class _SliderPainter extends CustomPainter {
 
     // Value fill
     final fillPaint = Paint()
-      ..color = color.withOpacity(0.6)
+      ..color = color.withValues(alpha: 0.6)
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
@@ -441,7 +441,7 @@ class _SliderPainter extends CustomPainter {
 
   void _drawRangeMarkers(Canvas canvas, Size size, double trackY) {
     final markerPaint = Paint()
-      ..color = color.withOpacity(0.3)
+      ..color = color.withValues(alpha: 0.3)
       ..strokeWidth = 1.0;
 
     // Min
@@ -470,7 +470,7 @@ class _SliderPainter extends CustomPainter {
     final modRange = modulationAmount * size.width / 2;
 
     final modPaint = Paint()
-      ..color = DesignTokens.stateWarning.withOpacity(0.3)
+      ..color = DesignTokens.stateWarning.withValues(alpha: 0.3)
       ..strokeWidth = 8.0
       ..strokeCap = StrokeCap.round;
 
@@ -494,7 +494,7 @@ class _SliderPainter extends CustomPainter {
     }
 
     final graphPaint = Paint()
-      ..color = color.withOpacity(0.2)
+      ..color = color.withValues(alpha: 0.2)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -504,7 +504,7 @@ class _SliderPainter extends CustomPainter {
   void _drawThumb(Canvas canvas, Offset position) {
     // Outer ring
     final outerPaint = Paint()
-      ..color = isDragging ? color : color.withOpacity(0.8)
+      ..color = isDragging ? color : color.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
@@ -513,7 +513,7 @@ class _SliderPainter extends CustomPainter {
 
     // Inner fill
     final innerPaint = Paint()
-      ..color = color.withOpacity(isDragging ? 0.8 : 0.6);
+      ..color = color.withValues(alpha: isDragging ? 0.8 : 0.6);
 
     canvas.drawCircle(position, outerRadius - 4, innerPaint);
 
@@ -532,8 +532,8 @@ class _SliderPainter extends CustomPainter {
       final glowPaint = Paint()
         ..shader = RadialGradient(
           colors: [
-            color.withOpacity(audioFeatures!.rms * 0.5),
-            color.withOpacity(0.0),
+            color.withValues(alpha: audioFeatures!.rms * 0.5),
+            color.withValues(alpha: 0.0),
           ],
         ).createShader(Rect.fromCircle(
           center: position,

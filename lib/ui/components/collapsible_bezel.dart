@@ -227,7 +227,7 @@ class BottomBezelContainer extends StatelessWidget {
             Container(
               height: SynthTheme.panelCollapsedHeight,
               decoration: BoxDecoration(
-                color: SynthTheme.panelBackground.withOpacity(0.8),
+                color: SynthTheme.panelBackground.withValues(alpha: 0.8),
                 border: Border(
                   top: BorderSide(
                     color: SynthTheme.borderSubtle,

@@ -164,7 +164,7 @@ class TouchTrail {
 
       // Draw segment
       final paint = Paint()
-        ..color = color.withOpacity(opacity.clamp(0.0, 1.0))
+        ..color = color.withValues(alpha: opacity.clamp(0.0, 1.0))
         ..strokeWidth = width
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
@@ -234,7 +234,7 @@ class TouchTrail {
     for (int i = 0; i < points.length; i++) {
       final point = points[i];
       final opacity = point.opacity * brightnessFactor;
-      colors.add(color.withOpacity(opacity.clamp(0.0, 1.0)));
+      colors.add(color.withValues(alpha: opacity.clamp(0.0, 1.0)));
       stops.add(i / (points.length - 1));
     }
 

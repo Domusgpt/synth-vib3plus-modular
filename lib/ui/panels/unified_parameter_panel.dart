@@ -288,14 +288,14 @@ class UnifiedParameterPanel extends StatelessWidget {
           Text(
             sonicText,
             style: SynthTheme.textStyleBody.copyWith(
-              color: colors.primary.withOpacity(0.8),
+              color: colors.primary.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(height: 4),
           Text(
             visualText,
             style: SynthTheme.textStyleBody.copyWith(
-              color: colors.secondary.withOpacity(0.8),
+              color: colors.secondary.withValues(alpha: 0.8),
             ),
           ),
         ],
@@ -307,10 +307,10 @@ class UnifiedParameterPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(SynthTheme.spacingMedium),
       decoration: BoxDecoration(
-        color: colors.primary.withOpacity(0.05),
+        color: colors.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
         border: Border.all(
-          color: colors.primary.withOpacity(0.2),
+          color: colors.primary.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -342,7 +342,7 @@ class UnifiedParameterPanel extends StatelessWidget {
             'All visual parameters automatically modulate based on sound analysis. '
             'Sliders set BASE values - audio reactivity adds ± modulation on top.',
             style: SynthTheme.textStyleCaption.copyWith(
-              color: colors.primary.withOpacity(0.6),
+              color: colors.primary.withValues(alpha: 0.6),
               fontStyle: FontStyle.italic,
             ),
           ),
@@ -362,14 +362,14 @@ class UnifiedParameterPanel extends StatelessWidget {
           Icon(
             Icons.arrow_forward,
             size: 12,
-            color: colors.primary.withOpacity(0.5),
+            color: colors.primary.withValues(alpha: 0.5),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               text,
               style: SynthTheme.textStyleCaption.copyWith(
-                color: colors.primary.withOpacity(0.7),
+                color: colors.primary.withValues(alpha: 0.7),
               ),
             ),
           ),

@@ -87,16 +87,16 @@ class _TopBezelState extends State<TopBezel>
         return Container(
           height: _heightAnimation.value,
           decoration: BoxDecoration(
-            color: SynthTheme.panelBackground.withOpacity(0.9),
+            color: SynthTheme.panelBackground.withValues(alpha: 0.9),
             border: Border(
               bottom: BorderSide(
-                color: widget.systemColors.primary.withOpacity(0.5),
+                color: widget.systemColors.primary.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha: 0.5),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -187,7 +187,7 @@ class _TopBezelState extends State<TopBezel>
               ),
               decoration: BoxDecoration(
                 color: isActive
-                    ? systemColors.primary.withOpacity(0.3)
+                    ? systemColors.primary.withValues(alpha: 0.3)
                     : Colors.transparent,
                 border: Border.all(
                   color:
@@ -259,15 +259,15 @@ class _TopBezelState extends State<TopBezel>
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: widget.systemColors.primary.withOpacity(0.15),
+        color: widget.systemColors.primary.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
         border: Border.all(
-          color: widget.systemColors.primary.withOpacity(0.6),
+          color: widget.systemColors.primary.withValues(alpha: 0.6),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: widget.systemColors.primary.withOpacity(0.3),
+            color: widget.systemColors.primary.withValues(alpha: 0.3),
             blurRadius: 8,
             spreadRadius: 0,
           ),
@@ -363,7 +363,7 @@ class _TopBezelState extends State<TopBezel>
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: value
-                ? widget.systemColors.primary.withOpacity(0.2)
+                ? widget.systemColors.primary.withValues(alpha: 0.2)
                 : SynthTheme.cardBackground,
             border: Border.all(
               color:

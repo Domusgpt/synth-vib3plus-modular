@@ -377,7 +377,7 @@ class GridOverlay extends StatelessWidget {
             calculator: calculator,
             config: config,
             showLabels: showLabels,
-            gridColor: gridColor.withOpacity(opacity),
+            gridColor: gridColor.withValues(alpha: opacity),
           ),
           size: constraints.biggest,
         );

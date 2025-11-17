@@ -78,10 +78,10 @@ class _AudioVisualizerState extends State<AudioVisualizer>
     return Container(
       height: widget.height,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _getSystemColor(visualProvider.currentSystem).withOpacity(0.3),
+          color: _getSystemColor(visualProvider.currentSystem).withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -112,10 +112,10 @@ class _AudioVisualizerState extends State<AudioVisualizer>
     return Container(
       height: widget.height,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _getSystemColor(systemName).withOpacity(0.2),
+          color: _getSystemColor(systemName).withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -123,7 +123,7 @@ class _AudioVisualizerState extends State<AudioVisualizer>
         child: Text(
           'Play a note to visualize',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
             fontSize: 12,
           ),
         ),
@@ -152,9 +152,9 @@ class _AudioVisualizerState extends State<AudioVisualizer>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withOpacity(0.5), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.5), width: 1),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -224,7 +224,7 @@ class _VisualizerPainter extends CustomPainter {
   void _drawWaveform(Canvas canvas, Size size) {
     // Draw center line
     final centerLinePaint = Paint()
-      ..color = systemColor.withOpacity(0.2)
+      ..color = systemColor.withValues(alpha: 0.2)
       ..strokeWidth = 1;
     canvas.drawLine(
       Offset(0, size.height / 2),
@@ -268,7 +268,7 @@ class _VisualizerPainter extends CustomPainter {
 
     // Draw glow effect
     final glowPaint = Paint()
-      ..color = systemColor.withOpacity(0.3)
+      ..color = systemColor.withValues(alpha: 0.3)
       ..strokeWidth = 6
       ..style = PaintingStyle.stroke
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
@@ -314,8 +314,8 @@ class _VisualizerPainter extends CustomPainter {
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: [
-            barColor.withOpacity(0.8),
-            systemColor.withOpacity(0.6),
+            barColor.withValues(alpha: 0.8),
+            systemColor.withValues(alpha: 0.6),
           ],
         ).createShader(Rect.fromLTWH(
             x, size.height - barHeight, barWidth - spacing * 2, barHeight));
@@ -334,7 +334,7 @@ class _VisualizerPainter extends CustomPainter {
       // Draw glow
       if (barValue > 0.3) {
         final glowPaint = Paint()
-          ..color = barColor.withOpacity(0.4)
+          ..color = barColor.withValues(alpha: 0.4)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
         canvas.drawRRect(barRect, glowPaint);
       }
@@ -344,7 +344,7 @@ class _VisualizerPainter extends CustomPainter {
   void _drawOscilloscope(Canvas canvas, Size size) {
     // Draw grid
     final gridPaint = Paint()
-      ..color = systemColor.withOpacity(0.1)
+      ..color = systemColor.withValues(alpha: 0.1)
       ..strokeWidth = 1;
 
     // Vertical lines
@@ -391,7 +391,7 @@ class _VisualizerPainter extends CustomPainter {
 
     // Draw glow
     final glowPaint = Paint()
-      ..color = systemColor.withOpacity(0.3)
+      ..color = systemColor.withValues(alpha: 0.3)
       ..strokeWidth = 6
       ..style = PaintingStyle.stroke
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);

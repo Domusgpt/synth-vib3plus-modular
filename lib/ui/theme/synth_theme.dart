@@ -105,7 +105,7 @@ class SynthTheme {
       case GlowIntensity.inactive:
         return [
           BoxShadow(
-            color: color.withOpacity(0.3),
+            color: color.withValues(alpha: 0.3),
             blurRadius: 4,
             spreadRadius: 0,
           ),
@@ -114,12 +114,12 @@ class SynthTheme {
       case GlowIntensity.active:
         return [
           BoxShadow(
-            color: color.withOpacity(0.6),
+            color: color.withValues(alpha: 0.6),
             blurRadius: 12,
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: color.withOpacity(0.3),
+            color: color.withValues(alpha: 0.3),
             blurRadius: 24,
             spreadRadius: 0,
           ),
@@ -128,17 +128,17 @@ class SynthTheme {
       case GlowIntensity.engaged:
         return [
           BoxShadow(
-            color: color.withOpacity(0.8),
+            color: color.withValues(alpha: 0.8),
             blurRadius: 20,
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: color.withOpacity(0.5),
+            color: color.withValues(alpha: 0.5),
             blurRadius: 40,
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: color.withOpacity(0.3),
+            color: color.withValues(alpha: 0.3),
             blurRadius: 60,
             spreadRadius: 0,
           ),
@@ -149,7 +149,7 @@ class SynthTheme {
   /// Get glassmorphic panel decoration
   BoxDecoration getGlassPanelDecoration({bool expanded = false}) {
     return BoxDecoration(
-      color: panelBackground.withOpacity(0.8),
+      color: panelBackground.withValues(alpha: 0.8),
       border: Border.all(
         color: borderSubtle,
         width: 1,
@@ -157,12 +157,12 @@ class SynthTheme {
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.4),
+          color: Colors.black.withValues(alpha: 0.4),
           blurRadius: 32,
           offset: const Offset(0, 8),
         ),
         BoxShadow(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           blurRadius: 0,
           spreadRadius: 0,
           offset: const Offset(0, 1),
@@ -190,24 +190,24 @@ class SynthTheme {
           ? [
               ...getGlow(GlowIntensity.active),
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(2, 2),
               ),
             ]
           : [
               BoxShadow(
-                color: Colors.black.withOpacity(0.4),
+                color: Colors.black.withValues(alpha: 0.4),
                 blurRadius: 16,
                 offset: const Offset(8, 8),
               ),
               BoxShadow(
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withValues(alpha: 0.05),
                 blurRadius: 16,
                 offset: const Offset(-8, -8),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 4,
                 spreadRadius: 0,
                 offset: const Offset(2, 2),

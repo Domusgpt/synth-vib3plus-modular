@@ -340,7 +340,7 @@ class ParticleSystem {
   void _paintBatch(Canvas canvas, List<Particle> particles) {
     for (final particle in particles) {
       final paint = Paint()
-        ..color = particle.color.withOpacity(particle.opacity)
+        ..color = particle.color.withValues(alpha: particle.opacity)
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, particle.size / 2);
 
       // Rotate canvas for this particle

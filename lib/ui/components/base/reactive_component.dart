@@ -345,7 +345,7 @@ abstract class ReactiveComponentState<T extends ReactiveComponent>
       boxShadow: widget.style.showGlow && glowIntensity > 0
           ? [
               BoxShadow(
-                color: color.withOpacity(glowIntensity / 10),
+                color: color.withValues(alpha: glowIntensity / 10),
                 blurRadius: glowIntensity,
                 spreadRadius: glowIntensity / 2,
               ),

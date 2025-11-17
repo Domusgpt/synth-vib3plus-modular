@@ -179,7 +179,7 @@ class _SynthMainContentState extends State<_SynthMainContent> {
       child: Container(
         width: SynthTheme.sideBezelWidth,
         decoration: BoxDecoration(
-          color: SynthTheme.panelBackground.withOpacity(0.8),
+          color: SynthTheme.panelBackground.withValues(alpha: 0.8),
           borderRadius: const BorderRadius.only(
             topRight: Radius.circular(SynthTheme.radiusLarge),
             bottomRight: Radius.circular(SynthTheme.radiusLarge),
@@ -217,7 +217,7 @@ class _SynthMainContentState extends State<_SynthMainContent> {
       child: Container(
         width: SynthTheme.sideBezelWidth,
         decoration: BoxDecoration(
-          color: SynthTheme.panelBackground.withOpacity(0.8),
+          color: SynthTheme.panelBackground.withValues(alpha: 0.8),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(SynthTheme.radiusLarge),
             bottomLeft: Radius.circular(SynthTheme.radiusLarge),
@@ -253,7 +253,7 @@ class _SynthMainContentState extends State<_SynthMainContent> {
         decoration: BoxDecoration(
           color: SynthTheme.cardBackground,
           borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
-          border: Border.all(color: systemColors.primary.withOpacity(0.5)),
+          border: Border.all(color: systemColors.primary.withValues(alpha: 0.5)),
           boxShadow: SynthTheme(systemColors: systemColors)
               .getGlow(GlowIntensity.inactive),
         ),
@@ -287,7 +287,7 @@ class _SynthMainContentState extends State<_SynthMainContent> {
       child: Container(
         padding: const EdgeInsets.all(SynthTheme.spacingSmall),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(SynthTheme.radiusSmall),
           border: Border.all(color: Colors.red),
         ),

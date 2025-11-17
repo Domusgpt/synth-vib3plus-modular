@@ -483,9 +483,9 @@ class DockZoneIndicator extends StatelessWidget {
             child: AnimatedContainer(
               duration: DesignTokens.micro,
               decoration: BoxDecoration(
-                color: color.withOpacity(isActive ? opacity * 2 : opacity),
+                color: color.withValues(alpha: isActive ? opacity * 2 : opacity),
                 border: Border.all(
-                  color: color.withOpacity(isActive ? 0.8 : 0.4),
+                  color: color.withValues(alpha: isActive ? 0.8 : 0.4),
                   width: isActive ? 2.0 : 1.0,
                 ),
                 borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
@@ -496,14 +496,14 @@ class DockZoneIndicator extends StatelessWidget {
                   children: [
                     Icon(
                       zone.icon,
-                      color: color.withOpacity(isActive ? 1.0 : 0.6),
+                      color: color.withValues(alpha: isActive ? 1.0 : 0.6),
                       size: 48,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       zone.label,
                       style: DesignTokens.headlineMedium.copyWith(
-                        color: color.withOpacity(isActive ? 1.0 : 0.6),
+                        color: color.withValues(alpha: isActive ? 1.0 : 0.6),
                       ),
                     ),
                   ],

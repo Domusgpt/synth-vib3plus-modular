@@ -50,15 +50,15 @@ class DualParameterSlider extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: SynthTheme.spacingMedium),
       padding: const EdgeInsets.all(SynthTheme.spacingMedium),
       decoration: BoxDecoration(
-        color: SynthTheme.panelBackground.withOpacity(0.3),
+        color: SynthTheme.panelBackground.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
         border: Border.all(
-          color: systemColors.primary.withOpacity(0.2),
+          color: systemColors.primary.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: systemColors.primary.withOpacity(0.1),
+            color: systemColors.primary.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -95,9 +95,9 @@ class DualParameterSlider extends StatelessWidget {
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: systemColors.primary,
-              inactiveTrackColor: systemColors.primary.withOpacity(0.2),
+              inactiveTrackColor: systemColors.primary.withValues(alpha: 0.2),
               thumbColor: systemColors.primary,
-              overlayColor: systemColors.primary.withOpacity(0.2),
+              overlayColor: systemColors.primary.withValues(alpha: 0.2),
               thumbShape: const RoundSliderThumbShape(
                 enabledThumbRadius: 8.0,
               ),
@@ -128,7 +128,7 @@ class DualParameterSlider extends StatelessWidget {
                 child: Text(
                   sonicEffect,
                   style: SynthTheme.textStyleCaption.copyWith(
-                    color: systemColors.primary.withOpacity(0.8),
+                    color: systemColors.primary.withValues(alpha: 0.8),
                   ),
                 ),
               ),
@@ -149,7 +149,7 @@ class DualParameterSlider extends StatelessWidget {
                 child: Text(
                   visualEffect,
                   style: SynthTheme.textStyleCaption.copyWith(
-                    color: systemColors.secondary.withOpacity(0.8),
+                    color: systemColors.secondary.withValues(alpha: 0.8),
                   ),
                 ),
               ),
