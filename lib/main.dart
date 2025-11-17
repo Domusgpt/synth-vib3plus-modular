@@ -9,10 +9,15 @@
 
 import 'package:flutter/material.dart';
 import 'core/synth_app_initializer.dart';
+import 'core/parameter_registry.dart';
 import 'ui/screens/synth_main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize parameter registry (centralized parameter definitions)
+  initializeDefaultParameterRegistry();
+  debugPrint('✅ Parameter Registry initialized with ${ParameterRegistry.getAllNames().length} parameters');
 
   // Initialize modular architecture
   final modules = await initializeSynthModules();

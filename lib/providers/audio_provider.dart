@@ -397,6 +397,14 @@ class AudioProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Portamento/Glide control (from synther-refactored)
+  double get portamentoTime => synthesizerEngine.portamentoTime;
+
+  void setPortamentoTime(double seconds) {
+    synthesizerEngine.setPortamentoTime(seconds);
+    notifyListeners();
+  }
+
   // Oscillator mix and detuning
   double _mixBalance = 0.5; // 0.0 = Osc1 only, 1.0 = Osc2 only
   double _oscillator1Detune = 0.0;
