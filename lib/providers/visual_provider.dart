@@ -47,10 +47,11 @@ class VisualProvider with ChangeNotifier {
   double _glowIntensity = 1.0;       // Bloom/glow amount (0-3)
   double _rgbSplitAmount = 0.0;      // Chromatic aberration (0-10)
 
-  // Geometry state
+  // Geometry state (ENHANCED FOR 72-COMBINATION MATRIX)
   int _activeVertexCount = 120;      // Current vertex count
   double _morphParameter = 0.0;       // Geometry morph (0-1)
-  int _currentGeometry = 0;           // Geometry index (0-7)
+  int _currentGeometry = 0;           // Base geometry index (0-7)
+  int _fullGeometryIndex = 0;         // Full geometry index (0-23) for 72-combination matrix
   double _geometryComplexity = 0.5;   // Complexity measure (0-1)
 
   // Projection parameters
@@ -85,6 +86,7 @@ class VisualProvider with ChangeNotifier {
   int get activeVertexCount => _activeVertexCount;
   double get morphParameter => _morphParameter;
   int get currentGeometry => _currentGeometry;
+  int get fullGeometryIndex => _fullGeometryIndex; // Full 0-23 range
   double get projectionDistance => _projectionDistance;
   double get layerSeparation => _layerSeparation;
   bool get isAnimating => _isAnimating;
@@ -102,7 +104,12 @@ class VisualProvider with ChangeNotifier {
     final previousSystem = _currentSystem;
     _currentSystem = systemName;
 
+    // Update full geometry index based on new system offset
+    final newSystemOffset = _getSystemOffset(systemName);
+    _fullGeometryIndex = newSystemOffset + _currentGeometry;
+
     debugPrint('🔄 System Switching: $previousSystem → $systemName');
+    debugPrint('   Full Geometry Updated: ${_getSystemOffset(previousSystem) + _currentGeometry} → $_fullGeometryIndex');
 
     // Update JavaScript system via WebView
     // VIB3+ uses window.switchSystem(), not window.vib34d.switchSystem()
@@ -119,7 +126,7 @@ class VisualProvider with ChangeNotifier {
       debugPrint('⚠️  WebView controller not initialized - system switch deferred');
     }
 
-    // Update vertex count based on system
+    // Update vertex count and complexity based on system
     switch (systemName) {
       case 'quantum':
         _activeVertexCount = 120; // Tesseract has 120 cells
@@ -292,13 +299,18 @@ class VisualProvider with ChangeNotifier {
     return _geometryComplexity;
   }
 
-  /// Set current geometry
+  /// Set current base geometry (0-7) - LEGACY METHOD for backward compatibility
   void setGeometry(int geometryIndex) {
     final previousGeometry = _currentGeometry;
     _currentGeometry = geometryIndex.clamp(0, 7);
 
+    // Update full geometry index based on current system
+    final systemOffset = _getSystemOffset(_currentSystem);
+    _fullGeometryIndex = systemOffset + _currentGeometry;
+
     if (previousGeometry != _currentGeometry) {
-      debugPrint('🔷 Geometry Switching: $previousGeometry → $_currentGeometry');
+      debugPrint('🔷 Base Geometry: $previousGeometry → $_currentGeometry');
+      debugPrint('   Full Geometry: $_fullGeometryIndex (System: $_currentSystem, Offset: $systemOffset)');
     }
 
     _updateJavaScriptParameter('geometry', _currentGeometry);
@@ -313,6 +325,78 @@ class VisualProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  /// Set full geometry index (0-23) for 72-combination matrix
+  /// This automatically switches visual system if needed:
+  /// - 0-7: Quantum system (Base core = Direct synthesis)
+  /// - 8-15: Faceted system (Hypersphere core = FM synthesis)
+  /// - 16-23: Holographic system (Hypertetrahedron core = Ring modulation)
+  Future<void> setFullGeometry(int index) async {
+    final clampedIndex = index.clamp(0, 23);
+    final previousFullGeometry = _fullGeometryIndex;
+    _fullGeometryIndex = clampedIndex;
+
+    // Calculate derived values
+    final coreIndex = clampedIndex ~/ 8;  // 0, 1, or 2
+    final baseGeometry = clampedIndex % 8; // 0-7
+
+    // Determine target system based on core
+    final targetSystem = _coreToSystem(coreIndex);
+
+    debugPrint('🎯 Full Geometry Set: $previousFullGeometry → $clampedIndex');
+    debugPrint('   Core: $coreIndex (${_coreNames[coreIndex]})');
+    debugPrint('   Base Geometry: $baseGeometry (${_geometryNames[baseGeometry]})');
+    debugPrint('   Target System: $targetSystem');
+
+    // Switch system if needed
+    if (_currentSystem != targetSystem) {
+      await switchSystem(targetSystem);
+    }
+
+    // Update base geometry
+    _currentGeometry = baseGeometry;
+    _updateJavaScriptParameter('geometry', _currentGeometry);
+
+    // Update vertex count
+    _activeVertexCount = _getVertexCountForGeometry(_currentGeometry);
+
+    notifyListeners();
+  }
+
+  /// Get geometry offset based on current visual system
+  /// This maps visual systems to polytope cores in the 72-combination matrix:
+  /// - Quantum → Base core (0) → Geometries 0-7
+  /// - Faceted → Hypersphere core (8) → Geometries 8-15
+  /// - Holographic → Hypertetrahedron core (16) → Geometries 16-23
+  int _getSystemOffset(String system) {
+    switch (system.toLowerCase()) {
+      case 'quantum':
+        return 0;  // Base core (Direct synthesis)
+      case 'faceted':
+        return 8;  // Hypersphere core (FM synthesis)
+      case 'holographic':
+        return 16; // Hypertetrahedron core (Ring modulation)
+      default:
+        return 0;
+    }
+  }
+
+  /// Map core index to visual system name
+  String _coreToSystem(int coreIndex) {
+    switch (coreIndex) {
+      case 0: return 'quantum';     // Base → Quantum
+      case 1: return 'faceted';     // Hypersphere → Faceted
+      case 2: return 'holographic'; // Hypertetrahedron → Holographic
+      default: return 'quantum';
+    }
+  }
+
+  // Helper arrays for debug output
+  static const _coreNames = ['Direct', 'FM', 'Ring Mod'];
+  static const _geometryNames = [
+    'Tetrahedron', 'Hypercube', 'Sphere', 'Torus',
+    'Klein Bottle', 'Fractal', 'Wave', 'Crystal'
+  ];
 
   /// Get vertex count for specific geometry
   int _getVertexCountForGeometry(int index) {

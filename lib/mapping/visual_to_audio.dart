@@ -162,31 +162,24 @@ class VisualToAudioModulator {
   }
 
   /// Sync geometry changes to audio provider
+  /// Now uses visual_provider's fullGeometryIndex (0-23) which automatically
+  /// accounts for visual system → polytope core mapping
   void _syncGeometryToAudio() {
-    final geometry = visualProvider.currentGeometry;
-    // Visual provider uses 0-7, but synthesis manager uses 0-23
-    // Need to calculate full geometry index from system + geometry
-    final systemOffset = _getSystemOffset(visualProvider.currentSystem);
-    final fullGeometry = systemOffset + geometry;
+    final fullGeometry = visualProvider.fullGeometryIndex;
     audioProvider.setGeometry(fullGeometry);
-  }
 
-  /// Get geometry offset based on current visual system
-  int _getSystemOffset(String system) {
-    // Each system has 8 base geometries (0-7)
-    // But they map to different polytope cores in the synthesis manager:
-    // - Quantum system → geometries 0-7 (Base core)
-    // - Faceted system → geometries 8-15 (Hypersphere core)
-    // - Holographic system → geometries 16-23 (Hypertetrahedron core)
-    switch (system.toLowerCase()) {
-      case 'quantum':
-        return 0;  // Base core (Direct synthesis)
-      case 'faceted':
-        return 8;  // Hypersphere core (FM synthesis)
-      case 'holographic':
-        return 16; // Hypertetrahedron core (Ring modulation)
-      default:
-        return 0;
+    // Debug logging (only on geometry changes)
+    static int _lastGeometry = -1;
+    if (fullGeometry != _lastGeometry) {
+      final coreIndex = fullGeometry ~/ 8;
+      final baseGeometry = fullGeometry % 8;
+      final coreNames = ['Direct', 'FM', 'Ring Mod'];
+      final geometryNames = ['Tetrahedron', 'Hypercube', 'Sphere', 'Torus',
+                             'Klein Bottle', 'Fractal', 'Wave', 'Crystal'];
+
+      debugPrint('🎯 Geometry Sync: $_lastGeometry → $fullGeometry '
+                 '(${coreNames[coreIndex]} ${geometryNames[baseGeometry]})');
+      _lastGeometry = fullGeometry;
     }
   }
 
