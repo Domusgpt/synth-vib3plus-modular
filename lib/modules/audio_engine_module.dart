@@ -15,7 +15,6 @@ library;
 import '../core/synth_module.dart';
 import '../core/synth_logger.dart';
 import '../providers/audio_provider.dart';
-import '../audio/audio_analyzer.dart';
 
 class AudioEngineModule extends SynthModule {
   @override

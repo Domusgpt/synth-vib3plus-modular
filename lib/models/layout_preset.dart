@@ -20,7 +20,6 @@
 library;
 
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import '../ui/layout/flexible_layout.dart';
 import '../ui/layout/panel_dock_system.dart';
 

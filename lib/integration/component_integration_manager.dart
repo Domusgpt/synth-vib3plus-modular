@@ -29,7 +29,6 @@ import '../providers/visual_provider.dart';
 import '../providers/layout_provider.dart';
 import '../mapping/parameter_bridge.dart';
 import '../ui/layers/animation_layer.dart';
-import '../ui/layers/particle_system.dart';
 import '../ui/theme/design_tokens.dart';
 import '../ui/layers/modulation_visualizer.dart';
 import '../ui/effects/glassmorphic_container.dart';

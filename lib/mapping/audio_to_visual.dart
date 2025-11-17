@@ -15,7 +15,6 @@
 library;
 
 import 'package:flutter/foundation.dart';
-import 'dart:typed_data';
 import 'dart:math' as math;
 import '../providers/audio_provider.dart';
 import '../providers/visual_provider.dart';

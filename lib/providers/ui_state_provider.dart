@@ -12,7 +12,6 @@
 
 library;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../ui/theme/synth_theme.dart';
 
