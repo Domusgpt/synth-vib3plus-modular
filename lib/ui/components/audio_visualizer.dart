@@ -17,8 +17,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../audio/audio_analyzer.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/visual_provider.dart';
+import '../theme/design_tokens.dart';
 import '../theme/synth_theme.dart';
 
 enum VisualizerMode {
@@ -69,7 +71,7 @@ class _AudioVisualizerState extends State<AudioVisualizer>
     final features = audioProvider.currentFeatures;
 
     if (features == null) {
-      return _buildEmptyState(visualProvider.currentSystemName);
+      return _buildEmptyState(visualProvider.currentSystem);
     }
 
     return Container(
@@ -78,8 +80,7 @@ class _AudioVisualizerState extends State<AudioVisualizer>
         color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _getSystemColor(visualProvider.currentSystemName)
-              .withOpacity(0.3),
+          color: _getSystemColor(visualProvider.currentSystem).withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -93,13 +94,13 @@ class _AudioVisualizerState extends State<AudioVisualizer>
               painter: _VisualizerPainter(
                 mode: widget.mode,
                 features: features,
-                systemColor: _getSystemColor(visualProvider.currentSystemName),
+                systemColor: _getSystemColor(visualProvider.currentSystem),
                 animationValue: _animationController.value,
               ),
             ),
             // Labels overlay
             if (widget.showLabels)
-              _buildLabels(features, visualProvider.currentSystemName),
+              _buildLabels(features, visualProvider.currentSystem),
           ],
         ),
       ),
@@ -180,13 +181,13 @@ class _AudioVisualizerState extends State<AudioVisualizer>
   Color _getSystemColor(String systemName) {
     switch (systemName.toLowerCase()) {
       case 'quantum':
-        return SynthTheme.quantumCyan;
+        return DesignTokens.quantum;
       case 'faceted':
-        return SynthTheme.facetedMagenta;
+        return DesignTokens.faceted;
       case 'holographic':
-        return SynthTheme.holographicAmber;
+        return DesignTokens.holographic;
       default:
-        return SynthTheme.quantumCyan;
+        return DesignTokens.quantum;
     }
   }
 }

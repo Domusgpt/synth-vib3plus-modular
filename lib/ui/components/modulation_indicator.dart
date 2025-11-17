@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/visual_provider.dart';
+import '../theme/design_tokens.dart';
 import '../theme/synth_theme.dart';
 
 class ModulationIndicator extends StatefulWidget {
@@ -66,7 +67,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
         color: Colors.black.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: SynthTheme.quantumCyan.withOpacity(0.3),
+          color: DesignTokens.quantum.withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -97,14 +98,14 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
       children: [
         Icon(
           Icons.sync_alt,
-          color: SynthTheme.quantumCyan,
+          color: DesignTokens.quantum,
           size: 20,
         ),
         const SizedBox(width: 8),
         Text(
           'Active Modulations',
           style: TextStyle(
-            color: SynthTheme.quantumCyan,
+            color: DesignTokens.quantum,
             fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
@@ -195,44 +196,42 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
     AudioProvider audioProvider,
     VisualProvider visualProvider,
   ) {
-    final state = visualProvider.visualState;
-
     return Column(
       children: [
         _buildModulationMeter(
           'XW Rotation → Osc1 Freq',
-          (state.rotationXW.abs() / math.pi).clamp(0.0, 1.0),
-          '${(state.rotationXW / math.pi * 2).toStringAsFixed(2)} st',
+          (visualProvider.rotationXW.abs() / math.pi).clamp(0.0, 1.0),
+          '${(visualProvider.rotationXW / math.pi * 2).toStringAsFixed(2)} st',
           Colors.purple,
         ),
         _buildModulationMeter(
           'YW Rotation → Osc2 Freq',
-          (state.rotationYW.abs() / math.pi).clamp(0.0, 1.0),
-          '${(state.rotationYW / math.pi * 2).toStringAsFixed(2)} st',
+          (visualProvider.rotationYW.abs() / math.pi).clamp(0.0, 1.0),
+          '${(visualProvider.rotationYW / math.pi * 2).toStringAsFixed(2)} st',
           Colors.pink,
         ),
         _buildModulationMeter(
           'ZW Rotation → Filter Cutoff',
-          (state.rotationZW.abs() / math.pi).clamp(0.0, 1.0),
-          '${(state.rotationZW / math.pi * 40).toStringAsFixed(0)}%',
+          (visualProvider.rotationZW.abs() / math.pi).clamp(0.0, 1.0),
+          '${(visualProvider.rotationZW / math.pi * 40).toStringAsFixed(0)}%',
           Colors.blue,
         ),
         _buildModulationMeter(
           'Morph → Wavetable',
-          state.morph,
-          '${(state.morph * 100).toStringAsFixed(0)}%',
+          visualProvider.morphParameter,
+          '${(visualProvider.morphParameter * 100).toStringAsFixed(0)}%',
           Colors.teal,
         ),
         _buildModulationMeter(
           'Projection → Reverb',
-          state.projectionDistance.clamp(0.0, 1.0),
-          '${(state.projectionDistance * 100).toStringAsFixed(0)}%',
+          visualProvider.projectionDistance.clamp(0.0, 1.0),
+          '${(visualProvider.projectionDistance * 100).toStringAsFixed(0)}%',
           Colors.indigo,
         ),
         _buildModulationMeter(
           'Layer Depth → Delay',
-          state.layerDepth.clamp(0.0, 1.0),
-          '${(state.layerDepth * 500).toStringAsFixed(0)} ms',
+          visualProvider.layerSeparation.clamp(0.0, 1.0),
+          '${(visualProvider.layerSeparation * 500).toStringAsFixed(0)} ms',
           Colors.deepPurple,
         ),
       ],

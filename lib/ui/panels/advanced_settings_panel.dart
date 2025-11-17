@@ -14,6 +14,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../theme/design_tokens.dart';
 import '../theme/synth_theme.dart';
 import '../utils/haptic_feedback.dart';
 import '../../providers/audio_provider.dart';
@@ -85,12 +86,12 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
           margin: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
             color: isSelected
-                ? SynthTheme.quantumCyan.withOpacity(0.2)
+                ? DesignTokens.quantum.withOpacity(0.2)
                 : Colors.white.withOpacity(0.05),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isSelected
-                  ? SynthTheme.quantumCyan
+                  ? DesignTokens.quantum
                   : Colors.white.withOpacity(0.1),
               width: isSelected ? 2 : 1,
             ),
@@ -101,14 +102,14 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
               Icon(
                 icon,
                 size: 18,
-                color: isSelected ? SynthTheme.quantumCyan : Colors.white70,
+                color: isSelected ? DesignTokens.quantum : Colors.white70,
               ),
               const SizedBox(height: 2),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 10,
-                  color: isSelected ? SynthTheme.quantumCyan : Colors.white70,
+                  color: isSelected ? DesignTokens.quantum : Colors.white70,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
@@ -147,7 +148,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildSettingRow(
@@ -158,7 +159,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildSettingRow(
@@ -169,7 +170,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         const SizedBox(height: 24),
@@ -254,7 +255,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildSettingRow(
@@ -265,7 +266,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildSettingRow(
@@ -276,7 +277,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         const SizedBox(height: 24),
@@ -306,7 +307,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildSliderSetting(
@@ -327,7 +328,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildSliderSetting(
@@ -350,7 +351,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildInfoRow('Current RAM Usage', '~120 MB'),
@@ -373,7 +374,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
               HapticManager.setEnabled(val);
               if (val) HapticManager.success();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildSliderSetting(
@@ -417,7 +418,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildSliderSetting(
@@ -438,7 +439,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
         _buildSettingRow(
@@ -449,7 +450,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
             onChanged: (val) {
               HapticManager.light();
             },
-            activeColor: SynthTheme.quantumCyan,
+            activeColor: DesignTokens.quantum,
           ),
         ),
       ],
@@ -461,12 +462,12 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(icon, color: SynthTheme.quantumCyan, size: 18),
+          Icon(icon, color: DesignTokens.quantum, size: 18),
           const SizedBox(width: 8),
           Text(
             title,
             style: const TextStyle(
-              color: SynthTheme.quantumCyan,
+              color: DesignTokens.quantum,
               fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
@@ -539,7 +540,7 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
               Text(
                 currentValue,
                 style: TextStyle(
-                  color: SynthTheme.quantumCyan,
+                  color: DesignTokens.quantum,
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
@@ -548,10 +549,10 @@ class _AdvancedSettingsPanelState extends State<AdvancedSettingsPanel> {
           ),
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: SynthTheme.quantumCyan,
+              activeTrackColor: DesignTokens.quantum,
               inactiveTrackColor: Colors.white.withOpacity(0.1),
-              thumbColor: SynthTheme.quantumCyan,
-              overlayColor: SynthTheme.quantumCyan.withOpacity(0.2),
+              thumbColor: DesignTokens.quantum,
+              overlayColor: DesignTokens.quantum.withOpacity(0.2),
             ),
             child: Slider(
               value: value,

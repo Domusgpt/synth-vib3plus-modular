@@ -613,22 +613,6 @@ class VisualProvider with ChangeNotifier {
   // SMART CANVAS LIFECYCLE MANAGEMENT
   // ========================================================================
 
-  /// Update a single parameter in the JavaScript Smart Canvas
-  /// Uses the new window.updateParameter() API from smart canvas
-  void _updateJavaScriptParameter(String key, dynamic value) {
-    if (_webViewController == null) {
-      // WebView not ready yet - defer update
-      return;
-    }
-
-    try {
-      _webViewController!.runJavaScript(
-          'if (window.updateParameter) { window.updateParameter("$key", $value); }');
-    } catch (e) {
-      debugPrint('⚠️ Failed to update VIB3+ parameter $key: $e');
-    }
-  }
-
   /// Batch update multiple parameters for better performance
   /// Uses the new window.updateParameters() API from smart canvas
   Future<void> updateBatchParameters(Map<String, dynamic> params) async {
