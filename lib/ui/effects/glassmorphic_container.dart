@@ -21,26 +21,8 @@ library;
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../audio/audio_analyzer.dart';
 import '../theme/design_tokens.dart';
-
-/// Audio features for reactive glassmorphism
-class AudioFeatures {
-  final double rms; // 0-1, amplitude
-  final double spectralCentroid; // 0-8000 Hz, brightness
-  final double bassEnergy; // 0-1, low freq content
-  final double transient; // 0-1, attack detection
-  final double dominantFreq; // 0-8000 Hz, peak frequency
-
-  const AudioFeatures({
-    this.rms = 0.0,
-    this.spectralCentroid = 1000.0,
-    this.bassEnergy = 0.0,
-    this.transient = 0.0,
-    this.dominantFreq = 440.0,
-  });
-
-  static const AudioFeatures silent = AudioFeatures();
-}
 
 /// Glassmorphic container with audio-reactive capabilities
 class GlassmorphicContainer extends StatelessWidget {

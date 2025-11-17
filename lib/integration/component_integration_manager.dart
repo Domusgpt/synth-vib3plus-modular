@@ -24,6 +24,7 @@ library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../audio/audio_analyzer.dart';
 import '../providers/audio_provider.dart';
 import '../providers/visual_provider.dart';
 import '../providers/layout_provider.dart';

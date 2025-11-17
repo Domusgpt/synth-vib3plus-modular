@@ -20,6 +20,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'dart:async';
+import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
 
