@@ -23,6 +23,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
 
@@ -281,7 +282,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
     if (existing) return;
 
     final connection = ModulationConnection(
-      id: '${sourceId}_to_${targetId}',
+      id: '${sourceId}_to_$targetId',
       sourceId: sourceId,
       targetId: targetId,
       strength: 0.5,

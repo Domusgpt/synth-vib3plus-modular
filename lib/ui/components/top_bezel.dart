@@ -417,7 +417,7 @@ class _TopBezelState extends State<TopBezel>
               'Vertices', visualProvider.getActiveVertexCount().toString()),
           _buildStatItem('Voices', audioProvider.getVoiceCount().toString()),
           _buildStatItem(
-              'Polyphony', audioProvider.activeNotes.length.toString() + '/8'),
+              'Polyphony', '${audioProvider.activeNotes.length}/8'),
         ],
       ),
     );

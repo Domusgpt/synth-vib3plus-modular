@@ -189,7 +189,7 @@ class ModuleManager with ChangeNotifier {
       }
     }
 
-    debugPrint('\n' + '═' * 60);
+    debugPrint('\n${'═' * 60}');
     debugPrint('Summary: $healthy healthy, $unhealthy with issues\n');
   }
 

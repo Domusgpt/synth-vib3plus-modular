@@ -92,7 +92,7 @@ class _IntegratedMainScreenState extends State<IntegratedMainScreen> {
   bool _showPresetBrowser = false;
   bool _showModulationMatrix = false;
   bool _showHelp = false;
-  bool _compactPerformanceOverlay = true;
+  final bool _compactPerformanceOverlay = true;
 
   @override
   void initState() {

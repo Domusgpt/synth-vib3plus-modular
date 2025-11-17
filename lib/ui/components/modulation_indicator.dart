@@ -168,13 +168,13 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
         _buildModulationMeter(
           'Mid → Tessellation',
           features.midEnergy,
-          '${(features.midEnergy * 5 + 3).toStringAsFixed(0)}',
+          (features.midEnergy * 5 + 3).toStringAsFixed(0),
           Colors.orange,
         ),
         _buildModulationMeter(
           'High → Brightness',
           features.highEnergy,
-          '${(features.highEnergy * 0.5 + 0.5).toStringAsFixed(2)}',
+          (features.highEnergy * 0.5 + 0.5).toStringAsFixed(2),
           Colors.yellow,
         ),
         _buildModulationMeter(
@@ -186,7 +186,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
         _buildModulationMeter(
           'RMS → Glow',
           features.rms,
-          '${(features.rms * 3.0).toStringAsFixed(2)}',
+          (features.rms * 3.0).toStringAsFixed(2),
           Colors.white,
         ),
       ],

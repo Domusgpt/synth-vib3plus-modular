@@ -532,8 +532,6 @@ class AudioProvider with ChangeNotifier {
         return SystemColors.faceted;
       case VisualSystem.holographic:
         return SystemColors.holographic;
-      default:
-        return SystemColors.quantum;
     }
   }
 

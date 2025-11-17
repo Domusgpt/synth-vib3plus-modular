@@ -168,7 +168,7 @@ class DualParameterSlider extends StatelessWidget {
     String formattedNumber;
 
     if (value >= 1000) {
-      formattedNumber = (value / 1000).toStringAsFixed(1) + 'k';
+      formattedNumber = '${(value / 1000).toStringAsFixed(1)}k';
     } else if (value >= 100) {
       formattedNumber = value.toStringAsFixed(0);
     } else if (value >= 10) {

@@ -27,7 +27,7 @@ class VIB34DNativeBridge {
   String _currentSystem = 'quantum';
 
   // Parameter state
-  Map<String, dynamic> _parameters = {
+  final Map<String, dynamic> _parameters = {
     // Quantum/Holographic parameters
     'geometry': 0,
     'gridDensity': 15.0,
@@ -183,7 +183,7 @@ class VIB34DNativeBridge {
           break;
       }
 
-      console.log(\`🔄 Switched to \${systemName} system\`);
+      console.log(`🔄 Switched to \${systemName} system`);
     }
 
     // Update parameters from Flutter

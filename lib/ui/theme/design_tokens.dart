@@ -12,7 +12,6 @@
 
 library;
 
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
 /// Design token system for Synth-VIB3+ v3.0

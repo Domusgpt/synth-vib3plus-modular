@@ -20,11 +20,10 @@
 library;
 
 import 'dart:async';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import '../../audio/audio_analyzer.dart';
 import '../theme/design_tokens.dart';
-import '../effects/glassmorphic_container.dart';
 import 'particle_system.dart';
 import 'trail_system.dart';
 import 'modulation_visualizer.dart';

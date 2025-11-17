@@ -330,6 +330,9 @@ class SynthesizerEngine {
   // Portamento/Glide system (Hermite smoothstep interpolation)
   double _portamentoTime = 0.0; // seconds (0 = disabled)
   double _glideCurrentFrequency = 440.0;
+  double _glideStartFrequency = 440.0;
+  double _glideTargetFrequency = 440.0;
+  bool _isGliding = false;
   DateTime? _glideStartTime;
 
   // Legacy single-note tracking (for compatibility)

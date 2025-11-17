@@ -334,6 +334,12 @@ class AudioFeatures {
   double get totalEnergy =>
       (bassEnergy * 0.4) + (midEnergy * 0.35) + (highEnergy * 0.25);
 
+  /// Alias for fundamentalFreq (dominantFreq is used in some legacy code)
+  double get dominantFreq => fundamentalFreq;
+
+  /// Alias for transientDensity (transient is used in some legacy code)
+  double get transient => transientDensity;
+
   /// Normalize all features to 0-1 range
   AudioFeatures normalize({
     double bassMax = 2.0,

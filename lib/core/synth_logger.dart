@@ -285,7 +285,7 @@ class SynthLogger {
     required int healthy,
     required int unhealthy,
   }) {
-    debugPrint('\n' + '═' * 60);
+    debugPrint('\n${'═' * 60}');
     debugPrint('Summary: $healthy healthy, $unhealthy with issues\n');
   }
 

@@ -86,7 +86,7 @@ class UIStateProvider with ChangeNotifier {
 
   // Thumb pads (portrait mode)
   bool _thumbPadsVisible = true;
-  String _leftPadParameter = 'octave'; // Fixed
+  final String _leftPadParameter = 'octave'; // Fixed
   String _rightPadParameter = 'volume'; // Assignable
 
   // XY pad configuration
@@ -121,7 +121,7 @@ class UIStateProvider with ChangeNotifier {
   // Visual feedback configuration
   bool _showTouchRipples = true;
   bool _showNoteGrid = false; // Grid overlay on XY pad
-  double _touchRippleDuration = 0.8; // seconds
+  final double _touchRippleDuration = 0.8; // seconds
 
   // Top bezel visibility
   bool _topBezelVisible = true;

@@ -19,10 +19,9 @@
 library;
 
 import 'dart:math' as math;
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../audio/audio_analyzer.dart';
 import '../theme/design_tokens.dart';
-import '../effects/glassmorphic_container.dart';
 
 // ============================================================================
 // PARTICLE MODEL

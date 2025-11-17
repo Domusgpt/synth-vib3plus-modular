@@ -198,8 +198,7 @@ class ModulationMatrix {
   @override
   String toString() {
     if (isEmpty) return 'ModulationMatrix(empty)';
-    return 'ModulationMatrix(${routeCount} routes):\n' +
-        _routes.values.map((route) => '  $route').join('\n');
+    return 'ModulationMatrix($routeCount routes):\n${_routes.values.map((route) => '  $route').join('\n')}';
   }
 }
 
