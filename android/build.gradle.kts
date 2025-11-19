@@ -17,9 +17,12 @@ allprojects {
                 "-Xlint:-deprecation"
             ))
 
-            // Verify we're using Java 21
-            options.isFork = true
-            options.forkOptions.javaHome = file("/usr/lib/jvm/java-21-openjdk-amd64")
+            // Use JAVA_HOME environment variable (works on GitHub Actions and local)
+            val javaHome = System.getenv("JAVA_HOME")
+            if (javaHome != null) {
+                options.isFork = true
+                options.forkOptions.javaHome = file(javaHome)
+            }
         }
     }
 }
@@ -46,9 +49,12 @@ subprojects {
                 "-Xlint:-deprecation"
             ))
 
-            // Force Java 21 JDK for compilation
-            options.isFork = true
-            options.forkOptions.javaHome = file("/usr/lib/jvm/java-21-openjdk-amd64")
+            // Use JAVA_HOME environment variable (works on GitHub Actions and local)
+            val javaHome = System.getenv("JAVA_HOME")
+            if (javaHome != null) {
+                options.isFork = true
+                options.forkOptions.javaHome = file(javaHome)
+            }
         }
     }
 }
