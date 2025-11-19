@@ -19,6 +19,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../ui/theme/synth_theme.dart';
+import '../core/geometry_library.dart';
 
 class VisualProvider with ChangeNotifier {
   // Current VIB34D system
@@ -50,8 +51,9 @@ class VisualProvider with ChangeNotifier {
   // Geometry state
   int _activeVertexCount = 120;      // Current vertex count
   double _morphParameter = 0.0;       // Geometry morph (0-1)
-  int _currentGeometry = 0;           // Geometry index (0-7)
+  int _currentGeometry = 0;           // Geometry index (0-23 for full system)
   double _geometryComplexity = 0.5;   // Complexity measure (0-1)
+  GeometryMetadata? _currentGeometryMetadata;
 
   // Projection parameters
   double _projectionDistance = 8.0;   // Camera distance (5-15)
@@ -85,6 +87,7 @@ class VisualProvider with ChangeNotifier {
   int get activeVertexCount => _activeVertexCount;
   double get morphParameter => _morphParameter;
   int get currentGeometry => _currentGeometry;
+  GeometryMetadata? get currentGeometryMetadata => _currentGeometryMetadata;
   double get projectionDistance => _projectionDistance;
   double get layerSeparation => _layerSeparation;
   bool get isAnimating => _isAnimating;
@@ -292,20 +295,27 @@ class VisualProvider with ChangeNotifier {
     return _geometryComplexity;
   }
 
-  /// Set current geometry
+  /// Set current geometry (now supports 0-23 full geometry system)
   void setGeometry(int geometryIndex) {
     final previousGeometry = _currentGeometry;
-    _currentGeometry = geometryIndex.clamp(0, 7);
+    _currentGeometry = geometryIndex.clamp(0, 23);
 
     if (previousGeometry != _currentGeometry) {
+      // Get geometry metadata from library
+      _currentGeometryMetadata = GeometryLibrary.describeGeometry(_currentGeometry);
+
       debugPrint('🔷 Geometry Switching: $previousGeometry → $_currentGeometry');
+      debugPrint('   ${_currentGeometryMetadata?.fullName}');
+      debugPrint('   Synthesis: ${GeometryLibrary.getSynthesisBranch(_currentGeometry)}');
     }
 
-    _updateJavaScriptParameter('geometry', _currentGeometry);
+    // Send base geometry (0-7) to JavaScript
+    final decoded = GeometryLibrary.decodeGeometryIndex(_currentGeometry);
+    _updateJavaScriptParameter('geometry', decoded.base);
 
     // Update vertex count based on geometry
     final previousVertexCount = _activeVertexCount;
-    _activeVertexCount = _getVertexCountForGeometry(_currentGeometry);
+    _activeVertexCount = _getVertexCountForGeometry(decoded.base);
 
     if (previousVertexCount != _activeVertexCount) {
       debugPrint('   Vertex count: $previousVertexCount → $_activeVertexCount');
