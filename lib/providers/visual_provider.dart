@@ -72,6 +72,7 @@ class VisualProvider with ChangeNotifier {
 
   // Getters
   String get currentSystem => _currentSystem;
+  String get currentSystemName => _currentSystem; // Alias for compatibility
   double get rotationXY => _rotationXY;
   double get rotationXZ => _rotationXZ;
   double get rotationYZ => _rotationYZ;
@@ -369,6 +370,8 @@ class VisualProvider with ChangeNotifier {
   }
 
   /// Get visual state for debugging/UI
+  Map<String, dynamic> get visualState => getVisualState();
+
   Map<String, dynamic> getVisualState() {
     return {
       'system': _currentSystem,
