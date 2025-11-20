@@ -89,6 +89,11 @@ class SynthTheme {
   static const textSecondary = Color(0xFFCCCCCC);
   static const textDim = Color(0xFF888888);
 
+  /// System-specific color constants (for backward compatibility)
+  static const quantumCyan = Color(0xFF00FFFF);
+  static const facetedMagenta = Color(0xFFFF00FF);
+  static const holographicAmber = Color(0xFFFFAA00);
+
   /// Border colors
   static const borderSubtle = Color(0x33FFFFFF); // rgba(255,255,255,0.2)
   static const borderActive = Color(0x66FFFFFF); // rgba(255,255,255,0.4)
