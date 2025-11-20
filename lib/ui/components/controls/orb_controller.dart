@@ -1,29 +1,29 @@
-/**
- * Orb Controller
- *
- * Enhanced 2D pitch bend/vibrato controller with holographic visuals,
- * audio-reactive glow, and auto-return functionality.
- *
- * Features:
- * - Resizable (small 80px to XL 200px diameter)
- * - Holographic gradient sphere
- * - Audio-reactive halo glow
- * - Crosshairs and connection line
- * - Pitch bend & vibrato readout
- * - Auto-return with spring physics
- * - Configurable range (±1 to ±12 semitones)
- * - Dockable or floating
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Orb Controller
+///
+/// Enhanced 2D pitch bend/vibrato controller with holographic visuals,
+/// audio-reactive glow, and auto-return functionality.
+///
+/// Features:
+/// - Resizable (small 80px to XL 200px diameter)
+/// - Holographic gradient sphere
+/// - Audio-reactive halo glow
+/// - Crosshairs and connection line
+/// - Pitch bend & vibrato readout
+/// - Auto-return with spring physics
+/// - Configurable range (±1 to ±12 semitones)
+/// - Dockable or floating
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+///
 
-import 'dart:math' as math;
+library;
+
 import 'package:flutter/material.dart';
+import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';
-import '../../effects/glassmorphic_container.dart';
-import '../base/reactive_component.dart';
 
 // ============================================================================
 // ORB SIZE
@@ -31,10 +31,10 @@ import '../base/reactive_component.dart';
 
 /// Orb diameter sizes
 enum OrbSize {
-  small,   // 80px
-  medium,  // 120px
-  large,   // 160px
-  xl,      // 200px
+  small, // 80px
+  medium, // 120px
+  large, // 160px
+  xl, // 200px
 }
 
 extension OrbSizeExtension on OrbSize {
@@ -59,9 +59,9 @@ extension OrbSizeExtension on OrbSize {
 /// Orb controller configuration
 class OrbConfig {
   final OrbSize size;
-  final double range;           // ±semitones (1-12)
+  final double range; // ±semitones (1-12)
   final bool autoReturn;
-  final double returnSpeed;     // 0.1-1.0, higher = faster
+  final double returnSpeed; // 0.1-1.0, higher = faster
   final bool showCrosshairs;
   final bool showConnectionLine;
   final bool showValue;
@@ -114,7 +114,7 @@ class OrbConfig {
 /// Enhanced orb controller
 class OrbController extends StatefulWidget {
   final OrbConfig config;
-  final ValueChanged<Offset>? onPositionChange;  // -1 to 1 for X/Y
+  final ValueChanged<Offset>? onPositionChange; // -1 to 1 for X/Y
   final ValueChanged<double>? onPitchBendChange;
   final ValueChanged<double>? onVibratoChange;
   final VoidCallback? onTouchStart;
@@ -124,7 +124,7 @@ class OrbController extends StatefulWidget {
   final String? label;
 
   const OrbController({
-    Key? key,
+    super.key,
     this.config = OrbConfig.performance,
     this.onPositionChange,
     this.onPitchBendChange,
@@ -134,7 +134,7 @@ class OrbController extends StatefulWidget {
     this.audioFeatures,
     this.color,
     this.label,
-  }) : super(key: key);
+  });
 
   @override
   State<OrbController> createState() => _OrbControllerState();
@@ -142,7 +142,7 @@ class OrbController extends StatefulWidget {
 
 class _OrbControllerState extends State<OrbController>
     with SingleTickerProviderStateMixin {
-  Offset _position = Offset.zero;  // -1 to 1
+  Offset _position = Offset.zero; // -1 to 1
   bool _isDragging = false;
   late AnimationController _returnController;
 
@@ -151,7 +151,8 @@ class _OrbControllerState extends State<OrbController>
     super.initState();
     _returnController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: (1000 / widget.config.returnSpeed).round()),
+      duration:
+          Duration(milliseconds: (1000 / widget.config.returnSpeed).round()),
     );
   }
 
@@ -190,9 +191,8 @@ class _OrbControllerState extends State<OrbController>
 
     // Clamp to circle
     final distance = localPosition.distance;
-    final clamped = distance > radius
-        ? localPosition / distance * radius
-        : localPosition;
+    final clamped =
+        distance > radius ? localPosition / distance * radius : localPosition;
 
     // Normalize to -1 to 1
     setState(() {
@@ -318,9 +318,9 @@ class _OrbControllerState extends State<OrbController>
         vertical: DesignTokens.spacing1,
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -345,7 +345,7 @@ class _OrbControllerState extends State<OrbController>
 // ============================================================================
 
 class _OrbPainter extends CustomPainter {
-  final Offset position;  // -1 to 1
+  final Offset position; // -1 to 1
   final bool isDragging;
   final Color color;
   final double glowIntensity;
@@ -371,10 +371,11 @@ class _OrbPainter extends CustomPainter {
     final radius = size.width / 2;
 
     // Current orb position (in pixels)
-    final orbPosition = center + Offset(
-      position.dx * radius * 0.8,
-      position.dy * radius * 0.8,
-    );
+    final orbPosition = center +
+        Offset(
+          position.dx * radius * 0.8,
+          position.dy * radius * 0.8,
+        );
 
     // Draw crosshairs
     if (showCrosshairs) {
@@ -404,7 +405,7 @@ class _OrbPainter extends CustomPainter {
 
   void _drawCrosshairs(Canvas canvas, Offset center, double radius) {
     final paint = Paint()
-      ..color = color.withOpacity(0.3)
+      ..color = color.withValues(alpha: 0.3)
       ..strokeWidth = 1.0;
 
     // Horizontal
@@ -424,7 +425,7 @@ class _OrbPainter extends CustomPainter {
 
   void _drawConnectionLine(Canvas canvas, Offset center, Offset orbPosition) {
     final paint = Paint()
-      ..color = color.withOpacity(isDragging ? 0.6 : 0.3)
+      ..color = color.withValues(alpha: isDragging ? 0.6 : 0.3)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
@@ -438,9 +439,9 @@ class _OrbPainter extends CustomPainter {
     final glowPaint = Paint()
       ..shader = RadialGradient(
         colors: [
-          color.withOpacity(0.5),
-          color.withOpacity(0.2),
-          color.withOpacity(0.0),
+          color.withValues(alpha: 0.5),
+          color.withValues(alpha: 0.2),
+          color.withValues(alpha: 0.0),
         ],
         stops: const [0.0, 0.5, 1.0],
       ).createShader(Rect.fromCircle(
@@ -478,8 +479,8 @@ class _OrbPainter extends CustomPainter {
         center: const Alignment(-0.3, -0.3),
         radius: 0.5,
         colors: [
-          Colors.white.withOpacity(0.6),
-          Colors.white.withOpacity(0.0),
+          Colors.white.withValues(alpha: 0.6),
+          Colors.white.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromCircle(
         center: position,
@@ -502,8 +503,8 @@ class _OrbPainter extends CustomPainter {
     final paint = Paint()
       ..shader = RadialGradient(
         colors: [
-          color.withOpacity(0.8),
-          color.withOpacity(0.4),
+          color.withValues(alpha: 0.8),
+          color.withValues(alpha: 0.4),
         ],
       ).createShader(Rect.fromCircle(
         center: position,
@@ -523,7 +524,7 @@ class _OrbPainter extends CustomPainter {
 
   void _drawCenterIndicator(Canvas canvas, Offset center) {
     final paint = Paint()
-      ..color = color.withOpacity(0.5)
+      ..color = color.withValues(alpha: 0.5)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, 4, paint);
@@ -539,8 +540,8 @@ class _OrbPainter extends CustomPainter {
   @override
   bool shouldRepaint(_OrbPainter oldDelegate) {
     return oldDelegate.position != position ||
-           oldDelegate.isDragging != isDragging ||
-           oldDelegate.glowIntensity != glowIntensity ||
-           oldDelegate.audioFeatures != audioFeatures;
+        oldDelegate.isDragging != isDragging ||
+        oldDelegate.glowIntensity != glowIntensity ||
+        oldDelegate.audioFeatures != audioFeatures;
   }
 }

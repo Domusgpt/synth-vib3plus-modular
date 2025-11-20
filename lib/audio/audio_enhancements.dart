@@ -1,15 +1,17 @@
-/**
- * Audio Enhancements Module
- *
- * Professional audio quality improvements:
- * - Anti-aliasing for oscillators (PolyBLEP)
- * - DC blocking filter
- * - Soft clipping/limiting
- * - Improved interpolation
- * - Voice spreading/unison effects
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio Enhancements Module
+///
+/// Professional audio quality improvements:
+/// - Anti-aliasing for oscillators (PolyBLEP)
+/// - DC blocking filter
+/// - Soft clipping/limiting
+/// - Improved interpolation
+/// - Voice spreading/unison effects
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -228,7 +230,6 @@ class SlewLimiter {
   double _current;
   final double _maxRiseRate;
   final double _maxFallRate;
-  final double _sampleRate;
 
   SlewLimiter({
     double initial = 0.0,
@@ -237,8 +238,7 @@ class SlewLimiter {
     required double sampleRate,
   })  : _current = initial,
         _maxRiseRate = maxRisePerSecond / sampleRate,
-        _maxFallRate = maxFallPerSecond / sampleRate,
-        _sampleRate = sampleRate;
+        _maxFallRate = maxFallPerSecond / sampleRate;
 
   /// Process input with slew limiting
   double process(double input) {

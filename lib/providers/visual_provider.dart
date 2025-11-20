@@ -1,19 +1,21 @@
-/**
- * Visual Provider
- *
- * Manages the VIB34D visualization system state, providing
- * parameter control and state queries for the visual system.
- *
- * Responsibilities:
- * - VIB34D system state (Quantum, Holographic, Faceted)
- * - 4D rotation angles (XW, YW, ZW planes)
- * - Visual parameters (tessellation, brightness, hue, glow, etc.)
- * - Geometry state (vertex count, morph parameter, complexity)
- * - Projection parameters (distance, layer depth)
- * - WebView bridge to JavaScript systems
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Visual Provider
+///
+/// Manages the VIB34D visualization system state, providing
+/// parameter control and state queries for the visual system.
+///
+/// Responsibilities:
+/// - VIB34D system state (Quantum, Holographic, Faceted)
+/// - 4D rotation angles (XW, YW, ZW planes)
+/// - Visual parameters (tessellation, brightness, hue, glow, etc.)
+/// - Geometry state (vertex count, morph parameter, complexity)
+/// - Projection parameters (distance, layer depth)
+/// - WebView bridge to JavaScript systems
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
@@ -40,29 +42,30 @@ class VisualProvider with ChangeNotifier {
   double _rotationVelocityZW = 0.0;
 
   // Visual parameters
-  double _rotationSpeed = 1.0;       // Base rotation speed multiplier
-  int _tessellationDensity = 5;      // Subdivision level (3-8)
-  double _vertexBrightness = 0.8;    // Vertex intensity (0-1)
-  double _hueShift = 180.0;          // Color hue offset (0-360°)
-  double _glowIntensity = 1.0;       // Bloom/glow amount (0-3)
-  double _rgbSplitAmount = 0.0;      // Chromatic aberration (0-10)
+  double _rotationSpeed = 1.0; // Base rotation speed multiplier
+  int _tessellationDensity = 5; // Subdivision level (3-8)
+  double _vertexBrightness = 0.8; // Vertex intensity (0-1)
+  double _hueShift = 180.0; // Color hue offset (0-360°)
+  double _glowIntensity = 1.0; // Bloom/glow amount (0-3)
+  double _rgbSplitAmount = 0.0; // Chromatic aberration (0-10)
 
-  // Geometry state
-  int _activeVertexCount = 120;      // Current vertex count
-  double _morphParameter = 0.0;       // Geometry morph (0-1)
-  int _currentGeometry = 0;           // Geometry index (0-7)
-  double _geometryComplexity = 0.5;   // Complexity measure (0-1)
+  // Geometry state (ENHANCED FOR 72-COMBINATION MATRIX)
+  int _activeVertexCount = 120; // Current vertex count
+  double _morphParameter = 0.0; // Geometry morph (0-1)
+  int _currentGeometry = 0; // Base geometry index (0-7)
+  int _fullGeometryIndex =
+      0; // Full geometry index (0-23) for 72-combination matrix
+  double _geometryComplexity = 0.5; // Complexity measure (0-1)
 
   // Projection parameters
-  double _projectionDistance = 8.0;   // Camera distance (5-15)
-  double _layerSeparation = 2.0;      // Holographic layer depth (0-5)
+  double _projectionDistance = 8.0; // Camera distance (5-15)
+  double _layerSeparation = 2.0; // Holographic layer depth (0-5)
 
   // WebView controller (for JavaScript bridge)
   WebViewController? _webViewController;
 
   // Animation state
   bool _isAnimating = false;
-  DateTime _lastUpdateTime = DateTime.now();
 
   VisualProvider() {
     debugPrint('✅ VisualProvider initialized');
@@ -85,6 +88,7 @@ class VisualProvider with ChangeNotifier {
   int get activeVertexCount => _activeVertexCount;
   double get morphParameter => _morphParameter;
   int get currentGeometry => _currentGeometry;
+  int get fullGeometryIndex => _fullGeometryIndex; // Full 0-23 range
   double get projectionDistance => _projectionDistance;
   double get layerSeparation => _layerSeparation;
   bool get isAnimating => _isAnimating;
@@ -102,39 +106,48 @@ class VisualProvider with ChangeNotifier {
     final previousSystem = _currentSystem;
     _currentSystem = systemName;
 
+    // Update full geometry index based on new system offset
+    final newSystemOffset = _getSystemOffset(systemName);
+    _fullGeometryIndex = newSystemOffset + _currentGeometry;
+
     debugPrint('🔄 System Switching: $previousSystem → $systemName');
+    debugPrint(
+        '   Full Geometry Updated: ${_getSystemOffset(previousSystem) + _currentGeometry} → $_fullGeometryIndex');
 
     // Update JavaScript system via WebView
     // VIB3+ uses window.switchSystem(), not window.vib34d.switchSystem()
     if (_webViewController != null) {
       try {
         await _webViewController!.runJavaScript(
-          'if (window.switchSystem) { window.switchSystem("$systemName"); }'
-        );
+            'if (window.switchSystem) { window.switchSystem("$systemName"); }');
         debugPrint('✅ VIB3+ system switched to $systemName');
       } catch (e) {
         debugPrint('❌ Error switching VIB3+ system: $e');
       }
     } else {
-      debugPrint('⚠️  WebView controller not initialized - system switch deferred');
+      debugPrint(
+          '⚠️  WebView controller not initialized - system switch deferred');
     }
 
-    // Update vertex count based on system
+    // Update vertex count and complexity based on system
     switch (systemName) {
       case 'quantum':
         _activeVertexCount = 120; // Tesseract has 120 cells
         _geometryComplexity = 0.8;
-        debugPrint('   Quantum: vertices=120, complexity=0.8 (Pure harmonic synthesis)');
+        debugPrint(
+            '   Quantum: vertices=120, complexity=0.8 (Pure harmonic synthesis)');
         break;
       case 'holographic':
         _activeVertexCount = 500; // 5 layers × 100 vertices
         _geometryComplexity = 0.9;
-        debugPrint('   Holographic: vertices=500, complexity=0.9 (Spectral rich synthesis)');
+        debugPrint(
+            '   Holographic: vertices=500, complexity=0.9 (Spectral rich synthesis)');
         break;
       case 'faceted':
         _activeVertexCount = 50; // Simpler geometry
         _geometryComplexity = 0.3;
-        debugPrint('   Faceted: vertices=50, complexity=0.3 (Geometric hybrid synthesis)');
+        debugPrint(
+            '   Faceted: vertices=50, complexity=0.3 (Geometric hybrid synthesis)');
         break;
     }
 
@@ -239,11 +252,9 @@ class VisualProvider with ChangeNotifier {
 
   /// Get rotation velocity (for advanced modulation)
   double getRotationVelocity() {
-    return math.sqrt(
-      _rotationVelocityXW * _rotationVelocityXW +
-      _rotationVelocityYW * _rotationVelocityYW +
-      _rotationVelocityZW * _rotationVelocityZW
-    );
+    return math.sqrt(_rotationVelocityXW * _rotationVelocityXW +
+        _rotationVelocityYW * _rotationVelocityYW +
+        _rotationVelocityZW * _rotationVelocityZW);
   }
 
   /// Get morph parameter (for wavetable modulation)
@@ -292,13 +303,19 @@ class VisualProvider with ChangeNotifier {
     return _geometryComplexity;
   }
 
-  /// Set current geometry
+  /// Set current base geometry (0-7) - LEGACY METHOD for backward compatibility
   void setGeometry(int geometryIndex) {
     final previousGeometry = _currentGeometry;
     _currentGeometry = geometryIndex.clamp(0, 7);
 
+    // Update full geometry index based on current system
+    final systemOffset = _getSystemOffset(_currentSystem);
+    _fullGeometryIndex = systemOffset + _currentGeometry;
+
     if (previousGeometry != _currentGeometry) {
-      debugPrint('🔷 Geometry Switching: $previousGeometry → $_currentGeometry');
+      debugPrint('🔷 Base Geometry: $previousGeometry → $_currentGeometry');
+      debugPrint(
+          '   Full Geometry: $_fullGeometryIndex (System: $_currentSystem, Offset: $systemOffset)');
     }
 
     _updateJavaScriptParameter('geometry', _currentGeometry);
@@ -314,18 +331,101 @@ class VisualProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Set full geometry index (0-23) for 72-combination matrix
+  /// This automatically switches visual system if needed:
+  /// - 0-7: Quantum system (Base core = Direct synthesis)
+  /// - 8-15: Faceted system (Hypersphere core = FM synthesis)
+  /// - 16-23: Holographic system (Hypertetrahedron core = Ring modulation)
+  Future<void> setFullGeometry(int index) async {
+    final clampedIndex = index.clamp(0, 23);
+    final previousFullGeometry = _fullGeometryIndex;
+    _fullGeometryIndex = clampedIndex;
+
+    // Calculate derived values
+    final coreIndex = clampedIndex ~/ 8; // 0, 1, or 2
+    final baseGeometry = clampedIndex % 8; // 0-7
+
+    // Determine target system based on core
+    final targetSystem = _coreToSystem(coreIndex);
+
+    debugPrint('🎯 Full Geometry Set: $previousFullGeometry → $clampedIndex');
+    debugPrint('   Core: $coreIndex (${_coreNames[coreIndex]})');
+    debugPrint(
+        '   Base Geometry: $baseGeometry (${_geometryNames[baseGeometry]})');
+    debugPrint('   Target System: $targetSystem');
+
+    // Switch system if needed
+    if (_currentSystem != targetSystem) {
+      await switchSystem(targetSystem);
+    }
+
+    // Update base geometry
+    _currentGeometry = baseGeometry;
+    _updateJavaScriptParameter('geometry', _currentGeometry);
+
+    // Update vertex count
+    _activeVertexCount = _getVertexCountForGeometry(_currentGeometry);
+
+    notifyListeners();
+  }
+
+  /// Get geometry offset based on current visual system
+  /// This maps visual systems to polytope cores in the 72-combination matrix:
+  /// - Quantum → Base core (0) → Geometries 0-7
+  /// - Faceted → Hypersphere core (8) → Geometries 8-15
+  /// - Holographic → Hypertetrahedron core (16) → Geometries 16-23
+  int _getSystemOffset(String system) {
+    switch (system.toLowerCase()) {
+      case 'quantum':
+        return 0; // Base core (Direct synthesis)
+      case 'faceted':
+        return 8; // Hypersphere core (FM synthesis)
+      case 'holographic':
+        return 16; // Hypertetrahedron core (Ring modulation)
+      default:
+        return 0;
+    }
+  }
+
+  /// Map core index to visual system name
+  String _coreToSystem(int coreIndex) {
+    switch (coreIndex) {
+      case 0:
+        return 'quantum'; // Base → Quantum
+      case 1:
+        return 'faceted'; // Hypersphere → Faceted
+      case 2:
+        return 'holographic'; // Hypertetrahedron → Holographic
+      default:
+        return 'quantum';
+    }
+  }
+
+  // Helper arrays for debug output
+  static const _coreNames = ['Direct', 'FM', 'Ring Mod'];
+  static const _geometryNames = [
+    'Tetrahedron',
+    'Hypercube',
+    'Sphere',
+    'Torus',
+    'Klein Bottle',
+    'Fractal',
+    'Wave',
+    'Crystal'
+  ];
+
   /// Get vertex count for specific geometry
   int _getVertexCountForGeometry(int index) {
     // Approximate vertex counts for different 4D geometries
     const vertexCounts = [
-      16,   // 0: Tesseract (hypercube)
-      120,  // 1: 120-cell
-      600,  // 2: 600-cell
-      8,    // 3: 16-cell
-      24,   // 4: 24-cell
-      50,   // 5: Torus
-      100,  // 6: Sphere
-      32,   // 7: Klein bottle
+      16, // 0: Tesseract (hypercube)
+      120, // 1: 120-cell
+      600, // 2: 600-cell
+      8, // 3: 16-cell
+      24, // 4: 24-cell
+      50, // 5: Torus
+      100, // 6: Sphere
+      32, // 7: Klein bottle
     ];
 
     return index < vertexCounts.length ? vertexCounts[index] : 100;
@@ -338,8 +438,7 @@ class VisualProvider with ChangeNotifier {
 
     try {
       await _webViewController!.runJavaScript(
-        'if (window.updateParameter) { window.updateParameter("$name", $value); }'
-      );
+          'if (window.updateParameter) { window.updateParameter("$name", $value); }');
     } catch (e) {
       debugPrint('⚠️  Error updating JS parameter $name: $e');
     }
@@ -348,7 +447,6 @@ class VisualProvider with ChangeNotifier {
   /// Start animation loop
   void startAnimation() {
     _isAnimating = true;
-    _lastUpdateTime = DateTime.now();
     notifyListeners();
   }
 
@@ -509,6 +607,131 @@ class VisualProvider with ChangeNotifier {
     _layerSeparation = depth.clamp(0.0, 5.0);
     _updateJavaScriptParameter('layerDepth', _layerSeparation);
     notifyListeners();
+  }
+
+  // ========================================================================
+  // SMART CANVAS LIFECYCLE MANAGEMENT
+  // ========================================================================
+
+  /// Batch update multiple parameters for better performance
+  /// Uses the new window.updateParameters() API from smart canvas
+  Future<void> updateBatchParameters(Map<String, dynamic> params) async {
+    if (_webViewController == null) {
+      debugPrint('⚠️ WebView not ready - cannot batch update parameters');
+      return;
+    }
+
+    try {
+      // Convert parameters to JSON-like object
+      final paramsJson =
+          params.entries.map((e) => '"${e.key}": ${e.value}').join(', ');
+
+      await _webViewController!.runJavaScript(
+          'if (window.updateParameters) { window.updateParameters({$paramsJson}); }');
+
+      debugPrint('📦 Batch updated ${params.length} parameters');
+    } catch (e) {
+      debugPrint('❌ Failed to batch update parameters: $e');
+    }
+  }
+
+  /// Query the Smart Canvas for current initialization state
+  Future<Map<String, bool>> getSmartCanvasState() async {
+    if (_webViewController == null) {
+      return {
+        'ready': false,
+        'quantum': false,
+        'faceted': false,
+        'holographic': false,
+      };
+    }
+
+    try {
+      final result = await _webViewController!.runJavaScriptReturningResult('''
+        (function() {
+          if (!window.canvasManager) return JSON.stringify({ready: false});
+
+          const manager = window.canvasManager;
+          const initialized = manager.initializedSystems || new Set();
+
+          return JSON.stringify({
+            ready: true,
+            quantum: initialized.has('quantum'),
+            faceted: initialized.has('faceted'),
+            holographic: initialized.has('holographic'),
+            currentSystem: manager.currentSystem || 'unknown',
+            fps: manager.fps || 0,
+          });
+        })()
+      ''');
+
+      // Parse the JSON result
+      if (result is String) {
+        // Remove quotes if present
+        final jsonString = result.replaceAll('"', '');
+        debugPrint('📊 Smart Canvas state: $jsonString');
+
+        return {
+          'ready': jsonString.contains('ready:true'),
+          'quantum': jsonString.contains('quantum:true'),
+          'faceted': jsonString.contains('faceted:true'),
+          'holographic': jsonString.contains('holographic:true'),
+        };
+      }
+
+      return {
+        'ready': false,
+        'quantum': false,
+        'faceted': false,
+        'holographic': false
+      };
+    } catch (e) {
+      debugPrint('⚠️ Failed to query Smart Canvas state: $e');
+      return {
+        'ready': false,
+        'quantum': false,
+        'faceted': false,
+        'holographic': false
+      };
+    }
+  }
+
+  /// Force initialization of a specific system (lazy loading)
+  Future<void> ensureSystemInitialized(String system) async {
+    if (_webViewController == null) {
+      debugPrint('⚠️ WebView not ready - cannot initialize $system');
+      return;
+    }
+
+    try {
+      await _webViewController!.runJavaScript('''
+        (async function() {
+          if (window.canvasManager && window.canvasManager.initializeSystem) {
+            console.log('🚀 Force initializing $system system...');
+            await window.canvasManager.initializeSystem('$system');
+          } else {
+            console.warn('⚠️ Smart Canvas manager not available');
+          }
+        })()
+      ''');
+
+      debugPrint('✅ Ensured $system system is initialized');
+    } catch (e) {
+      debugPrint('❌ Failed to ensure $system initialization: $e');
+    }
+  }
+
+  /// Toggle debug overlay in Smart Canvas
+  Future<void> toggleSmartCanvasDebug() async {
+    if (_webViewController == null) return;
+
+    try {
+      await _webViewController!
+          .runJavaScript('if (window.toggleDebug) { window.toggleDebug(); }');
+      debugPrint('🐛 Toggled Smart Canvas debug overlay');
+    } catch (e) {
+      debugPrint('⚠️ Failed to toggle debug: $e');
+    }
   }
 
   @override

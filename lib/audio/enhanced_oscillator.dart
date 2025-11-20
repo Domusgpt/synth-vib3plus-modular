@@ -1,15 +1,17 @@
-/**
- * Enhanced Oscillator with Anti-Aliasing
- *
- * Professional oscillator implementation with:
- * - PolyBLEP anti-aliasing for square and sawtooth
- * - Multiple waveform morphing
- * - Phase modulation (FM) support
- * - Pulse width modulation for square wave
- * - Sync and sub-oscillator support
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Enhanced Oscillator with Anti-Aliasing
+///
+/// Professional oscillator implementation with:
+/// - PolyBLEP anti-aliasing for square and sawtooth
+/// - Multiple waveform morphing
+/// - Phase modulation (FM) support
+/// - Pulse width modulation for square wave
+/// - Sync and sub-oscillator support
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'audio_enhancements.dart';
@@ -50,7 +52,6 @@ class EnhancedOscillator {
   double syncPhase = 0.0;
 
   // Anti-aliasing
-  double _lastPhaseIncrement = 0.0;
 
   // Random number generator for noise
   final math.Random _random = math.Random();
@@ -65,7 +66,6 @@ class EnhancedOscillator {
     final phaseIncrement = frequency / sampleRate;
 
     // Store for anti-aliasing
-    _lastPhaseIncrement = phaseIncrement;
 
     // Handle sync
     if (enableSync) {
@@ -88,7 +88,8 @@ class EnhancedOscillator {
       subPhase += phaseIncrement * 0.5; // Half frequency
       if (subPhase >= 1.0) subPhase -= 1.0;
       final subSample = _generateWaveform(subPhase, phaseIncrement * 0.5);
-      sample = sample * (1.0 - subOscillatorLevel) + subSample * subOscillatorLevel;
+      sample =
+          sample * (1.0 - subOscillatorLevel) + subSample * subOscillatorLevel;
     }
 
     // Advance phase
@@ -279,8 +280,7 @@ class LFOSystem {
   final List<LFO> lfos;
 
   LFOSystem({required this.sampleRate, int lfoCount = 3})
-      : lfos = List.generate(
-            lfoCount, (_) => LFO(sampleRate: sampleRate));
+      : lfos = List.generate(lfoCount, (_) => LFO(sampleRate: sampleRate));
 
   /// Get LFO by index
   LFO getLFO(int index) => lfos[index.clamp(0, lfos.length - 1)];

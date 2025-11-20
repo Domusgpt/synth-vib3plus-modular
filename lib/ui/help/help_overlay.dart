@@ -1,30 +1,31 @@
-/**
- * Context-Sensitive Help Overlay
- *
- * Interactive help system that provides contextual guidance based on user
- * location and actions. Includes tooltips, walkthroughs, feature highlights,
- * and interactive tutorials.
- *
- * Features:
- * - Context-aware help based on current screen/component
- * - Interactive walkthroughs (first-time user experience)
- * - Feature highlights with animated pointers
- * - Tooltip system with rich content
- * - Gesture instruction overlays
- * - Quick reference sheets
- * - Search help topics
- * - Video tutorial integration
- * - Help history tracking
- *
- * Part of the Integration Layer (Phase 3.5)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Context-Sensitive Help Overlay
+///
+/// Interactive help system that provides contextual guidance based on user
+/// location and actions. Includes tooltips, walkthroughs, feature highlights,
+/// and interactive tutorials.
+///
+/// Features:
+/// - Context-aware help based on current screen/component
+/// - Interactive walkthroughs (first-time user experience)
+/// - Feature highlights with animated pointers
+/// - Tooltip system with rich content
+/// - Gesture instruction overlays
+/// - Quick reference sheets
+/// - Search help topics
+/// - Video tutorial integration
+/// - Help history tracking
+///
+/// Part of the Integration Layer (Phase 3.5)
+///
+/// A Paul Phillips Manifestation
+///
 
-import 'dart:async';
+library;
+
 import 'package:flutter/material.dart';
-import '../../theme/design_tokens.dart';
-import '../../effects/glassmorphic_container.dart';
+import '../theme/design_tokens.dart';
+import '../effects/glassmorphic_container.dart';
 
 // ============================================================================
 // HELP CONTEXT
@@ -101,17 +102,20 @@ extension HelpContextExtension on HelpContext {
         return [
           const HelpTopic(
             title: 'Multi-Touch Control',
-            content: 'Use multiple fingers simultaneously for polyphonic control. Each touch point controls independent frequency and filter parameters.',
+            content:
+                'Use multiple fingers simultaneously for polyphonic control. Each touch point controls independent frequency and filter parameters.',
             icon: Icons.touch_app,
           ),
           const HelpTopic(
             title: 'Trails',
-            content: 'Touch trails visualize your movement and provide visual feedback for parameter changes.',
+            content:
+                'Touch trails visualize your movement and provide visual feedback for parameter changes.',
             icon: Icons.gesture,
           ),
           const HelpTopic(
             title: 'Grid Snapping',
-            content: 'Enable grid snapping for quantized note values. Useful for melodic performance.',
+            content:
+                'Enable grid snapping for quantized note values. Useful for melodic performance.',
             icon: Icons.grid_on,
           ),
         ];
@@ -119,17 +123,20 @@ extension HelpContextExtension on HelpContext {
         return [
           const HelpTopic(
             title: 'Pitch Bend',
-            content: 'Drag horizontally to bend pitch. Range is configurable from ±1 to ±12 semitones.',
+            content:
+                'Drag horizontally to bend pitch. Range is configurable from ±1 to ±12 semitones.',
             icon: Icons.tune,
           ),
           const HelpTopic(
             title: 'Vibrato',
-            content: 'Drag vertically for vibrato depth. Higher movement = more intense vibrato.',
+            content:
+                'Drag vertically for vibrato depth. Higher movement = more intense vibrato.',
             icon: Icons.graphic_eq,
           ),
           const HelpTopic(
             title: 'Auto-Return',
-            content: 'Release to automatically return to center. Disable in settings for manual control.',
+            content:
+                'Release to automatically return to center. Disable in settings for manual control.',
             icon: Icons.settings_backup_restore,
           ),
         ];
@@ -137,17 +144,20 @@ extension HelpContextExtension on HelpContext {
         return [
           const HelpTopic(
             title: 'Creating Connections',
-            content: 'Drag from a source (left) to a target (right) to create a modulation connection.',
+            content:
+                'Drag from a source (left) to a target (right) to create a modulation connection.',
             icon: Icons.cable,
           ),
           const HelpTopic(
             title: 'Adjusting Strength',
-            content: 'Click a connection to select it, then adjust the strength slider at the bottom.',
+            content:
+                'Click a connection to select it, then adjust the strength slider at the bottom.',
             icon: Icons.tune,
           ),
           const HelpTopic(
             title: 'Bipolar Mode',
-            content: 'Toggle bipolar mode to modulate in both positive and negative directions.',
+            content:
+                'Toggle bipolar mode to modulate in both positive and negative directions.',
             icon: Icons.swap_vert,
           ),
         ];
@@ -204,7 +214,7 @@ class HelpTopic {
 class WalkthroughStep {
   final String title;
   final String description;
-  final Offset? targetPosition;  // Position to highlight
+  final Offset? targetPosition; // Position to highlight
   final Size? targetSize;
   final IconData? icon;
   final VoidCallback? action;
@@ -230,11 +240,11 @@ class HelpOverlay extends StatefulWidget {
   final bool showWalkthrough;
 
   const HelpOverlay({
-    Key? key,
+    super.key,
     required this.context,
     this.onClose,
     this.showWalkthrough = false,
-  }) : super(key: key);
+  });
 
   @override
   State<HelpOverlay> createState() => _HelpOverlayState();
@@ -245,7 +255,6 @@ class _HelpOverlayState extends State<HelpOverlay>
   late AnimationController _animationController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  int _walkthroughStep = 0;
 
   @override
   void initState() {
@@ -270,7 +279,7 @@ class _HelpOverlayState extends State<HelpOverlay>
     return topics.where((topic) {
       final query = _searchQuery.toLowerCase();
       return topic.title.toLowerCase().contains(query) ||
-             topic.content.toLowerCase().contains(query);
+          topic.content.toLowerCase().contains(query);
     }).toList();
   }
 
@@ -281,7 +290,7 @@ class _HelpOverlayState extends State<HelpOverlay>
       child: GestureDetector(
         onTap: widget.onClose,
         child: Container(
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.withValues(alpha: 0.8),
           child: Center(
             child: GestureDetector(
               onTap: () {}, // Prevent closing when tapping content
@@ -299,7 +308,7 @@ class _HelpOverlayState extends State<HelpOverlay>
     return GlassmorphicContainer(
       width: 600,
       height: 700,
-      borderRadius: DesignTokens.radiusLarge,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
       child: Column(
         children: [
           // Header
@@ -329,7 +338,7 @@ class _HelpOverlayState extends State<HelpOverlay>
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -340,13 +349,13 @@ class _HelpOverlayState extends State<HelpOverlay>
           const SizedBox(width: DesignTokens.spacing2),
           Text(
             'Help & Tutorials',
-            style: DesignTokens.headingMedium,
+            style: DesignTokens.headlineMedium,
           ),
           const Spacer(),
           IconButton(
             icon: const Icon(Icons.close),
             onPressed: widget.onClose,
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
           ),
         ],
       ),
@@ -367,7 +376,7 @@ class _HelpOverlayState extends State<HelpOverlay>
         decoration: InputDecoration(
           hintText: 'Search help topics...',
           hintStyle: DesignTokens.bodyMedium.copyWith(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha: 0.4),
           ),
           prefixIcon: const Icon(Icons.search, size: 20),
           suffixIcon: _searchQuery.isNotEmpty
@@ -382,7 +391,7 @@ class _HelpOverlayState extends State<HelpOverlay>
                 )
               : null,
           filled: true,
-          fillColor: Colors.white.withOpacity(0.05),
+          fillColor: Colors.white.withValues(alpha: 0.05),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           ),
@@ -396,10 +405,10 @@ class _HelpOverlayState extends State<HelpOverlay>
       margin: const EdgeInsets.symmetric(horizontal: DesignTokens.spacing3),
       padding: const EdgeInsets.all(DesignTokens.spacing3),
       decoration: BoxDecoration(
-        color: DesignTokens.quantum.withOpacity(0.1),
+        color: DesignTokens.quantum.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
         border: Border.all(
-          color: DesignTokens.quantum.withOpacity(0.3),
+          color: DesignTokens.quantum.withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -407,15 +416,15 @@ class _HelpOverlayState extends State<HelpOverlay>
         children: [
           Text(
             widget.context.displayName,
-            style: DesignTokens.headingSmall.copyWith(
+            style: DesignTokens.labelLarge.copyWith(
               color: DesignTokens.quantum,
             ),
           ),
           const SizedBox(height: DesignTokens.spacing1),
           Text(
             widget.context.description,
-            style: DesignTokens.bodySmall.copyWith(
-              color: Colors.white.withOpacity(0.8),
+            style: DesignTokens.labelMedium.copyWith(
+              color: Colors.white.withValues(alpha: 0.8),
             ),
           ),
         ],
@@ -434,13 +443,13 @@ class _HelpOverlayState extends State<HelpOverlay>
             Icon(
               Icons.search_off,
               size: 64,
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
             ),
             const SizedBox(height: DesignTokens.spacing3),
             Text(
               'No help topics found',
-              style: DesignTokens.headingSmall.copyWith(
-                color: Colors.white.withOpacity(0.4),
+              style: DesignTokens.labelLarge.copyWith(
+                color: Colors.white.withValues(alpha: 0.4),
               ),
             ),
           ],
@@ -461,7 +470,7 @@ class _HelpOverlayState extends State<HelpOverlay>
     return Container(
       margin: const EdgeInsets.only(bottom: DesignTokens.spacing3),
       child: GlassmorphicContainer(
-        borderRadius: DesignTokens.radiusMedium,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
         child: Padding(
           padding: const EdgeInsets.all(DesignTokens.spacing3),
           child: Column(
@@ -472,8 +481,9 @@ class _HelpOverlayState extends State<HelpOverlay>
                   Container(
                     padding: const EdgeInsets.all(DesignTokens.spacing2),
                     decoration: BoxDecoration(
-                      color: DesignTokens.quantum.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
+                      color: DesignTokens.quantum.withValues(alpha: 0.2),
+                      borderRadius:
+                          BorderRadius.circular(DesignTokens.radiusSmall),
                     ),
                     child: Icon(
                       topic.icon,
@@ -485,7 +495,7 @@ class _HelpOverlayState extends State<HelpOverlay>
                   Expanded(
                     child: Text(
                       topic.title,
-                      style: DesignTokens.headingSmall,
+                      style: DesignTokens.labelLarge,
                     ),
                   ),
                 ],
@@ -494,7 +504,7 @@ class _HelpOverlayState extends State<HelpOverlay>
               Text(
                 topic.content,
                 style: DesignTokens.bodyMedium.copyWith(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
               ),
               if (topic.keyboardShortcuts != null) ...[
@@ -508,10 +518,10 @@ class _HelpOverlayState extends State<HelpOverlay>
                         vertical: DesignTokens.spacing1,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Text(
@@ -550,7 +560,7 @@ class _HelpOverlayState extends State<HelpOverlay>
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -603,13 +613,13 @@ class RichTooltip extends StatelessWidget {
   final Color? color;
 
   const RichTooltip({
-    Key? key,
+    super.key,
     required this.title,
     required this.message,
     this.icon,
     required this.child,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -649,8 +659,8 @@ class RichTooltip extends StatelessWidget {
               const SizedBox(height: DesignTokens.spacing1),
               Text(
                 message,
-                style: DesignTokens.bodySmall.copyWith(
-                  color: Colors.white.withOpacity(0.8),
+                style: DesignTokens.labelMedium.copyWith(
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
               ),
             ],
@@ -658,10 +668,10 @@ class RichTooltip extends StatelessWidget {
         ),
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.9),
+        color: Colors.black.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
         border: Border.all(
-          color: (color ?? DesignTokens.quantum).withOpacity(0.5),
+          color: (color ?? DesignTokens.quantum).withValues(alpha: 0.5),
         ),
       ),
       child: child,
@@ -682,13 +692,13 @@ class FeatureHighlight extends StatefulWidget {
   final VoidCallback onDismiss;
 
   const FeatureHighlight({
-    Key? key,
+    super.key,
     required this.position,
     required this.size,
     required this.title,
     required this.description,
     required this.onDismiss,
-  }) : super(key: key);
+  });
 
   @override
   State<FeatureHighlight> createState() => _FeatureHighlightState();
@@ -721,7 +731,7 @@ class _FeatureHighlightState extends State<FeatureHighlight>
         GestureDetector(
           onTap: widget.onDismiss,
           child: Container(
-            color: Colors.black.withOpacity(0.7),
+            color: Colors.black.withValues(alpha: 0.7),
           ),
         ),
 
@@ -738,15 +748,17 @@ class _FeatureHighlightState extends State<FeatureHighlight>
                   height: widget.size.height,
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: DesignTokens.stateActive.withOpacity(
-                        0.5 + (_controller.value * 0.5),
+                      color: DesignTokens.stateActive.withValues(
+                        alpha: 0.5 + (_controller.value * 0.5),
                       ),
                       width: 3,
                     ),
-                    borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+                    borderRadius:
+                        BorderRadius.circular(DesignTokens.radiusMedium),
                     boxShadow: [
                       BoxShadow(
-                        color: DesignTokens.stateActive.withOpacity(_controller.value * 0.5),
+                        color: DesignTokens.stateActive
+                            .withValues(alpha: _controller.value * 0.5),
                         blurRadius: 20,
                         spreadRadius: 5,
                       ),
@@ -764,7 +776,7 @@ class _FeatureHighlightState extends State<FeatureHighlight>
           top: widget.position.dy + widget.size.height + 20,
           child: GlassmorphicContainer(
             width: 300,
-            borderRadius: DesignTokens.radiusMedium,
+            borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
             child: Padding(
               padding: const EdgeInsets.all(DesignTokens.spacing3),
               child: Column(
@@ -773,7 +785,7 @@ class _FeatureHighlightState extends State<FeatureHighlight>
                 children: [
                   Text(
                     widget.title,
-                    style: DesignTokens.headingSmall.copyWith(
+                    style: DesignTokens.labelLarge.copyWith(
                       color: DesignTokens.stateActive,
                     ),
                   ),

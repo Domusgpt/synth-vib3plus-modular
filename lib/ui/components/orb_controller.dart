@@ -1,17 +1,19 @@
-/**
- * Orb Controller
- *
- * Floating, draggable trackball-style pitch modulation controller.
- * Features pitch bend (±1 to ±12 semitones) and vibrato control.
- * Integrates with device tilt for hands-free modulation.
- *
- * Visual States:
- * - Inactive: Subtle glow at origin
- * - Active (dragging): Intense glow + trail effect
- * - Tilt mode: Pulsing indicator + auto-movement
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Orb Controller
+///
+/// Floating, draggable trackball-style pitch modulation controller.
+/// Features pitch bend (±1 to ±12 semitones) and vibrato control.
+/// Integrates with device tilt for hands-free modulation.
+///
+/// Visual States:
+/// - Inactive: Subtle glow at origin
+/// - Active (dragging): Intense glow + trail effect
+/// - Tilt mode: Pulsing indicator + auto-movement
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,10 +27,10 @@ class OrbController extends StatefulWidget {
   final Offset initialPosition;
 
   const OrbController({
-    Key? key,
+    super.key,
     required this.systemColors,
     this.initialPosition = const Offset(0.5, 0.5), // Normalized (0-1)
-  }) : super(key: key);
+  });
 
   @override
   State<OrbController> createState() => _OrbControllerState();
@@ -117,11 +119,13 @@ class _OrbControllerState extends State<OrbController>
     final vibratoDepth = (1.0 - position.dy) / 2.0; // Map -1..1 to 0..1
     audioProvider.setVibratoDepth(vibratoDepth);
 
-    debugPrint('🎛️ Orb: Pitch ${pitchBendSemitones.toStringAsFixed(2)}st, Vibrato ${vibratoDepth.toStringAsFixed(2)}');
+    debugPrint(
+        '🎛️ Orb: Pitch ${pitchBendSemitones.toStringAsFixed(2)}st, Vibrato ${vibratoDepth.toStringAsFixed(2)}');
   }
 
   // Update orb position from tilt sensor
-  void _updateFromTilt(Offset tiltPosition, UIStateProvider uiState, AudioProvider audioProvider) {
+  void _updateFromTilt(Offset tiltPosition, UIStateProvider uiState,
+      AudioProvider audioProvider) {
     if (!uiState.tiltEnabled) return;
 
     setState(() {
@@ -140,7 +144,8 @@ class _OrbControllerState extends State<OrbController>
     // Sync with tilt if enabled
     if (uiState.tiltEnabled && tiltSensor.isEnabled) {
       final orientation = MediaQuery.of(context).orientation;
-      _updateFromTilt(tiltSensor.getTiltPositionForOrientation(orientation), uiState, audioProvider);
+      _updateFromTilt(tiltSensor.getTiltPositionForOrientation(orientation),
+          uiState, audioProvider);
     }
 
     final screenSize = MediaQuery.of(context).size;
@@ -163,7 +168,7 @@ class _OrbControllerState extends State<OrbController>
           child: CustomPaint(
             size: const Size(40, 40),
             painter: CrosshairPainter(
-              color: widget.systemColors.primary.withOpacity(0.3),
+              color: widget.systemColors.primary.withValues(alpha: 0.3),
             ),
           ),
         ),
@@ -185,7 +190,8 @@ class _OrbControllerState extends State<OrbController>
           top: orbY - orbSize.height / 2,
           child: GestureDetector(
             onPanStart: (details) => _handleDragStart(details, uiState),
-            onPanUpdate: (details) => _handleDragUpdate(details, uiState, audioProvider, orbSize),
+            onPanUpdate: (details) =>
+                _handleDragUpdate(details, uiState, audioProvider, orbSize),
             onPanEnd: (details) => _handleDragEnd(details, uiState),
             child: AnimatedBuilder(
               animation: _pulseAnimation,
@@ -220,8 +226,10 @@ class _OrbControllerState extends State<OrbController>
                       children: [
                         // Center icon
                         Icon(
-                          uiState.tiltEnabled ? Icons.screen_rotation : Icons.control_camera,
-                          color: Colors.white.withOpacity(0.8),
+                          uiState.tiltEnabled
+                              ? Icons.screen_rotation
+                              : Icons.control_camera,
+                          color: Colors.white.withValues(alpha: 0.8),
                           size: 40,
                         ),
 
@@ -254,7 +262,7 @@ class _OrbControllerState extends State<OrbController>
               size: const Size(120, 120),
               painter: RangeIndicatorPainter(
                 pitchBendRange: uiState.orbPitchBendRange,
-                color: widget.systemColors.primary.withOpacity(0.2),
+                color: widget.systemColors.primary.withValues(alpha: 0.2),
               ),
             ),
           ),
@@ -316,7 +324,7 @@ class ConnectionLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withOpacity(0.5)
+      ..color = color.withValues(alpha: 0.5)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
@@ -324,7 +332,7 @@ class ConnectionLinePainter extends CustomPainter {
 
     // Add glow effect
     final glowPaint = Paint()
-      ..color = color.withOpacity(0.2)
+      ..color = color.withValues(alpha: 0.2)
       ..strokeWidth = 8.0
       ..style = PaintingStyle.stroke
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);

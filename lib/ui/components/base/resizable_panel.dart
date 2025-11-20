@@ -1,29 +1,31 @@
-/**
- * Resizable Panel
- *
- * Panel component with drag-to-resize handles, size constraints,
- * grid snapping, and visual feedback. Foundation for customizable
- * layout system.
- *
- * Features:
- * - Drag-to-resize handles (corner + edge)
- * - Min/max size constraints
- * - Grid snapping
- * - Visual resize preview
- * - Docking support
- * - Layout persistence
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 2
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Resizable Panel
+///
+/// Panel component with drag-to-resize handles, size constraints,
+/// grid snapping, and visual feedback. Foundation for customizable
+/// layout system.
+///
+/// Features:
+/// - Drag-to-resize handles (corner + edge)
+/// - Min/max size constraints
+/// - Grid snapping
+/// - Visual resize preview
+/// - Docking support
+/// - Layout persistence
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
+import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
 import '../../layout/flexible_layout.dart';
 import '../../layout/resize_handle.dart';
-import 'reactive_component.dart';
 
 // ============================================================================
 // PANEL CONFIGURATION
@@ -88,7 +90,7 @@ class ResizablePanel extends StatefulWidget {
   final Color? color;
 
   const ResizablePanel({
-    Key? key,
+    super.key,
     required this.child,
     this.config = PanelConfig.customizable,
     this.gridConfig = GridConfig.standard,
@@ -101,7 +103,7 @@ class ResizablePanel extends StatefulWidget {
     this.audioFeatures,
     this.enableAudioReactivity = false,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   State<ResizablePanel> createState() => ResizablePanelState();
@@ -197,8 +199,10 @@ class ResizablePanelState extends State<ResizablePanel> {
 
       // Apply constraints
       final constrainedSize = GridUnits(
-        newSize.columns.clamp(widget.config.minSize.columns, widget.config.maxSize.columns),
-        newSize.rows.clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
+        newSize.columns.clamp(
+            widget.config.minSize.columns, widget.config.maxSize.columns),
+        newSize.rows
+            .clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
       );
 
       // Update preview
@@ -223,8 +227,10 @@ class ResizablePanelState extends State<ResizablePanel> {
       setState(() {
         _position = newPosition;
         _size = GridUnits(
-          newSize.columns.clamp(widget.config.minSize.columns, widget.config.maxSize.columns),
-          newSize.rows.clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
+          newSize.columns.clamp(
+              widget.config.minSize.columns, widget.config.maxSize.columns),
+          newSize.rows
+              .clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
         );
         _isResizing = false;
         _previewRect = null;
@@ -343,8 +349,9 @@ class ResizablePanelState extends State<ResizablePanel> {
                           vertical: DesignTokens.spacing1,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
+                          color: Colors.black.withValues(alpha: 0.7),
+                          borderRadius:
+                              BorderRadius.circular(DesignTokens.radiusSmall),
                         ),
                         child: Text(
                           _isResizing ? 'Resizing...' : 'Moving...',
@@ -395,8 +402,10 @@ class ResizablePanelState extends State<ResizablePanel> {
   void setSize(GridUnits newSize) {
     setState(() {
       _size = GridUnits(
-        newSize.columns.clamp(widget.config.minSize.columns, widget.config.maxSize.columns),
-        newSize.rows.clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
+        newSize.columns.clamp(
+            widget.config.minSize.columns, widget.config.maxSize.columns),
+        newSize.rows
+            .clamp(widget.config.minSize.rows, widget.config.maxSize.rows),
       );
     });
   }

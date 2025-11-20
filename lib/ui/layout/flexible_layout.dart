@@ -1,21 +1,23 @@
-/**
- * Flexible Layout System
- *
- * Grid-based layout system for responsive, resizable UI components.
- * Provides 12-column grid with breakpoints, snap-to-grid, and
- * automatic layout calculations.
- *
- * Features:
- * - 12-column responsive grid
- * - Portrait/landscape breakpoints
- * - Snap-to-grid positioning
- * - Grid unit calculations
- * - Constraint validation
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 2
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Flexible Layout System
+///
+/// Grid-based layout system for responsive, resizable UI components.
+/// Provides 12-column grid with breakpoints, snap-to-grid, and
+/// automatic layout calculations.
+///
+/// Features:
+/// - 12-column responsive grid
+/// - Portrait/landscape breakpoints
+/// - Snap-to-grid positioning
+/// - Grid unit calculations
+/// - Constraint validation
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -70,9 +72,9 @@ class GridConfig {
 
 /// Screen orientation breakpoint
 enum LayoutBreakpoint {
-  portrait,   // Height > width
-  landscape,  // Width > height
-  square,     // Width ≈ height
+  portrait, // Height > width
+  landscape, // Width > height
+  square, // Width ≈ height
 }
 
 /// Breakpoint utilities
@@ -109,8 +111,8 @@ class Breakpoints {
 
 /// Grid unit representation (columns × rows)
 class GridUnits {
-  final int columns;  // Width in grid columns
-  final int rows;     // Height in grid rows
+  final int columns; // Width in grid columns
+  final int rows; // Height in grid rows
 
   const GridUnits(this.columns, this.rows);
 
@@ -153,8 +155,8 @@ class GridUnits {
 
 /// Position in grid coordinates
 class GridPosition {
-  final int column;  // Column index (0-based)
-  final int row;     // Row index (0-based)
+  final int column; // Column index (0-based)
+  final int row; // Row index (0-based)
 
   const GridPosition(this.column, this.row);
 
@@ -209,8 +211,8 @@ class GridCalculator {
 
     // Assume square cells for row height
     final rowHeight = columnWidth;
-    final height = (rowHeight * units.rows) +
-        (config.gutterSize * (units.rows - 1));
+    final height =
+        (rowHeight * units.rows) + (config.gutterSize * (units.rows - 1));
 
     return Size(width, height);
   }
@@ -241,12 +243,14 @@ class GridCalculator {
 
     // Calculate column
     final columnWithGutter = columnWidth + config.gutterSize;
-    final column = (adjustedX / columnWithGutter).round().clamp(0, config.columns - 1);
+    final column =
+        (adjustedX / columnWithGutter).round().clamp(0, config.columns - 1);
 
     // Calculate row
     final rowHeight = columnWidth;
     final rowWithGutter = rowHeight + config.gutterSize;
-    final row = (adjustedY / rowWithGutter).round().clamp(0, 100);  // Max 100 rows
+    final row =
+        (adjustedY / rowWithGutter).round().clamp(0, 100); // Max 100 rows
 
     return GridPosition(column, row);
   }
@@ -257,7 +261,8 @@ class GridCalculator {
     final adjustedY = pixelPosition.dy - config.padding.top;
 
     final columnWithGutter = columnWidth + config.gutterSize;
-    final column = (adjustedX / columnWithGutter).floor().clamp(0, config.columns - 1);
+    final column =
+        (adjustedX / columnWithGutter).floor().clamp(0, config.columns - 1);
 
     final rowHeight = columnWidth;
     final rowWithGutter = rowHeight + config.gutterSize;
@@ -312,7 +317,7 @@ class GridCalculator {
       }
     }
 
-    return null;  // No available position found
+    return null; // No available position found
   }
 
   /// Get bounding rect for grid area
@@ -351,12 +356,12 @@ class GridOverlay extends StatelessWidget {
   final double opacity;
 
   const GridOverlay({
-    Key? key,
+    super.key,
     this.config = GridConfig.standard,
     this.showLabels = true,
     this.gridColor = DesignTokens.stateActive,
     this.opacity = 0.2,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -372,7 +377,7 @@ class GridOverlay extends StatelessWidget {
             calculator: calculator,
             config: config,
             showLabels: showLabels,
-            gridColor: gridColor.withOpacity(opacity),
+            gridColor: gridColor.withValues(alpha: opacity),
           ),
           size: constraints.biggest,
         );
@@ -431,9 +436,8 @@ class _GridPainter extends CustomPainter {
     // Draw horizontal lines (rows) - show first 10
     final rowHeight = calculator.columnWidth;
     for (int row = 0; row <= 10; row++) {
-      final y = config.padding.top +
-          (rowHeight * row) +
-          (config.gutterSize * row);
+      final y =
+          config.padding.top + (rowHeight * row) + (config.gutterSize * row);
 
       if (y > size.height) break;
 
@@ -460,11 +464,11 @@ class GridContainer extends StatelessWidget {
   final bool showGrid;
 
   const GridContainer({
-    Key? key,
+    super.key,
     this.config = GridConfig.standard,
     required this.children,
     this.showGrid = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -493,9 +497,7 @@ extension GridUnitsExtension on GridUnits {
 
   /// Check if valid for given config
   bool isValidFor(GridConfig config) {
-    return columns > 0 &&
-           columns <= config.columns &&
-           rows > 0;
+    return columns > 0 && columns <= config.columns && rows > 0;
   }
 
   /// Scale by factor
@@ -510,9 +512,7 @@ extension GridUnitsExtension on GridUnits {
 extension GridPositionExtension on GridPosition {
   /// Check if valid for given config
   bool isValidFor(GridConfig config) {
-    return column >= 0 &&
-           column < config.columns &&
-           row >= 0;
+    return column >= 0 && column < config.columns && row >= 0;
   }
 
   /// Translate by delta

@@ -1,25 +1,28 @@
-/**
- * Audio Visualizer Widget
- *
- * Real-time waveform and spectrum display with multiple visualization modes.
- * Provides immediate visual feedback for synthesis and audio reactivity.
- *
- * Features:
- * - Waveform display (time domain)
- * - Spectrum analyzer (frequency domain)
- * - Oscilloscope mode
- * - System-themed colors (Quantum/Faceted/Holographic)
- * - Smooth animations and transitions
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio Visualizer Widget
+///
+/// Real-time waveform and spectrum display with multiple visualization modes.
+/// Provides immediate visual feedback for synthesis and audio reactivity.
+///
+/// Features:
+/// - Waveform display (time domain)
+/// - Spectrum analyzer (frequency domain)
+/// - Oscilloscope mode
+/// - System-themed colors (Quantum/Faceted/Holographic)
+/// - Smooth animations and transitions
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../audio/audio_analyzer.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/visual_provider.dart';
-import '../theme/synth_theme.dart';
+import '../theme/design_tokens.dart';
 
 enum VisualizerMode {
   waveform,
@@ -33,11 +36,11 @@ class AudioVisualizer extends StatefulWidget {
   final bool showLabels;
 
   const AudioVisualizer({
-    Key? key,
+    super.key,
     this.height = 120.0,
     this.mode = VisualizerMode.spectrum,
     this.showLabels = true,
-  }) : super(key: key);
+  });
 
   @override
   State<AudioVisualizer> createState() => _AudioVisualizerState();
@@ -69,16 +72,16 @@ class _AudioVisualizerState extends State<AudioVisualizer>
     final features = audioProvider.currentFeatures;
 
     if (features == null) {
-      return _buildEmptyState(visualProvider.currentSystemName);
+      return _buildEmptyState(visualProvider.currentSystem);
     }
 
     return Container(
       height: widget.height,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _getSystemColor(visualProvider.currentSystemName).withOpacity(0.3),
+          color: _getSystemColor(visualProvider.currentSystem).withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -92,12 +95,13 @@ class _AudioVisualizerState extends State<AudioVisualizer>
               painter: _VisualizerPainter(
                 mode: widget.mode,
                 features: features,
-                systemColor: _getSystemColor(visualProvider.currentSystemName),
+                systemColor: _getSystemColor(visualProvider.currentSystem),
                 animationValue: _animationController.value,
               ),
             ),
             // Labels overlay
-            if (widget.showLabels) _buildLabels(features, visualProvider.currentSystemName),
+            if (widget.showLabels)
+              _buildLabels(features, visualProvider.currentSystem),
           ],
         ),
       ),
@@ -108,10 +112,10 @@ class _AudioVisualizerState extends State<AudioVisualizer>
     return Container(
       height: widget.height,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _getSystemColor(systemName).withOpacity(0.2),
+          color: _getSystemColor(systemName).withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -119,7 +123,7 @@ class _AudioVisualizerState extends State<AudioVisualizer>
         child: Text(
           'Play a note to visualize',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
             fontSize: 12,
           ),
         ),
@@ -148,9 +152,9 @@ class _AudioVisualizerState extends State<AudioVisualizer>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withOpacity(0.5), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.5), width: 1),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -178,13 +182,13 @@ class _AudioVisualizerState extends State<AudioVisualizer>
   Color _getSystemColor(String systemName) {
     switch (systemName.toLowerCase()) {
       case 'quantum':
-        return SynthTheme.quantumCyan;
+        return DesignTokens.quantum;
       case 'faceted':
-        return SynthTheme.facetedMagenta;
+        return DesignTokens.faceted;
       case 'holographic':
-        return SynthTheme.holographicAmber;
+        return DesignTokens.holographic;
       default:
-        return SynthTheme.quantumCyan;
+        return DesignTokens.quantum;
     }
   }
 }
@@ -220,7 +224,7 @@ class _VisualizerPainter extends CustomPainter {
   void _drawWaveform(Canvas canvas, Size size) {
     // Draw center line
     final centerLinePaint = Paint()
-      ..color = systemColor.withOpacity(0.2)
+      ..color = systemColor.withValues(alpha: 0.2)
       ..strokeWidth = 1;
     canvas.drawLine(
       Offset(0, size.height / 2),
@@ -241,11 +245,16 @@ class _VisualizerPainter extends CustomPainter {
       final x = (i / segments) * size.width;
 
       // Combine different frequency bands for synthetic waveform
-      final bassContribution = features.bassEnergy * math.sin(i * 0.5 + animationValue * math.pi * 2);
-      final midContribution = features.midEnergy * math.sin(i * 1.5 + animationValue * math.pi * 4);
-      final highContribution = features.highEnergy * math.sin(i * 3.0 + animationValue * math.pi * 8);
+      final bassContribution = features.bassEnergy *
+          math.sin(i * 0.5 + animationValue * math.pi * 2);
+      final midContribution =
+          features.midEnergy * math.sin(i * 1.5 + animationValue * math.pi * 4);
+      final highContribution = features.highEnergy *
+          math.sin(i * 3.0 + animationValue * math.pi * 8);
 
-      final amplitude = (bassContribution + midContribution * 0.5 + highContribution * 0.3) / 1.8;
+      final amplitude =
+          (bassContribution + midContribution * 0.5 + highContribution * 0.3) /
+              1.8;
       final y = size.height / 2 + amplitude * (size.height / 2 - 20);
 
       if (i == 0) {
@@ -259,7 +268,7 @@ class _VisualizerPainter extends CustomPainter {
 
     // Draw glow effect
     final glowPaint = Paint()
-      ..color = systemColor.withOpacity(0.3)
+      ..color = systemColor.withValues(alpha: 0.3)
       ..strokeWidth = 6
       ..style = PaintingStyle.stroke
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
@@ -287,7 +296,8 @@ class _VisualizerPainter extends CustomPainter {
       }
 
       // Add some variation
-      final variation = math.sin(i * 0.5 + animationValue * math.pi * 2) * 0.2 + 1.0;
+      final variation =
+          math.sin(i * 0.5 + animationValue * math.pi * 2) * 0.2 + 1.0;
       barValue *= variation;
       barValue = barValue.clamp(0.0, 1.0);
 
@@ -304,10 +314,11 @@ class _VisualizerPainter extends CustomPainter {
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: [
-            barColor.withOpacity(0.8),
-            systemColor.withOpacity(0.6),
+            barColor.withValues(alpha: 0.8),
+            systemColor.withValues(alpha: 0.6),
           ],
-        ).createShader(Rect.fromLTWH(x, size.height - barHeight, barWidth - spacing * 2, barHeight));
+        ).createShader(Rect.fromLTWH(
+            x, size.height - barHeight, barWidth - spacing * 2, barHeight));
 
       final barRect = RRect.fromRectAndRadius(
         Rect.fromLTWH(
@@ -323,7 +334,7 @@ class _VisualizerPainter extends CustomPainter {
       // Draw glow
       if (barValue > 0.3) {
         final glowPaint = Paint()
-          ..color = barColor.withOpacity(0.4)
+          ..color = barColor.withValues(alpha: 0.4)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
         canvas.drawRRect(barRect, glowPaint);
       }
@@ -333,7 +344,7 @@ class _VisualizerPainter extends CustomPainter {
   void _drawOscilloscope(Canvas canvas, Size size) {
     // Draw grid
     final gridPaint = Paint()
-      ..color = systemColor.withOpacity(0.1)
+      ..color = systemColor.withValues(alpha: 0.1)
       ..strokeWidth = 1;
 
     // Vertical lines
@@ -361,12 +372,14 @@ class _VisualizerPainter extends CustomPainter {
       final t = (i / segments) * math.pi * 2;
 
       // X: Bass + Mid modulation
-      final xPhase = features.bassEnergy * math.sin(t * 2 + animationValue * math.pi * 2);
+      final xPhase =
+          features.bassEnergy * math.sin(t * 2 + animationValue * math.pi * 2);
       final x = size.width / 2 + xPhase * (size.width / 2 - 20);
 
       // Y: Mid + High modulation
-      final yPhase = features.midEnergy * math.sin(t * 3 + animationValue * math.pi * 3) +
-                     features.highEnergy * math.cos(t * 5);
+      final yPhase =
+          features.midEnergy * math.sin(t * 3 + animationValue * math.pi * 3) +
+              features.highEnergy * math.cos(t * 5);
       final y = size.height / 2 + yPhase * (size.height / 2 - 20);
 
       if (i == 0) {
@@ -378,7 +391,7 @@ class _VisualizerPainter extends CustomPainter {
 
     // Draw glow
     final glowPaint = Paint()
-      ..color = systemColor.withOpacity(0.3)
+      ..color = systemColor.withValues(alpha: 0.3)
       ..strokeWidth = 6
       ..style = PaintingStyle.stroke
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
@@ -401,6 +414,6 @@ class _VisualizerPainter extends CustomPainter {
   @override
   bool shouldRepaint(_VisualizerPainter oldDelegate) {
     return oldDelegate.animationValue != animationValue ||
-           oldDelegate.features.rms != features.rms;
+        oldDelegate.features.rms != features.rms;
   }
 }

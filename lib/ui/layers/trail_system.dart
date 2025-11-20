@@ -1,27 +1,28 @@
-/**
- * Trail System
- *
- * Visual history of touch movements. Creates smooth, fading trails
- * that follow finger movements across the interface, providing
- * immediate visual feedback for gestures and XY pad interactions.
- *
- * Features:
- * - Pressure-sensitive width
- * - Time-based fade out
- * - Color gradient support
- * - Audio-reactive brightness
- * - Smooth bezier interpolation
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Trail System
+///
+/// Visual history of touch movements. Creates smooth, fading trails
+/// that follow finger movements across the interface, providing
+/// immediate visual feedback for gestures and XY pad interactions.
+///
+/// Features:
+/// - Pressure-sensitive width
+/// - Time-based fade out
+/// - Color gradient support
+/// - Audio-reactive brightness
+/// - Smooth bezier interpolation
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../audio/audio_analyzer.dart';
 import '../theme/design_tokens.dart';
-import '../effects/glassmorphic_container.dart';
 
 // ============================================================================
 // TRAIL POINT MODEL
@@ -30,9 +31,9 @@ import '../effects/glassmorphic_container.dart';
 /// Single point in a touch trail
 class TrailPoint {
   final Offset position;
-  final double pressure;    // 0-1, touch pressure
+  final double pressure; // 0-1, touch pressure
   final DateTime timestamp;
-  final double velocity;    // Speed at this point
+  final double velocity; // Speed at this point
 
   TrailPoint(
     this.position,
@@ -62,9 +63,9 @@ class TrailPoint {
 class TouchTrail {
   final List<TrailPoint> points = [];
   Color color;
-  double maxLength;      // Maximum points to keep
-  double fadeTime;       // Seconds before points disappear
-  double baseWidth;      // Base stroke width
+  double maxLength; // Maximum points to keep
+  double fadeTime; // Seconds before points disappear
+  double baseWidth; // Base stroke width
   bool enabled;
 
   TouchTrail({
@@ -88,7 +89,9 @@ class TouchTrail {
     if (points.isNotEmpty) {
       final lastPoint = points.last;
       final distance = (position - lastPoint.position).distance;
-      final timeDelta = DateTime.now().difference(lastPoint.timestamp).inMilliseconds / 1000.0;
+      final timeDelta =
+          DateTime.now().difference(lastPoint.timestamp).inMilliseconds /
+              1000.0;
       if (timeDelta > 0) {
         velocity = distance / timeDelta;
       }
@@ -122,7 +125,8 @@ class TouchTrail {
 
     // Audio-reactive color shift
     if (audioFeatures != null) {
-      final hueShift = DesignTokens.dominantFreqToHueShift(audioFeatures.dominantFreq);
+      final hueShift =
+          DesignTokens.dominantFreqToHueShift(audioFeatures.dominantFreq);
       color = DesignTokens.adjustHue(color, hueShift * dt * 60);
     }
   }
@@ -147,17 +151,19 @@ class TouchTrail {
       final endPoint = points[i];
 
       // Calculate opacity (fade based on age)
-      final opacity = math.min(startPoint.opacity, endPoint.opacity) * brightnessFactor;
+      final opacity =
+          math.min(startPoint.opacity, endPoint.opacity) * brightnessFactor;
       if (opacity <= 0.0) continue;
 
       // Calculate width (pressure-sensitive + velocity-based)
       final avgPressure = (startPoint.pressure + endPoint.pressure) / 2;
-      final velocityFactor = (1.0 - (endPoint.velocity / 1000.0).clamp(0.0, 0.5));
+      final velocityFactor =
+          (1.0 - (endPoint.velocity / 1000.0).clamp(0.0, 0.5));
       final width = baseWidth * avgPressure * velocityFactor;
 
       // Draw segment
       final paint = Paint()
-        ..color = color.withOpacity(opacity.clamp(0.0, 1.0))
+        ..color = color.withValues(alpha: opacity.clamp(0.0, 1.0))
         ..strokeWidth = width
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
@@ -227,7 +233,7 @@ class TouchTrail {
     for (int i = 0; i < points.length; i++) {
       final point = points[i];
       final opacity = point.opacity * brightnessFactor;
-      colors.add(color.withOpacity(opacity.clamp(0.0, 1.0)));
+      colors.add(color.withValues(alpha: opacity.clamp(0.0, 1.0)));
       stops.add(i / (points.length - 1));
     }
 
@@ -280,13 +286,13 @@ class TouchTrail {
 
 /// Manages multiple trails (multi-touch support)
 class TrailSystem {
-  final Map<int, TouchTrail> _trails = {};  // Pointer ID → Trail
+  final Map<int, TouchTrail> _trails = {}; // Pointer ID → Trail
   Color defaultColor;
   double maxLength;
   double fadeTime;
   double baseWidth;
   bool enabled;
-  bool smoothRendering;  // Use bezier curves
+  bool smoothRendering; // Use bezier curves
 
   TrailSystem({
     this.defaultColor = DesignTokens.stateActive,
@@ -367,7 +373,8 @@ class TrailSystem {
   int get activeCount => _trails.length;
 
   /// Get total point count across all trails
-  int get totalPoints => _trails.values.fold(0, (sum, trail) => sum + trail.length);
+  int get totalPoints =>
+      _trails.values.fold(0, (sum, trail) => sum + trail.length);
 
   /// Set enabled state
   void setEnabled(bool value) {

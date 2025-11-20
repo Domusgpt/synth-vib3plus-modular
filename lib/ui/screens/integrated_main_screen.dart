@@ -1,26 +1,27 @@
-/**
- * Integrated Synth Application
- *
- * Complete integration of all enhancement systems:
- * - Component Integration Manager
- * - Gesture Recognition System
- * - Performance Monitoring
- * - Preset Browser
- * - Modulation Matrix
- * - Haptic Feedback
- * - Context-Sensitive Help
- *
- * This demonstrates the "extra dimension of ability" through
- * comprehensive system integration.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Integrated Synth Application
+///
+/// Complete integration of all enhancement systems:
+/// - Component Integration Manager
+/// - Gesture Recognition System
+/// - Performance Monitoring
+/// - Preset Browser
+/// - Modulation Matrix
+/// - Haptic Feedback
+/// - Context-Sensitive Help
+///
+/// This demonstrates the "extra dimension of ability" through
+/// comprehensive system integration.
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
 
 // Providers
 import '../../providers/audio_provider.dart';
@@ -40,18 +41,16 @@ import '../components/presets/preset_browser.dart';
 import '../components/modulation/modulation_matrix.dart';
 import '../help/help_overlay.dart';
 import '../theme/design_tokens.dart';
-import '../../visual/vib34d_widget.dart';
 
 // Existing UI
 import 'synth_main_screen.dart';
-import '../theme/synth_theme.dart';
 import '../../core/synth_app_initializer.dart';
 
 /// Main integrated application
 class IntegratedSynthApp extends StatelessWidget {
   final SynthModules modules;
 
-  const IntegratedSynthApp({Key? key, required this.modules}) : super(key: key);
+  const IntegratedSynthApp({super.key, required this.modules});
 
   @override
   Widget build(BuildContext context) {
@@ -76,15 +75,13 @@ class IntegratedSynthApp extends StatelessWidget {
 class IntegratedMainScreen extends StatefulWidget {
   final SynthModules modules;
 
-  const IntegratedMainScreen({Key? key, required this.modules}) : super(key: key);
-
+  const IntegratedMainScreen({super.key, required this.modules});
   @override
   State<IntegratedMainScreen> createState() => _IntegratedMainScreenState();
 }
 
 class _IntegratedMainScreenState extends State<IntegratedMainScreen> {
   // Integration systems
-  late ComponentIntegrationManager _integrationManager;
   late GestureRecognitionSystem _gestureSystem;
   late PerformanceTracker _performanceTracker;
 
@@ -93,7 +90,7 @@ class _IntegratedMainScreenState extends State<IntegratedMainScreen> {
   bool _showPresetBrowser = false;
   bool _showModulationMatrix = false;
   bool _showHelp = false;
-  bool _compactPerformanceOverlay = true;
+  final bool _compactPerformanceOverlay = true;
 
   @override
   void initState() {
@@ -180,7 +177,8 @@ class _IntegratedMainScreenState extends State<IntegratedMainScreen> {
         ChangeNotifierProvider(create: (_) => LayoutProvider()),
 
         // Integration manager (depends on other providers)
-        ChangeNotifierProxyProvider4<AudioProvider, VisualProvider, LayoutProvider, UIStateProvider, ComponentIntegrationManager>(
+        ChangeNotifierProxyProvider4<AudioProvider, VisualProvider,
+            LayoutProvider, UIStateProvider, ComponentIntegrationManager>(
           create: (context) => ComponentIntegrationManager(
             audioProvider: context.read<AudioProvider>(),
             visualProvider: context.read<VisualProvider>(),
@@ -190,7 +188,8 @@ class _IntegratedMainScreenState extends State<IntegratedMainScreen> {
             enableModulationViz: true,
           ),
           update: (context, audio, visual, layout, ui, previous) =>
-              previous ?? ComponentIntegrationManager(
+              previous ??
+              ComponentIntegrationManager(
                 audioProvider: audio,
                 visualProvider: visual,
                 layoutProvider: layout,
@@ -246,7 +245,6 @@ class _IntegratedMainContent extends StatelessWidget {
   final VoidCallback onToggleHelp;
 
   const _IntegratedMainContent({
-    Key? key,
     required this.modules,
     required this.gestureSystem,
     required this.performanceTracker,
@@ -259,11 +257,12 @@ class _IntegratedMainContent extends StatelessWidget {
     required this.onTogglePresetBrowser,
     required this.onToggleModulationMatrix,
     required this.onToggleHelp,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final integrationManager = Provider.of<ComponentIntegrationManager>(context);
+    final integrationManager =
+        Provider.of<ComponentIntegrationManager>(context);
     final audioProvider = Provider.of<AudioProvider>(context);
 
     // Track parameter updates
@@ -292,7 +291,8 @@ class _IntegratedMainContent extends StatelessWidget {
           ),
 
           // Compact performance overlay (top-right)
-          if (compactPerformanceOverlay && performanceTracker.history.isNotEmpty)
+          if (compactPerformanceOverlay &&
+              performanceTracker.history.isNotEmpty)
             Positioned(
               top: 16,
               right: 16,
@@ -311,16 +311,13 @@ class _IntegratedMainContent extends StatelessWidget {
             ),
 
           // Full performance monitor
-          if (showPerformanceMonitor)
-            _buildFullPerformanceMonitor(context),
+          if (showPerformanceMonitor) _buildFullPerformanceMonitor(context),
 
           // Preset browser
-          if (showPresetBrowser)
-            _buildPresetBrowser(context),
+          if (showPresetBrowser) _buildPresetBrowser(context),
 
           // Modulation matrix
-          if (showModulationMatrix)
-            _buildModulationMatrix(context),
+          if (showModulationMatrix) _buildModulationMatrix(context),
 
           // Help overlay
           if (showHelp)
@@ -390,15 +387,15 @@ class _IntegratedMainContent extends StatelessWidget {
         width: 56,
         height: 56,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
-            color: color.withOpacity(0.5),
+            color: color.withValues(alpha: 0.5),
             width: 2,
           ),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.3),
+              color: color.withValues(alpha: 0.3),
               blurRadius: 12,
               spreadRadius: 2,
             ),
@@ -415,7 +412,7 @@ class _IntegratedMainContent extends StatelessWidget {
 
   Widget _buildFullPerformanceMonitor(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withValues(alpha: 0.8),
       child: Center(
         child: Stack(
           children: [
@@ -445,7 +442,7 @@ class _IntegratedMainContent extends StatelessWidget {
 
   Widget _buildPresetBrowser(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withValues(alpha: 0.8),
       child: Center(
         child: Stack(
           children: [
@@ -482,7 +479,7 @@ class _IntegratedMainContent extends StatelessWidget {
 
   Widget _buildModulationMatrix(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withValues(alpha: 0.8),
       child: Center(
         child: Stack(
           children: [

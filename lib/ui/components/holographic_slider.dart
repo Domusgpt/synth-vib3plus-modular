@@ -1,17 +1,19 @@
-/**
- * Holographic Slider Component
- *
- * Custom slider with holographic gradient fill, system-color glow,
- * and smooth animations. Features neoskeuomorphic styling and
- * responsive touch handling.
- *
- * Visual feedback:
- * - Track: Holographic gradient fill from min to current value
- * - Thumb: Glowing circle with system color
- * - State: Inactive (60% opacity) → Active (100%) → Engaged (glow + scale)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Holographic Slider Component
+///
+/// Custom slider with holographic gradient fill, system-color glow,
+/// and smooth animations. Features neoskeuomorphic styling and
+/// responsive touch handling.
+///
+/// Visual feedback:
+/// - Track: Holographic gradient fill from min to current value
+/// - Thumb: Glowing circle with system color
+/// - State: Inactive (60% opacity) → Active (100%) → Engaged (glow + scale)
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../theme/synth_theme.dart';
@@ -30,7 +32,7 @@ class HolographicSlider extends StatefulWidget {
   final bool showValue;
 
   const HolographicSlider({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     this.min = 0.0,
@@ -42,7 +44,7 @@ class HolographicSlider extends StatefulWidget {
     required this.systemColors,
     this.icon,
     this.showValue = true,
-  }) : super(key: key);
+  });
 
   @override
   State<HolographicSlider> createState() => _HolographicSliderState();
@@ -78,7 +80,8 @@ class _HolographicSliderState extends State<HolographicSlider>
       return widget.value.round().toString();
     } else if (widget.unit == '%') {
       // Percentage
-      final percentage = ((widget.value - widget.min) / (widget.max - widget.min) * 100);
+      final percentage =
+          ((widget.value - widget.min) / (widget.max - widget.min) * 100);
       return '${percentage.round()}${widget.unit}';
     } else if (widget.unit == 'ms') {
       // Milliseconds
@@ -98,7 +101,8 @@ class _HolographicSliderState extends State<HolographicSlider>
   @override
   Widget build(BuildContext context) {
     final theme = SynthTheme(systemColors: widget.systemColors);
-    final normalizedValue = (widget.value - widget.min) / (widget.max - widget.min);
+    final normalizedValue =
+        (widget.value - widget.min) / (widget.max - widget.min);
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -140,8 +144,11 @@ class _HolographicSliderState extends State<HolographicSlider>
                 final localPosition = box.globalToLocal(details.globalPosition);
                 final sliderStart = 96.0 + (widget.icon != null ? 24.0 : 0.0);
                 final sliderWidth = box.size.width - sliderStart - 50.0;
-                final percentage = ((localPosition.dx - sliderStart) / sliderWidth).clamp(0.0, 1.0);
-                final newValue = widget.min + (percentage * (widget.max - widget.min));
+                final percentage =
+                    ((localPosition.dx - sliderStart) / sliderWidth)
+                        .clamp(0.0, 1.0);
+                final newValue =
+                    widget.min + (percentage * (widget.max - widget.min));
 
                 widget.onChanged(newValue);
               },
@@ -195,10 +202,11 @@ class _HolographicSliderState extends State<HolographicSlider>
 
                           // Thumb (position indicator)
                           Positioned(
-                            left: normalizedValue * (MediaQuery.of(context).size.width -
-                                    96 -
-                                    50 -
-                                    (widget.icon != null ? 24 : 0)) -
+                            left: normalizedValue *
+                                    (MediaQuery.of(context).size.width -
+                                        96 -
+                                        50 -
+                                        (widget.icon != null ? 24 : 0)) -
                                 8,
                             top: 2,
                             child: Container(
@@ -255,7 +263,7 @@ class VerticalHolographicSlider extends StatefulWidget {
   final double height;
 
   const VerticalHolographicSlider({
-    Key? key,
+    super.key,
     required this.value,
     this.min = 0.0,
     this.max = 1.0,
@@ -263,7 +271,7 @@ class VerticalHolographicSlider extends StatefulWidget {
     required this.systemColors,
     this.width = 32,
     this.height = 200,
-  }) : super(key: key);
+  });
 
   @override
   State<VerticalHolographicSlider> createState() =>
@@ -276,14 +284,16 @@ class _VerticalHolographicSliderState extends State<VerticalHolographicSlider> {
   @override
   Widget build(BuildContext context) {
     final theme = SynthTheme(systemColors: widget.systemColors);
-    final normalizedValue = (widget.value - widget.min) / (widget.max - widget.min);
+    final normalizedValue =
+        (widget.value - widget.min) / (widget.max - widget.min);
 
     return GestureDetector(
       onVerticalDragStart: (_) {
         setState(() => _isDragging = true);
       },
       onVerticalDragUpdate: (details) {
-        final percentage = 1.0 - ((details.localPosition.dy / widget.height).clamp(0.0, 1.0));
+        final percentage =
+            1.0 - ((details.localPosition.dy / widget.height).clamp(0.0, 1.0));
         final newValue = widget.min + (percentage * (widget.max - widget.min));
         widget.onChanged(newValue);
       },

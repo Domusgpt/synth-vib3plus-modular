@@ -1,16 +1,18 @@
-/**
- * Dual Parameter Slider - Audio-Visual Parity Control
- *
- * Shows both sonic (🎵) and visual (🎨) effects for each parameter.
- * User controls BASE value, audio reactivity adds modulation on top.
- *
- * Design:
- * - Clear labeling of what parameter does to BOTH audio and visuals
- * - Holographic styling consistent with system colors
- * - Visual feedback shows base value + current modulation
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Dual Parameter Slider - Audio-Visual Parity Control
+///
+/// Shows both sonic (🎵) and visual (🎨) effects for each parameter.
+/// User controls BASE value, audio reactivity adds modulation on top.
+///
+/// Design:
+/// - Clear labeling of what parameter does to BOTH audio and visuals
+/// - Holographic styling consistent with system colors
+/// - Visual feedback shows base value + current modulation
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../theme/synth_theme.dart';
@@ -29,7 +31,7 @@ class DualParameterSlider extends StatelessWidget {
   final bool logarithmic;
 
   const DualParameterSlider({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     required this.min,
@@ -40,7 +42,7 @@ class DualParameterSlider extends StatelessWidget {
     required this.systemColors,
     this.unit,
     this.logarithmic = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +50,15 @@ class DualParameterSlider extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: SynthTheme.spacingMedium),
       padding: const EdgeInsets.all(SynthTheme.spacingMedium),
       decoration: BoxDecoration(
-        color: SynthTheme.panelBackground.withOpacity(0.3),
+        color: SynthTheme.panelBackground.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
         border: Border.all(
-          color: systemColors.primary.withOpacity(0.2),
+          color: systemColors.primary.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: systemColors.primary.withOpacity(0.1),
+            color: systemColors.primary.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -93,9 +95,9 @@ class DualParameterSlider extends StatelessWidget {
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: systemColors.primary,
-              inactiveTrackColor: systemColors.primary.withOpacity(0.2),
+              inactiveTrackColor: systemColors.primary.withValues(alpha: 0.2),
               thumbColor: systemColors.primary,
-              overlayColor: systemColors.primary.withOpacity(0.2),
+              overlayColor: systemColors.primary.withValues(alpha: 0.2),
               thumbShape: const RoundSliderThumbShape(
                 enabledThumbRadius: 8.0,
               ),
@@ -106,9 +108,7 @@ class DualParameterSlider extends StatelessWidget {
               min: logarithmic ? _valueToLog() : min,
               max: logarithmic ? math.log(max) : max,
               onChanged: (newValue) {
-                final actualValue = logarithmic
-                    ? math.exp(newValue)
-                    : newValue;
+                final actualValue = logarithmic ? math.exp(newValue) : newValue;
                 onChanged(actualValue);
               },
             ),
@@ -128,7 +128,7 @@ class DualParameterSlider extends StatelessWidget {
                 child: Text(
                   sonicEffect,
                   style: SynthTheme.textStyleCaption.copyWith(
-                    color: systemColors.primary.withOpacity(0.8),
+                    color: systemColors.primary.withValues(alpha: 0.8),
                   ),
                 ),
               ),
@@ -149,7 +149,7 @@ class DualParameterSlider extends StatelessWidget {
                 child: Text(
                   visualEffect,
                   style: SynthTheme.textStyleCaption.copyWith(
-                    color: systemColors.secondary.withOpacity(0.8),
+                    color: systemColors.secondary.withValues(alpha: 0.8),
                   ),
                 ),
               ),
@@ -168,7 +168,7 @@ class DualParameterSlider extends StatelessWidget {
     String formattedNumber;
 
     if (value >= 1000) {
-      formattedNumber = (value / 1000).toStringAsFixed(1) + 'k';
+      formattedNumber = '${(value / 1000).toStringAsFixed(1)}k';
     } else if (value >= 100) {
       formattedNumber = value.toStringAsFixed(0);
     } else if (value >= 10) {

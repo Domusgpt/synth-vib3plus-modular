@@ -1,18 +1,26 @@
-/**
- * Synth-VIB3+ Main Application
- *
- * Professional holographic synthesizer with 4D visualization,
- * multi-touch XY pad, orb controller, and collapsible UI.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Synth-VIB3+ Main Application
+///
+/// Professional holographic synthesizer with 4D visualization,
+/// multi-touch XY pad, orb controller, and collapsible UI.
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'core/synth_app_initializer.dart';
+import 'core/parameter_registry.dart';
 import 'ui/screens/synth_main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize parameter registry (centralized parameter definitions)
+  initializeDefaultParameterRegistry();
+  debugPrint(
+      '✅ Parameter Registry initialized with ${ParameterRegistry.getAllNames().length} parameters');
 
   // Initialize modular architecture
   final modules = await initializeSynthModules();
@@ -23,7 +31,7 @@ void main() async {
 class SynthVIB3App extends StatelessWidget {
   final SynthModules modules;
 
-  const SynthVIB3App({Key? key, required this.modules}) : super(key: key);
+  const SynthVIB3App({super.key, required this.modules});
 
   @override
   Widget build(BuildContext context) {
@@ -43,4 +51,3 @@ class SynthVIB3App extends StatelessWidget {
     );
   }
 }
-

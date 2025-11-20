@@ -1,16 +1,18 @@
-/**
- * Comprehensive Preset Management System
- *
- * Features:
- * - Complete synthesizer state serialization
- * - Preset categories and tags
- * - Search and filter
- * - Factory presets + user presets
- * - Cloud sync ready (Firebase integration)
- * - Import/export
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Comprehensive Preset Management System
+///
+/// Features:
+/// - Complete synthesizer state serialization
+/// - Preset categories and tags
+/// - Search and filter
+/// - Factory presets + user presets
+/// - Cloud sync ready (Firebase integration)
+/// - Import/export
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -412,8 +414,7 @@ class MappingPresetData {
       visualToAudioEnabled: json['visualToAudioEnabled'] ?? true,
       audioToVisualStrength: json['audioToVisualStrength'] ?? 1.0,
       visualToAudioStrength: json['visualToAudioStrength'] ?? 1.0,
-      mappingEnabled:
-          Map<String, bool>.from(json['mappingEnabled'] ?? {}),
+      mappingEnabled: Map<String, bool>.from(json['mappingEnabled'] ?? {}),
     );
   }
 }

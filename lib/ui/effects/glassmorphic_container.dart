@@ -1,44 +1,28 @@
-/**
- * Glassmorphic Container
- *
- * Provides frosted glass effect with backdrop blur, transparency,
- * and audio-reactive modulation. Core visual component for the
- * holographic interface design system.
- *
- * Features:
- * - Backdrop blur (configurable intensity)
- * - Semi-transparent background
- * - Border with glow effects
- * - Audio-reactive blur/opacity/glow
- * - Holographic gradient option
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Glassmorphic Container
+///
+/// Provides frosted glass effect with backdrop blur, transparency,
+/// and audio-reactive modulation. Core visual component for the
+/// holographic interface design system.
+///
+/// Features:
+/// - Backdrop blur (configurable intensity)
+/// - Semi-transparent background
+/// - Border with glow effects
+/// - Audio-reactive blur/opacity/glow
+/// - Holographic gradient option
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../audio/audio_analyzer.dart';
 import '../theme/design_tokens.dart';
-
-/// Audio features for reactive glassmorphism
-class AudioFeatures {
-  final double rms;               // 0-1, amplitude
-  final double spectralCentroid;  // 0-8000 Hz, brightness
-  final double bassEnergy;        // 0-1, low freq content
-  final double transient;         // 0-1, attack detection
-  final double dominantFreq;      // 0-8000 Hz, peak frequency
-
-  const AudioFeatures({
-    this.rms = 0.0,
-    this.spectralCentroid = 1000.0,
-    this.bassEnergy = 0.0,
-    this.transient = 0.0,
-    this.dominantFreq = 440.0,
-  });
-
-  static const AudioFeatures silent = AudioFeatures();
-}
 
 /// Glassmorphic container with audio-reactive capabilities
 class GlassmorphicContainer extends StatelessWidget {
@@ -55,7 +39,7 @@ class GlassmorphicContainer extends StatelessWidget {
   final List<BoxShadow>? customShadows;
 
   const GlassmorphicContainer({
-    Key? key,
+    super.key,
     required this.child,
     this.config = GlassmorphicConfig.interactive,
     this.audioFeatures,
@@ -67,7 +51,7 @@ class GlassmorphicContainer extends StatelessWidget {
     this.margin,
     this.borderRadius,
     this.customShadows,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -90,21 +74,24 @@ class GlassmorphicContainer extends StatelessWidget {
         : effectiveConfig.borderWidth;
 
     // Generate holographic gradient if enabled
-    final backgroundDecoration = enableHolographicGradient && audioFeatures != null
-        ? BoxDecoration(
-            gradient: DesignTokens.holographicGradient(
-              audioIntensity: audioFeatures!.rms,
-            ),
-            borderRadius: borderRadius ?? BorderRadius.circular(DesignTokens.radiusMedium),
-          )
-        : null;
+    final backgroundDecoration =
+        enableHolographicGradient && audioFeatures != null
+            ? BoxDecoration(
+                gradient: DesignTokens.holographicGradient(
+                  audioIntensity: audioFeatures!.rms,
+                ),
+                borderRadius: borderRadius ??
+                    BorderRadius.circular(DesignTokens.radiusMedium),
+              )
+            : null;
 
     return Container(
       width: width,
       height: height,
       margin: margin,
       child: ClipRRect(
-        borderRadius: borderRadius ?? BorderRadius.circular(DesignTokens.radiusMedium),
+        borderRadius:
+            borderRadius ?? BorderRadius.circular(DesignTokens.radiusMedium),
         child: BackdropFilter(
           filter: ImageFilter.blur(
             sigmaX: effectiveConfig.blurRadius,
@@ -113,8 +100,10 @@ class GlassmorphicContainer extends StatelessWidget {
           child: Container(
             padding: padding,
             decoration: BoxDecoration(
-              color: effectiveConfig.backgroundColor.withOpacity(effectiveConfig.opacity),
-              borderRadius: borderRadius ?? BorderRadius.circular(DesignTokens.radiusMedium),
+              color: effectiveConfig.backgroundColor
+                  .withValues(alpha: effectiveConfig.opacity),
+              borderRadius: borderRadius ??
+                  BorderRadius.circular(DesignTokens.radiusMedium),
               border: Border.all(
                 color: effectiveConfig.borderColor,
                 width: borderWidth,
@@ -141,7 +130,7 @@ class GlassmorphicContainer extends StatelessWidget {
       // Color based on dominant frequency
       final glowColor = _getFrequencyColor(audioFeatures!.dominantFreq);
       shadows.add(BoxShadow(
-        color: glowColor.withOpacity(glowIntensity / 10.0),
+        color: glowColor.withValues(alpha: glowIntensity / 10.0),
         blurRadius: glowIntensity,
         spreadRadius: glowIntensity / 2,
       ));
@@ -168,14 +157,14 @@ class GlassmorphicCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const GlassmorphicCard({
-    Key? key,
+    super.key,
     required this.child,
     this.audioFeatures,
     this.enableAudioReactivity = false,
     this.padding,
     this.margin,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +201,7 @@ class GlassmorphicPanel extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
 
   const GlassmorphicPanel({
-    Key? key,
+    super.key,
     required this.child,
     this.title,
     this.trailing,
@@ -222,7 +211,7 @@ class GlassmorphicPanel extends StatelessWidget {
     this.height,
     this.padding,
     this.margin,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -238,8 +227,7 @@ class GlassmorphicPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (title != null || trailing != null)
-            _buildHeader(),
+          if (title != null || trailing != null) _buildHeader(),
           Flexible(
             child: Padding(
               padding: padding ?? const EdgeInsets.all(DesignTokens.spacing3),
@@ -260,7 +248,7 @@ class GlassmorphicPanel extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -275,8 +263,7 @@ class GlassmorphicPanel extends StatelessWidget {
                 color: DesignTokens.stateActive,
               ),
             ),
-          if (trailing != null)
-            trailing!,
+          if (trailing != null) trailing!,
         ],
       ),
     );
@@ -294,7 +281,7 @@ class GlassmorphicButton extends StatefulWidget {
   final double? height;
 
   const GlassmorphicButton({
-    Key? key,
+    super.key,
     required this.child,
     this.onPressed,
     this.activeColor,
@@ -302,7 +289,7 @@ class GlassmorphicButton extends StatefulWidget {
     this.padding,
     this.width,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   State<GlassmorphicButton> createState() => _GlassmorphicButtonState();
@@ -321,11 +308,11 @@ class _GlassmorphicButtonState extends State<GlassmorphicButton> {
     if (isDisabled) {
       backgroundColor = DesignTokens.stateDisabled;
     } else if (_isPressed) {
-      backgroundColor = DesignTokens.pressed.withOpacity(0.3);
+      backgroundColor = DesignTokens.pressed.withValues(alpha: 0.3);
     } else if (widget.isActive) {
-      backgroundColor = effectiveColor.withOpacity(0.2);
+      backgroundColor = effectiveColor.withValues(alpha: 0.2);
     } else {
-      backgroundColor = Colors.white.withOpacity(0.1);
+      backgroundColor = Colors.white.withValues(alpha: 0.1);
     }
 
     // Border color
@@ -333,7 +320,7 @@ class _GlassmorphicButtonState extends State<GlassmorphicButton> {
         ? DesignTokens.stateDisabled
         : widget.isActive
             ? effectiveColor
-            : Colors.white.withOpacity(0.2);
+            : Colors.white.withValues(alpha: 0.2);
 
     // Glow effect when active
     final shadows = widget.isActive && !isDisabled
@@ -342,20 +329,23 @@ class _GlassmorphicButtonState extends State<GlassmorphicButton> {
 
     return GestureDetector(
       onTapDown: isDisabled ? null : (_) => setState(() => _isPressed = true),
-      onTapUp: isDisabled ? null : (_) {
-        setState(() => _isPressed = false);
-        widget.onPressed?.call();
-      },
+      onTapUp: isDisabled
+          ? null
+          : (_) {
+              setState(() => _isPressed = false);
+              widget.onPressed?.call();
+            },
       onTapCancel: isDisabled ? null : () => setState(() => _isPressed = false),
       child: AnimatedContainer(
         duration: DesignTokens.micro,
         curve: DesignTokens.easeOut,
         width: widget.width,
         height: widget.height ?? DesignTokens.touchTargetMinimum,
-        padding: widget.padding ?? const EdgeInsets.symmetric(
-          horizontal: DesignTokens.spacing3,
-          vertical: DesignTokens.spacing2,
-        ),
+        padding: widget.padding ??
+            const EdgeInsets.symmetric(
+              horizontal: DesignTokens.spacing3,
+              vertical: DesignTokens.spacing2,
+            ),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
@@ -380,13 +370,13 @@ class GlassmorphicModal extends StatelessWidget {
   final double? height;
 
   const GlassmorphicModal({
-    Key? key,
+    super.key,
     required this.child,
     this.onDismiss,
     this.barrierDismissible = true,
     this.width,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -396,7 +386,7 @@ class GlassmorphicModal extends StatelessWidget {
         GestureDetector(
           onTap: barrierDismissible ? onDismiss : null,
           child: Container(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
           ),
         ),
         // Modal content

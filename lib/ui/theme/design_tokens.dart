@@ -1,18 +1,18 @@
-/**
- * Design Token System
- *
- * Unified design language for Synth-VIB3+ holographic interface.
- * Provides consistent colors, typography, spacing, and animations
- * across all components with audio-reactive capabilities.
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Design Token System
+///
+/// Unified design language for Synth-VIB3+ holographic interface.
+/// Provides consistent colors, typography, spacing, and animations
+/// across all components with audio-reactive capabilities.
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+///
 
-import 'dart:ui';
+library;
+
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 /// Design token system for Synth-VIB3+ v3.0
 class DesignTokens {
@@ -21,63 +21,67 @@ class DesignTokens {
   // ============================================================================
 
   /// State Colors - Semantic meaning across all components
-  static const Color stateActive = Color(0xFF00FFFF);    // Cyan - active/enabled
-  static const Color stateInactive = Color(0xFF404050);  // Gray - inactive but enabled
-  static const Color stateDisabled = Color(0xFF202028);  // Dark gray - disabled
-  static const Color stateWarning = Color(0xFFFFAA00);   // Amber - warning state
-  static const Color stateError = Color(0xFFFF3366);     // Red - error state
-  static const Color stateSuccess = Color(0xFF00FF88);   // Green - success state
+  static const Color stateActive = Color(0xFF00FFFF); // Cyan - active/enabled
+  static const Color stateInactive =
+      Color(0xFF404050); // Gray - inactive but enabled
+  static const Color stateDisabled = Color(0xFF202028); // Dark gray - disabled
+  static const Color stateWarning = Color(0xFFFFAA00); // Amber - warning state
+  static const Color stateError = Color(0xFFFF3366); // Red - error state
+  static const Color stateSuccess = Color(0xFF00FF88); // Green - success state
 
   // ============================================================================
   // SYSTEM COLORS (from visual systems)
   // ============================================================================
 
   /// Visual System Colors - Match the 3 synthesis systems
-  static const Color quantum = Color(0xFF00FFFF);        // Cyan - pure harmonic
-  static const Color faceted = Color(0xFFFF00FF);        // Magenta - geometric hybrid
-  static const Color holographic = Color(0xFFFFAA00);    // Amber - spectral rich
+  static const Color quantum = Color(0xFF00FFFF); // Cyan - pure harmonic
+  static const Color faceted = Color(0xFFFF00FF); // Magenta - geometric hybrid
+  static const Color holographic = Color(0xFFFFAA00); // Amber - spectral rich
 
   // ============================================================================
   // INTERACTION STATE COLORS
   // ============================================================================
 
   /// Interaction States - Touch/gesture feedback
-  static const Color hover = Color(0xFF88CCFF);          // Light cyan - hovering
-  static const Color pressed = Color(0xFF0088CC);        // Dark cyan - pressed
-  static const Color selected = Color(0xFF00FFCC);       // Teal - selected/focused
-  static const Color dragging = Color(0xFF00DDFF);       // Bright cyan - dragging
+  static const Color hover = Color(0xFF88CCFF); // Light cyan - hovering
+  static const Color pressed = Color(0xFF0088CC); // Dark cyan - pressed
+  static const Color selected = Color(0xFF00FFCC); // Teal - selected/focused
+  static const Color dragging = Color(0xFF00DDFF); // Bright cyan - dragging
 
   // ============================================================================
   // AUDIO REACTIVITY COLORS
   // ============================================================================
 
   /// Audio-Reactive Colors - Frequency band visualization
-  static const Color audioLow = Color(0xFFFF3366);       // Red - bass (20-250 Hz)
-  static const Color audioMid = Color(0xFF00FF88);       // Green - mid (250-2000 Hz)
-  static const Color audioHigh = Color(0xFF00AAFF);      // Blue - high (2000-8000 Hz)
-  static const Color audioSilent = Color(0xFF303040);    // Dark gray - no audio
-  static const Color audioClipping = Color(0xFFFF0044);  // Bright red - clipping warning
+  static const Color audioLow = Color(0xFFFF3366); // Red - bass (20-250 Hz)
+  static const Color audioMid = Color(0xFF00FF88); // Green - mid (250-2000 Hz)
+  static const Color audioHigh =
+      Color(0xFF00AAFF); // Blue - high (2000-8000 Hz)
+  static const Color audioSilent = Color(0xFF303040); // Dark gray - no audio
+  static const Color audioClipping =
+      Color(0xFFFF0044); // Bright red - clipping warning
 
   // ============================================================================
   // GLASSMORPHIC LAYER DEFINITIONS
   // ============================================================================
 
   /// Base Layer - Background elements
-  static const Color glassBaseBackground = Color(0x1A000000);  // 10% black
+  static const Color glassBaseBackground = Color(0x1A000000); // 10% black
   static const double glassBaseBlur = 10.0;
-  static const Color glassBaseBorder = Color(0x1AFFFFFF);      // 10% white
+  static const Color glassBaseBorder = Color(0x1AFFFFFF); // 10% white
   static const double glassBaseBorderWidth = 1.0;
 
   /// Interactive Layer - UI controls
-  static const Color glassInteractiveBackground = Color(0x33FFFFFF);  // 20% white
+  static const Color glassInteractiveBackground =
+      Color(0x33FFFFFF); // 20% white
   static const double glassInteractiveBlur = 20.0;
-  static const Color glassInteractiveBorder = Color(0x40FFFFFF);      // 25% white
+  static const Color glassInteractiveBorder = Color(0x40FFFFFF); // 25% white
   static const double glassInteractiveBorderWidth = 1.0;
 
   /// Elevated Layer - Modals, popups, floating panels
-  static const Color glassElevatedBackground = Color(0x4DFFFFFF);  // 30% white
+  static const Color glassElevatedBackground = Color(0x4DFFFFFF); // 30% white
   static const double glassElevatedBlur = 30.0;
-  static const Color glassElevatedBorder = Color(0x66FFFFFF);      // 40% white
+  static const Color glassElevatedBorder = Color(0x66FFFFFF); // 40% white
   static const double glassElevatedBorderWidth = 1.5;
 
   // ============================================================================
@@ -87,7 +91,7 @@ class DesignTokens {
   /// Display - Large titles and headers
   static const TextStyle displayLarge = TextStyle(
     fontSize: 32,
-    fontWeight: FontWeight.w300,  // Light
+    fontWeight: FontWeight.w300, // Light
     letterSpacing: -0.5,
     color: Colors.white,
     height: 1.2,
@@ -112,7 +116,7 @@ class DesignTokens {
   /// Headlines - Section headers
   static const TextStyle headlineLarge = TextStyle(
     fontSize: 16,
-    fontWeight: FontWeight.w600,  // Semi-bold
+    fontWeight: FontWeight.w600, // Semi-bold
     letterSpacing: 0.15,
     color: Colors.white,
     height: 1.4,
@@ -129,7 +133,7 @@ class DesignTokens {
   /// Body - Standard text
   static const TextStyle bodyLarge = TextStyle(
     fontSize: 14,
-    fontWeight: FontWeight.w400,  // Regular
+    fontWeight: FontWeight.w400, // Regular
     letterSpacing: 0.25,
     color: Colors.white,
     height: 1.5,
@@ -146,7 +150,7 @@ class DesignTokens {
   /// Labels - UI control labels
   static const TextStyle labelLarge = TextStyle(
     fontSize: 13,
-    fontWeight: FontWeight.w500,  // Medium
+    fontWeight: FontWeight.w500, // Medium
     letterSpacing: 0.5,
     color: Colors.white70,
     height: 1.3,
@@ -175,7 +179,7 @@ class DesignTokens {
     letterSpacing: 0,
     color: stateActive,
     height: 1.2,
-    fontFeatures: [FontFeature.tabularFigures()],  // Monospace digits
+    fontFeatures: [FontFeature.tabularFigures()], // Monospace digits
   );
 
   static const TextStyle valueMedium = TextStyle(
@@ -200,17 +204,17 @@ class DesignTokens {
   // SPACING SYSTEM (8pt Grid)
   // ============================================================================
 
-  static const double spacing1 = 4.0;   // 0.5× - tight spacing
-  static const double spacing2 = 8.0;   // 1× - normal spacing
-  static const double spacing3 = 16.0;  // 2× - loose spacing
-  static const double spacing4 = 24.0;  // 3× - section spacing
-  static const double spacing5 = 32.0;  // 4× - major spacing
-  static const double spacing6 = 48.0;  // 6× - page spacing
+  static const double spacing1 = 4.0; // 0.5× - tight spacing
+  static const double spacing2 = 8.0; // 1× - normal spacing
+  static const double spacing3 = 16.0; // 2× - loose spacing
+  static const double spacing4 = 24.0; // 3× - section spacing
+  static const double spacing5 = 32.0; // 4× - major spacing
+  static const double spacing6 = 48.0; // 6× - page spacing
 
   /// Touch Targets - Minimum sizes for interactive elements
-  static const double touchTargetMinimum = 48.0;  // 48px minimum (Apple/Google)
-  static const double touchTargetComfortable = 56.0;  // 56px comfortable
-  static const double touchTargetLarge = 72.0;  // 72px large/important
+  static const double touchTargetMinimum = 48.0; // 48px minimum (Apple/Google)
+  static const double touchTargetComfortable = 56.0; // 56px comfortable
+  static const double touchTargetLarge = 72.0; // 72px large/important
 
   // ============================================================================
   // ANIMATION TIMINGS
@@ -226,7 +230,7 @@ class DesignTokens {
   static const Duration complex = Duration(milliseconds: 500);
 
   /// Audio-reactive - 60 FPS sync
-  static const Duration reactive = Duration(milliseconds: 16);  // ~60 FPS
+  static const Duration reactive = Duration(milliseconds: 16); // ~60 FPS
 
   /// Slow emphasis - Attention-grabbing
   static const Duration slow = Duration(milliseconds: 800);
@@ -250,57 +254,57 @@ class DesignTokens {
   static const double radiusMedium = 8.0;
   static const double radiusLarge = 12.0;
   static const double radiusXLarge = 16.0;
-  static const double radiusFull = 9999.0;  // Fully rounded
+  static const double radiusFull = 9999.0; // Fully rounded
 
   // ============================================================================
   // ELEVATION / SHADOWS
   // ============================================================================
 
   static BoxShadow shadowSmall(Color color) => BoxShadow(
-    color: color.withOpacity(0.2),
-    blurRadius: 4,
-    offset: const Offset(0, 2),
-  );
+        color: color.withValues(alpha: 0.2),
+        blurRadius: 4,
+        offset: const Offset(0, 2),
+      );
 
   static BoxShadow shadowMedium(Color color) => BoxShadow(
-    color: color.withOpacity(0.3),
-    blurRadius: 8,
-    offset: const Offset(0, 4),
-  );
+        color: color.withValues(alpha: 0.3),
+        blurRadius: 8,
+        offset: const Offset(0, 4),
+      );
 
   static BoxShadow shadowLarge(Color color) => BoxShadow(
-    color: color.withOpacity(0.4),
-    blurRadius: 16,
-    offset: const Offset(0, 8),
-  );
+        color: color.withValues(alpha: 0.4),
+        blurRadius: 16,
+        offset: const Offset(0, 8),
+      );
 
   // ============================================================================
   // GLOW EFFECTS
   // ============================================================================
 
   static BoxShadow glowSubtle(Color color) => BoxShadow(
-    color: color.withOpacity(0.3),
-    blurRadius: 4,
-    spreadRadius: 0,
-  );
+        color: color.withValues(alpha: 0.3),
+        blurRadius: 4,
+        spreadRadius: 0,
+      );
 
   static BoxShadow glowMedium(Color color) => BoxShadow(
-    color: color.withOpacity(0.5),
-    blurRadius: 8,
-    spreadRadius: 2,
-  );
+        color: color.withValues(alpha: 0.5),
+        blurRadius: 8,
+        spreadRadius: 2,
+      );
 
   static BoxShadow glowStrong(Color color) => BoxShadow(
-    color: color.withOpacity(0.7),
-    blurRadius: 16,
-    spreadRadius: 4,
-  );
+        color: color.withValues(alpha: 0.7),
+        blurRadius: 16,
+        spreadRadius: 4,
+      );
 
   static BoxShadow glowIntense(Color color) => BoxShadow(
-    color: color.withOpacity(0.9),
-    blurRadius: 24,
-    spreadRadius: 6,
-  );
+        color: color.withValues(alpha: 0.9),
+        blurRadius: 24,
+        spreadRadius: 6,
+      );
 
   // ============================================================================
   // AUDIO REACTIVITY MAPPINGS
@@ -325,7 +329,7 @@ class DesignTokens {
   /// Map dominant frequency (0-8000 Hz) to hue shift (±60°)
   static double dominantFreqToHueShift(double frequency) {
     final normalized = (frequency / 8000.0).clamp(0.0, 1.0);
-    return (normalized - 0.5) * 120.0;  // ±60° from base hue
+    return (normalized - 0.5) * 120.0; // ±60° from base hue
   }
 
   /// Map bass energy (0-1) to border width (1-4px)
@@ -384,7 +388,8 @@ class DesignTokens {
   }
 
   /// Get border width for state
-  static double getBorderWidth(InteractionState state, {required bool isSelected}) {
+  static double getBorderWidth(InteractionState state,
+      {required bool isSelected}) {
     if (isSelected) return 2.0;
 
     switch (state) {
@@ -407,25 +412,25 @@ class DesignTokens {
   /// Lighten a color by percentage (0-1)
   static Color _lighten(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
-    return hsl.withLightness(
-      (hsl.lightness + amount).clamp(0.0, 1.0)
-    ).toColor();
+    return hsl
+        .withLightness((hsl.lightness + amount).clamp(0.0, 1.0))
+        .toColor();
   }
 
   /// Darken a color by percentage (0-1)
   static Color _darken(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
-    return hsl.withLightness(
-      (hsl.lightness - amount).clamp(0.0, 1.0)
-    ).toColor();
+    return hsl
+        .withLightness((hsl.lightness - amount).clamp(0.0, 1.0))
+        .toColor();
   }
 
   /// Desaturate a color by percentage (0-1)
   static Color _desaturate(Color color, double amount) {
     final hsl = HSLColor.fromColor(color);
-    return hsl.withSaturation(
-      (hsl.saturation * (1.0 - amount)).clamp(0.0, 1.0)
-    ).toColor();
+    return hsl
+        .withSaturation((hsl.saturation * (1.0 - amount)).clamp(0.0, 1.0))
+        .toColor();
   }
 
   /// Adjust hue by degrees
@@ -446,18 +451,21 @@ class DesignTokens {
   /// Generate holographic iridescent gradient
   static LinearGradient holographicGradient({
     required double audioIntensity,
-    double baseHue = 180.0,  // Start with cyan
+    double baseHue = 180.0, // Start with cyan
   }) {
-    final hueShift = audioIntensity * 60.0;  // ±60° based on audio
+    final hueShift = audioIntensity * 60.0; // ±60° based on audio
 
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
         HSLColor.fromAHSL(1.0, (baseHue + hueShift) % 360, 0.8, 0.5).toColor(),
-        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 60) % 360, 0.8, 0.5).toColor(),
-        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 120) % 360, 0.8, 0.5).toColor(),
-        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 180) % 360, 0.8, 0.5).toColor(),
+        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 60) % 360, 0.8, 0.5)
+            .toColor(),
+        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 120) % 360, 0.8, 0.5)
+            .toColor(),
+        HSLColor.fromAHSL(1.0, (baseHue + hueShift + 180) % 360, 0.8, 0.5)
+            .toColor(),
       ],
       stops: const [0.0, 0.33, 0.66, 1.0],
     );
@@ -472,11 +480,11 @@ class DesignTokens {
 
     return RadialGradient(
       center: Alignment.center,
-      radius: 0.5 + (rms * 0.5),  // Expand with audio
+      radius: 0.5 + (rms * 0.5), // Expand with audio
       colors: [
-        centerColor.withOpacity(opacity),
-        centerColor.withOpacity(opacity * 0.5),
-        centerColor.withOpacity(0.0),
+        centerColor.withValues(alpha: opacity),
+        centerColor.withValues(alpha: opacity * 0.5),
+        centerColor.withValues(alpha: 0.0),
       ],
       stops: const [0.0, 0.5, 1.0],
     );
@@ -489,34 +497,34 @@ class DesignTokens {
 
 /// Interaction state (user input)
 enum InteractionState {
-  idle,       // Default, no interaction
-  hover,      // Finger near (if detectable)
-  pressed,    // Touching
-  dragging,   // Moving while touching
-  released,   // Just released
+  idle, // Default, no interaction
+  hover, // Finger near (if detectable)
+  pressed, // Touching
+  dragging, // Moving while touching
+  released, // Just released
 }
 
 /// Functional state (purpose/capability)
 enum FunctionalState {
-  active,     // Enabled and current
-  inactive,   // Enabled but not current
-  disabled,   // Not interactive
-  loading,    // Processing
+  active, // Enabled and current
+  inactive, // Enabled but not current
+  disabled, // Not interactive
+  loading, // Processing
 }
 
 /// Audio state (reactivity)
 enum AudioState {
-  silent,     // No audio input
-  playing,    // Audio active
+  silent, // No audio input
+  playing, // Audio active
   modulating, // Being modulated
-  clipping,   // Over threshold
+  clipping, // Over threshold
 }
 
 /// Visual system type (maps to synthesis system)
 enum VisualSystemType {
-  quantum,      // Cyan - pure harmonic
-  faceted,      // Magenta - geometric hybrid
-  holographic,  // Amber - spectral rich
+  quantum, // Cyan - pure harmonic
+  faceted, // Magenta - geometric hybrid
+  holographic, // Amber - spectral rich
 }
 
 // ============================================================================

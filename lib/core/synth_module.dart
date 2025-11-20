@@ -1,11 +1,13 @@
-/**
- * Core Module System for Synth-VIB3+
- *
- * Provides clean lifecycle management and dependency resolution
- * for all system modules. Inspired by VIB3+ JavaScript architecture.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Core Module System for Synth-VIB3+
+///
+/// Provides clean lifecycle management and dependency resolution
+/// for all system modules. Inspired by VIB3+ JavaScript architecture.
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/foundation.dart';
 
@@ -103,7 +105,7 @@ class ModuleManager with ChangeNotifier {
             await other.module.onModuleReady(info.module.runtimeType);
           }
         }
-      } catch (e, stackTrace) {
+      } catch (e) {
         info.state = ModuleState.failed;
         info.error = e.toString();
         info.initEndTime = DateTime.now();
@@ -187,7 +189,7 @@ class ModuleManager with ChangeNotifier {
       }
     }
 
-    debugPrint('\n' + '═' * 60);
+    debugPrint('\n${'═' * 60}');
     debugPrint('Summary: $healthy healthy, $unhealthy with issues\n');
   }
 
@@ -234,7 +236,8 @@ class ModuleManager with ChangeNotifier {
       for (final depType in info.module.dependencies) {
         final depInfo = _moduleMap[depType];
         if (depInfo == null) {
-          throw StateError('Dependency $depType not registered for ${info.module.name}');
+          throw StateError(
+              'Dependency $depType not registered for ${info.module.name}');
         }
         visit(depInfo);
       }

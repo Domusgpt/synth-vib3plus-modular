@@ -1,35 +1,37 @@
-/**
- * Component Integration Manager
- *
- * Central hub that connects all UI components with audio/visual systems,
- * manages parameter routing, animation layer integration, haptic feedback,
- * and coordinates state across the entire application.
- *
- * Features:
- * - Component registration and lifecycle management
- * - Audio → Visual parameter routing
- * - Visual → Audio parameter routing
- * - Animation layer coordination
- * - Haptic feedback integration
- * - Performance monitoring
- * - Event broadcasting
- * - State synchronization
- *
- * This is the "nervous system" of the application.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Component Integration Manager
+///
+/// Central hub that connects all UI components with audio/visual systems,
+/// manages parameter routing, animation layer integration, haptic feedback,
+/// and coordinates state across the entire application.
+///
+/// Features:
+/// - Component registration and lifecycle management
+/// - Audio → Visual parameter routing
+/// - Visual → Audio parameter routing
+/// - Animation layer coordination
+/// - Haptic feedback integration
+/// - Performance monitoring
+/// - Event broadcasting
+/// - State synchronization
+///
+/// This is the "nervous system" of the application.
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../audio/audio_analyzer.dart';
 import '../providers/audio_provider.dart';
 import '../providers/visual_provider.dart';
 import '../providers/layout_provider.dart';
 import '../mapping/parameter_bridge.dart';
 import '../ui/layers/animation_layer.dart';
-import '../ui/layers/particle_system.dart';
+import '../ui/theme/design_tokens.dart';
 import '../ui/layers/modulation_visualizer.dart';
-import '../ui/effects/glassmorphic_container.dart';
 import '../ui/utils/haptic_feedback.dart';
 
 // ============================================================================
@@ -76,9 +78,9 @@ class RegisteredComponent {
 class ParameterBinding {
   final String componentId;
   final String parameterId;
-  final bool bidirectional;      // Two-way binding
-  final double sensitivity;      // 0.1-2.0
-  final Function(double)? transform;  // Value transformation
+  final bool bidirectional; // Two-way binding
+  final double sensitivity; // 0.1-2.0
+  final Function(double)? transform; // Value transformation
 
   const ParameterBinding({
     required this.componentId,
@@ -117,7 +119,8 @@ class ComponentIntegrationManager extends ChangeNotifier {
   DateTime _sessionStart = DateTime.now();
 
   // Event broadcasting
-  final StreamController<ComponentEvent> _eventController = StreamController.broadcast();
+  final StreamController<ComponentEvent> _eventController =
+      StreamController.broadcast();
   Stream<ComponentEvent> get events => _eventController.stream;
 
   // Configuration
@@ -142,16 +145,23 @@ class ComponentIntegrationManager extends ChangeNotifier {
   void _initialize() {
     _sessionStart = DateTime.now();
 
-    // Subscribe to audio stream if available
+    // Subscribe to audio provider updates
     if (audioProvider != null) {
-      // Create audio features stream (would need to be implemented in AudioProvider)
-      // audioStream = audioProvider!.audioFeaturesStream;
-      // _audioSubscription = audioStream?.listen(_handleAudioFeatures);
+      audioProvider!.addListener(_onAudioProviderUpdate);
+    }
+  }
+
+  /// Handle audio provider updates
+  void _onAudioProviderUpdate() {
+    final features = audioProvider?.currentFeatures;
+    if (features != null) {
+      _handleAudioFeatures(features);
     }
   }
 
   @override
   void dispose() {
+    audioProvider?.removeListener(_onAudioProviderUpdate);
     _audioSubscription?.cancel();
     _eventController.close();
     super.dispose();
@@ -347,7 +357,9 @@ class ComponentIntegrationManager extends ChangeNotifier {
   }
 
   /// Spawn particles on interaction
-  void spawnInteractionParticles(String componentId, Offset position, {
+  void spawnInteractionParticles(
+    String componentId,
+    Offset position, {
     double intensity = 1.0,
     Color? color,
   }) {
@@ -393,7 +405,10 @@ class ComponentIntegrationManager extends ChangeNotifier {
   }
 
   /// Add trail for component
-  void addComponentTrail(String componentId, int pointerId, Offset position, {
+  void addComponentTrail(
+    String componentId,
+    int pointerId,
+    Offset position, {
     double pressure = 1.0,
   }) {
     if (animationLayer == null) return;
@@ -413,7 +428,7 @@ class ComponentIntegrationManager extends ChangeNotifier {
     if (component == null || animationLayer == null) return;
 
     // Get component position (would need to query the actual widget)
-    final sourcePosition = Offset(100, 100);  // Placeholder
+    final sourcePosition = Offset(100, 100); // Placeholder
 
     animationLayer!.addModulation(
       source: ModulationSource(
@@ -425,7 +440,7 @@ class ComponentIntegrationManager extends ChangeNotifier {
       target: ModulationTarget(
         id: binding.parameterId,
         label: binding.parameterId,
-        position: const Offset(200, 200),  // Placeholder
+        position: const Offset(200, 200), // Placeholder
       ),
       strength: binding.sensitivity,
     );
@@ -501,7 +516,8 @@ class ComponentIntegrationManager extends ChangeNotifier {
 
     return {
       'sessionDuration': sessionDuration.inSeconds,
-      'totalInteractions': _interactionCounts.values.fold(0, (sum, count) => sum + count),
+      'totalInteractions':
+          _interactionCounts.values.fold(0, (sum, count) => sum + count),
       'componentCount': _components.length,
       'bindingCount': _bindings.length,
       'interactionBreakdown': Map.from(_interactionCounts),
@@ -525,7 +541,7 @@ class ComponentIntegrationManager extends ChangeNotifier {
   /// Get current audio features
   AudioFeatures? getCurrentAudioFeatures() {
     // Would return the latest audio features
-    return null;  // Placeholder
+    return null; // Placeholder
   }
 
   /// Reset all components

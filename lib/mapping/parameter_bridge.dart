@@ -1,15 +1,17 @@
-/**
- * VIB34D + Synther Parameter Bridge
- *
- * Orchestrates bidirectional parameter flow between audio synthesis
- * and 4D visual rendering systems.
- *
- * Audio → Visual: Real-time FFT analysis modulates visual parameters
- * Visual → Audio: Quaternion rotations and geometry state modulate synthesis
- *
- * A Paul Phillips Manifestation
- * Paul@clearseassolutions.com
- */
+///
+/// VIB34D + Synther Parameter Bridge
+///
+/// Orchestrates bidirectional parameter flow between audio synthesis
+/// and 4D visual rendering systems.
+///
+/// Audio → Visual: Real-time FFT analysis modulates visual parameters
+/// Visual → Audio: Quaternion rotations and geometry state modulate synthesis
+///
+/// A Paul Phillips Manifestation
+/// Paul@clearseassolutions.com
+///
+
+library;
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -17,6 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'audio_to_visual.dart';
 import 'visual_to_audio.dart';
 import '../models/mapping_preset.dart';
+import '../models/modulation_matrix.dart';
 import '../providers/audio_provider.dart';
 import '../providers/visual_provider.dart';
 
@@ -28,6 +31,10 @@ class ParameterBridge with ChangeNotifier {
   // Providers
   final AudioProvider audioProvider;
   final VisualProvider visualProvider;
+
+  // Modulation matrix (flexible parameter routing)
+  ModulationMatrix _audioToVisualMatrix = ModulationMatrix();
+  ModulationMatrix _visualToAudioMatrix = ModulationMatrix();
 
   // Current mapping configuration
   MappingPreset _currentPreset = MappingPreset.defaultPreset();
@@ -55,12 +62,70 @@ class ParameterBridge with ChangeNotifier {
       audioProvider: audioProvider,
       visualProvider: visualProvider,
     );
+
+    // Initialize default modulation matrices
+    _initializeDefaultMatrices();
+  }
+
+  /// Initialize default modulation routing
+  void _initializeDefaultMatrices() {
+    // Use bidirectional preset as default
+    _audioToVisualMatrix = DefaultModulationMatrices.audioReactive();
+    _visualToAudioMatrix = DefaultModulationMatrices.visualReactive();
+
+    debugPrint('🌉 Modulation matrices initialized:');
+    debugPrint('   Audio→Visual: ${_audioToVisualMatrix.routeCount} routes');
+    debugPrint('   Visual→Audio: ${_visualToAudioMatrix.routeCount} routes');
   }
 
   // Getters
   MappingPreset get currentPreset => _currentPreset;
   bool get isRunning => _isRunning;
   double get currentFPS => _currentFPS;
+  ModulationMatrix get audioToVisualMatrix => _audioToVisualMatrix;
+  ModulationMatrix get visualToAudioMatrix => _visualToAudioMatrix;
+
+  /// Set audio→visual modulation matrix
+  void setAudioToVisualMatrix(ModulationMatrix matrix) {
+    _audioToVisualMatrix = matrix.copy();
+    debugPrint(
+        '🔊→👁️ Audio→Visual matrix updated: ${_audioToVisualMatrix.routeCount} routes');
+    notifyListeners();
+  }
+
+  /// Set visual→audio modulation matrix
+  void setVisualToAudioMatrix(ModulationMatrix matrix) {
+    _visualToAudioMatrix = matrix.copy();
+    debugPrint(
+        '👁️→🔊 Visual→Audio matrix updated: ${_visualToAudioMatrix.routeCount} routes');
+    notifyListeners();
+  }
+
+  /// Load preset modulation matrices
+  void loadModulationPreset(String presetName) {
+    switch (presetName.toLowerCase()) {
+      case 'audioreactive':
+        _audioToVisualMatrix = DefaultModulationMatrices.audioReactive();
+        _visualToAudioMatrix = ModulationMatrix(); // Clear visual→audio
+        break;
+      case 'visualreactive':
+        _audioToVisualMatrix = ModulationMatrix(); // Clear audio→visual
+        _visualToAudioMatrix = DefaultModulationMatrices.visualReactive();
+        break;
+      case 'bidirectional':
+        _audioToVisualMatrix = DefaultModulationMatrices.audioReactive();
+        _visualToAudioMatrix = DefaultModulationMatrices.visualReactive();
+        break;
+      default:
+        debugPrint('⚠️ Unknown modulation preset: $presetName');
+        return;
+    }
+
+    debugPrint('🎚️ Loaded modulation preset: $presetName');
+    debugPrint('   Audio→Visual: ${_audioToVisualMatrix.routeCount} routes');
+    debugPrint('   Visual→Audio: ${_visualToAudioMatrix.routeCount} routes');
+    notifyListeners();
+  }
 
   /// Start the parameter bridge update loop
   void start() {
@@ -77,8 +142,10 @@ class ParameterBridge with ChangeNotifier {
     );
 
     debugPrint('🌉 ParameterBridge started (60 FPS)');
-    debugPrint('   Audio→Visual: ${_currentPreset.audioReactiveEnabled ? "ENABLED" : "disabled"}');
-    debugPrint('   Visual→Audio: ${_currentPreset.visualReactiveEnabled ? "ENABLED" : "disabled"}');
+    debugPrint(
+        '   Audio→Visual: ${_currentPreset.audioReactiveEnabled ? "ENABLED" : "disabled"}');
+    debugPrint(
+        '   Visual→Audio: ${_currentPreset.visualReactiveEnabled ? "ENABLED" : "disabled"}');
 
     notifyListeners();
   }
