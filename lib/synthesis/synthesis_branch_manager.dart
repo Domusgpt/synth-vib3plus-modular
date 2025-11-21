@@ -237,6 +237,11 @@ class SynthesisBranchManager {
   int _samplesSinceNoteOn = 0;
   bool _noteIsOn = false;
 
+  // Note state
+  int _currentMidiNote = 60;  // Middle C
+  double _currentVelocity = 1.0;
+  double _currentFrequency = 261.63;  // Middle C frequency
+
   // Random number generator for noise
   final _random = math.Random();
 
@@ -275,13 +280,23 @@ class SynthesisBranchManager {
   }
 
   /// Note on (trigger envelope)
-  void noteOn() {
+  /// Note on - start playing a note
+  void noteOn(int midiNote, [double velocity = 1.0]) {
+    _currentMidiNote = midiNote;
+    _currentVelocity = velocity.clamp(0.0, 1.0);
+
+    // Convert MIDI note to frequency: f = 440 * 2^((n-69)/12)
+    _currentFrequency = 440.0 * math.pow(2.0, (midiNote - 69) / 12.0);
+
     _noteIsOn = true;
     _samplesSinceNoteOn = 0;
+    _envelopeLevel = 0.0;
   }
 
-  /// Note off (start release)
-  void noteOff() {
+  /// Note off - start release (optional midiNote for polyphony compatibility)
+  void noteOff([int? midiNote]) {
+    // For now, we're monophonic, so we ignore the midiNote parameter
+    // In a polyphonic version, we'd check if this matches the current note
     _noteIsOn = false;
   }
 
@@ -320,15 +335,16 @@ class SynthesisBranchManager {
   }
 
   /// Generate audio buffer with current configuration
-  Float32List generateBuffer(int frames, double frequency) {
+  /// Generate audio buffer using current note frequency
+  Float32List generateBuffer(int frames) {
     // Route to appropriate synthesis branch based on core
     switch (_currentCore) {
       case PolytopeCor.base:
-        return _generateDirect(frames, frequency);
+        return _generateDirect(frames, _currentFrequency);
       case PolytopeCor.hypersphere:
-        return _generateFM(frames, frequency);
+        return _generateFM(frames, _currentFrequency);
       case PolytopeCor.hypertetrahedron:
-        return _generateRingMod(frames, frequency);
+        return _generateRingMod(frames, _currentFrequency);
     }
   }
 
