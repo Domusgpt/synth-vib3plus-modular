@@ -19,6 +19,7 @@
  */
 
 import 'dart:math' as math;
+import '../../../audio/audio_analyzer.dart';
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../base/reactive_component.dart';
