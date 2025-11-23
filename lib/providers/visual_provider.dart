@@ -109,15 +109,15 @@ class VisualProvider with ChangeNotifier {
     debugPrint('🔄 System Switching: $previousSystem → $systemName');
 
     // Update JavaScript system via WebView
-    // VIB3+ uses window.switchSystem(), not window.vib34d.switchSystem()
+    // VIB34D uses window.vib34d.switchSystem()
     if (_webViewController != null) {
       try {
         await _webViewController!.runJavaScript(
-          'if (window.switchSystem) { window.switchSystem("$systemName"); }'
+          'if (window.vib34d && window.vib34d.switchSystem) { window.vib34d.switchSystem("$systemName"); }'
         );
-        debugPrint('✅ VIB3+ system switched to $systemName');
+        debugPrint('✅ VIB34D system switched to $systemName');
       } catch (e) {
-        debugPrint('❌ Error switching VIB3+ system: $e');
+        debugPrint('❌ Error switching VIB34D system: $e');
       }
     } else {
       debugPrint('⚠️  WebView controller not initialized - system switch deferred');
