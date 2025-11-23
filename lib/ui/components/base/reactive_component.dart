@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
+import '../../../audio/audio_analyzer.dart';
 
 // ============================================================================
 // COMPONENT STATE MODEL
