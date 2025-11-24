@@ -23,11 +23,15 @@ import '../ui/debug/webview_console_overlay.dart';
 class VIB34DWidget extends StatefulWidget {
   final VisualProvider visualProvider;
   final AudioProvider audioProvider;
+  final Function(String message, ConsoleMessageType type)? onConsoleMessage;
+  final ValueNotifier<String>? systemStateNotifier;
 
   const VIB34DWidget({
     Key? key,
     required this.visualProvider,
     required this.audioProvider,
+    this.onConsoleMessage,
+    this.systemStateNotifier,
   }) : super(key: key);
 
   @override
@@ -38,8 +42,6 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
   late WebViewController _webViewController;
   bool _isLoading = true;
   String? _errorMessage;
-  final GlobalKey<WebViewConsoleOverlayState> _consoleKey = GlobalKey();
-  final ValueNotifier<String> _systemStateNotifier = ValueNotifier<String>('Unknown');
 
   @override
   void initState() {
@@ -88,16 +90,18 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
                 msgType = ConsoleMessageType.log;
             }
 
-            _consoleKey.currentState?.addMessage(msg, msgType);
+            // Forward to callback
+            widget.onConsoleMessage?.call(msg, msgType);
 
             // Update system state if message contains system info
-            if (msg.contains('Switched to') || msg.contains('system initialized')) {
+            if (widget.systemStateNotifier != null &&
+                (msg.contains('Switched to') || msg.contains('system initialized'))) {
               if (msg.contains('quantum')) {
-                _systemStateNotifier.value = 'Quantum System';
+                widget.systemStateNotifier!.value = 'Quantum System';
               } else if (msg.contains('holographic')) {
-                _systemStateNotifier.value = 'Holographic System';
+                widget.systemStateNotifier!.value = 'Holographic System';
               } else if (msg.contains('faceted')) {
-                _systemStateNotifier.value = 'Faceted System';
+                widget.systemStateNotifier!.value = 'Faceted System';
               }
             }
           } catch (e) {
@@ -399,75 +403,65 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return WebViewConsoleOverlay(
-      key: _consoleKey,
-      systemStateNotifier: _systemStateNotifier,
-      child: Stack(
-        children: [
-          WebViewWidget(controller: _webViewController),
+    return Stack(
+      children: [
+        WebViewWidget(controller: _webViewController),
 
-          // Loading indicator
-          if (_isLoading)
-            Container(
-              color: Colors.black,
-              child: const Center(
+        // Loading indicator
+        if (_isLoading)
+          Container(
+            color: Colors.black,
+            child: const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(color: Colors.cyan),
+                  SizedBox(height: 20),
+                  Text(
+                    'Loading VIB34D Systems...',
+                    style: TextStyle(
+                      color: Colors.cyan,
+                      fontSize: 16,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+        // Error message
+        if (_errorMessage != null)
+          Container(
+            color: Colors.black,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(color: Colors.cyan),
-                    SizedBox(height: 20),
+                    const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                    const SizedBox(height: 20),
                     Text(
-                      'Loading VIB34D Systems...',
-                      style: TextStyle(
-                        color: Colors.cyan,
-                        fontSize: 16,
-                        fontFamily: 'monospace',
+                      'Error Loading Visualization',
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.white70),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
             ),
-
-          // Error message
-          if (_errorMessage != null)
-            Container(
-              color: Colors.black,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.error_outline, color: Colors.red, size: 48),
-                      const SizedBox(height: 20),
-                      Text(
-                        'Error Loading Visualization',
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        _errorMessage!,
-                        style: const TextStyle(color: Colors.white70),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
+          ),
+      ],
     );
-  }
-
-  @override
-  void dispose() {
-    _systemStateNotifier.dispose();
-    super.dispose();
   }
 }
