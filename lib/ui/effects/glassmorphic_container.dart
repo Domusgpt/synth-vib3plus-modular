@@ -62,7 +62,7 @@ class GlassmorphicContainer extends StatelessWidget {
         : config;
 
     // Calculate audio-reactive border glow
-    final glowIntensity = enableAudioReactivity && audioFeatures != null
+    final intensity = enableAudioReactivity && audioFeatures != null
         ? DesignTokens.transientToGlow(audioFeatures!.transient)
         : 0.0;
 
@@ -101,7 +101,7 @@ class GlassmorphicContainer extends StatelessWidget {
                 color: effectiveConfig.borderColor,
                 width: borderWidth,
               ),
-              boxShadow: customShadows ?? _buildShadows(glowIntensity),
+              boxShadow: customShadows ?? _buildShadows(intensity),
               gradient: backgroundDecoration?.gradient,
             ),
             child: child,
@@ -112,20 +112,20 @@ class GlassmorphicContainer extends StatelessWidget {
   }
 
   /// Build shadow list with optional glow
-  List<BoxShadow> _buildShadows(double glowIntensity) {
+  List<BoxShadow> _buildShadows(double intensity) {
     final shadows = <BoxShadow>[];
 
     // Standard elevation shadow
     shadows.add(DesignTokens.shadowSmall(Colors.black));
 
     // Audio-reactive glow
-    if (glowIntensity > 0.0 && audioFeatures != null) {
+    if (intensity > 0.0 && audioFeatures != null) {
       // Color based on dominant frequency
       final glowColor = _getFrequencyColor(audioFeatures!.dominantFreq);
       shadows.add(BoxShadow(
-        color: glowColor.withOpacity(glowIntensity / 10.0),
-        blurRadius: glowIntensity,
-        spreadRadius: glowIntensity / 2,
+        color: glowColor.withOpacity(intensity / 10.0),
+        blurRadius: intensity,
+        spreadRadius: intensity / 2,
       ));
     }
 

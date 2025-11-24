@@ -319,11 +319,11 @@ class VisualPresetData {
   // Visual parameters
   final double morph;
   final double chaos;
-  final double tessellationDensity;
-  final double hueShift;
-  final double glowIntensity;
-  final double vertexBrightness;
-  final double projectionDistance;
+  final double gridDensity;
+  final double hue;
+  final double intensity;
+  final double intensity;
+  final double dimension;
   final double layerDepth;
 
   const VisualPresetData({
@@ -335,11 +335,11 @@ class VisualPresetData {
     this.rotationSpeedZW = 0.25,
     this.morph = 0.0,
     this.chaos = 0.0,
-    this.tessellationDensity = 5.0,
-    this.hueShift = 0.0,
-    this.glowIntensity = 1.0,
-    this.vertexBrightness = 1.0,
-    this.projectionDistance = 2.0,
+    this.gridDensity = 5.0,
+    this.hue = 0.0,
+    this.intensity = 1.0,
+    this.intensity = 1.0,
+    this.dimension = 2.0,
     this.layerDepth = 0.5,
   });
 
@@ -352,11 +352,11 @@ class VisualPresetData {
         'rotationSpeedZW': rotationSpeedZW,
         'morph': morph,
         'chaos': chaos,
-        'tessellationDensity': tessellationDensity,
-        'hueShift': hueShift,
-        'glowIntensity': glowIntensity,
-        'vertexBrightness': vertexBrightness,
-        'projectionDistance': projectionDistance,
+        'gridDensity': gridDensity,
+        'hue': hue,
+        'intensity': intensity,
+        'intensity': intensity,
+        'dimension': dimension,
         'layerDepth': layerDepth,
       };
 
@@ -370,11 +370,11 @@ class VisualPresetData {
       rotationSpeedZW: json['rotationSpeedZW'] ?? 0.25,
       morph: json['morph'] ?? 0.0,
       chaos: json['chaos'] ?? 0.0,
-      tessellationDensity: json['tessellationDensity'] ?? 5.0,
-      hueShift: json['hueShift'] ?? 0.0,
-      glowIntensity: json['glowIntensity'] ?? 1.0,
-      vertexBrightness: json['vertexBrightness'] ?? 1.0,
-      projectionDistance: json['projectionDistance'] ?? 2.0,
+      gridDensity: json['gridDensity'] ?? 5.0,
+      hue: json['hue'] ?? 0.0,
+      intensity: json['intensity'] ?? 1.0,
+      intensity: json['intensity'] ?? 1.0,
+      dimension: json['dimension'] ?? 2.0,
       layerDepth: json['layerDepth'] ?? 0.5,
     );
   }

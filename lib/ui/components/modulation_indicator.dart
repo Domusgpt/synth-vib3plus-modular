@@ -199,9 +199,9 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
     final rotationXW = (state['rotationXW'] as double?) ?? 0.0;
     final rotationYW = (state['rotationYW'] as double?) ?? 0.0;
     final rotationZW = (state['rotationZW'] as double?) ?? 0.0;
-    final morph = (state['morphParameter'] as double?) ?? 0.0;
-    final projection = (state['projectionDistance'] as double?) ?? 0.0;
-    final layerSep = (state['layerSeparation'] as double?) ?? 0.0;
+    final morph = (state['morphFactor'] as double?) ?? 0.0;
+    final projection = (state['dimension'] as double?) ?? 0.0;
+    final layerSep = (state['dimension'] as double?) ?? 0.0;
 
     return Column(
       children: [

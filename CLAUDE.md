@@ -111,32 +111,32 @@ VIB3+ runs as a WebGL visualization inside a Flutter WebView. Communication happ
 
 ## Parameter Mappings Reference
 
-### Visual Controls Audio
+### Visual Controls Audio (ACTUAL VIB3+ PARAMETERS)
 
 | Visual Parameter | Audio Effect |
 |-----------------|--------------|
-| XY Rotation | Oscillator 1 detune (±12 cents) |
-| XZ Rotation | Oscillator 2 detune (±12 cents) |
-| YZ Rotation | Combined detuning (±7 cents) |
-| XW Rotation | FM depth (0-2 semitones) - Hypersphere only |
-| YW Rotation | Ring mod depth (0-100%) - Hypertetrahedron only |
-| ZW Rotation | Filter cutoff modulation (±40%) |
-| Morph | Waveform crossfade |
-| Chaos | Noise injection (0-30%) + filter randomization |
-| Speed | LFO rate for all modulations (0.1-10 Hz) |
-| Hue Shift | Spectral tilt (brightness filter) |
-| Glow Intensity | Reverb mix (5-60%) + attack time (1-100ms) |
-| Tessellation Density | Voice count/polyphony (1-8 voices) |
+| rot4dXY | Oscillator 1 detune (±12 cents) |
+| rot4dXZ | Oscillator 2 detune (±12 cents) |
+| rot4dYZ | Combined detuning (±7 cents) |
+| rot4dXW | FM depth (0-2 semitones) - Hypersphere only |
+| rot4dYW | Ring mod depth (0-100%) - Hypertetrahedron only |
+| rot4dZW | Filter cutoff modulation (±40%) |
+| morphFactor | Waveform crossfade |
+| chaos | Noise injection (0-30%) + filter randomization |
+| speed | LFO rate for all modulations (0.1-10 Hz) |
+| hue | Spectral tilt (brightness filter) |
+| intensity | Reverb mix (5-60%) + attack time (1-100ms) |
+| gridDensity | Voice count/polyphony (1-8 voices) |
 
-### Audio Controls Visual
+### Audio Controls Visual (ACTUAL VIB3+ PARAMETERS)
 
 | Audio Feature | Visual Effect |
 |--------------|---------------|
 | Bass Energy (20-250 Hz) | Rotation speed (0.5x-2.5x) |
-| Mid Energy (250-2000 Hz) | Tessellation density (3-8) |
-| High Energy (2000-8000 Hz) | Vertex brightness (0.5-1.0) |
-| Spectral Centroid | Hue shift (dark→red, bright→cyan) |
-| RMS Amplitude | Glow intensity |
+| Mid Energy (250-2000 Hz) | gridDensity (5-100) |
+| High Energy (2000-8000 Hz) | intensity (0-1) |
+| Spectral Centroid | hue (0-360) |
+| RMS Amplitude | intensity (0-1) |
 
 ## Implementation Status
 

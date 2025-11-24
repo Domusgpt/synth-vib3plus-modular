@@ -65,7 +65,7 @@ class VisualStyle {
   final double borderRadius;
   final bool showGlow;
   final bool showBorder;
-  final double glowIntensity;
+  final double intensity;
   final GlassmorphicConfig? glassmorphism;
 
   const VisualStyle({
@@ -73,7 +73,7 @@ class VisualStyle {
     this.borderRadius = DesignTokens.radiusMedium,
     this.showGlow = true,
     this.showBorder = true,
-    this.glowIntensity = 1.0,
+    this.intensity = 1.0,
     this.glassmorphism,
   });
 
@@ -82,7 +82,7 @@ class VisualStyle {
     double? borderRadius,
     bool? showGlow,
     bool? showBorder,
-    double? glowIntensity,
+    double? intensity,
     GlassmorphicConfig? glassmorphism,
   }) {
     return VisualStyle(
@@ -90,7 +90,7 @@ class VisualStyle {
       borderRadius: borderRadius ?? this.borderRadius,
       showGlow: showGlow ?? this.showGlow,
       showBorder: showBorder ?? this.showBorder,
-      glowIntensity: glowIntensity ?? this.glowIntensity,
+      intensity: intensity ?? this.intensity,
       glassmorphism: glassmorphism ?? this.glassmorphism,
     );
   }
@@ -291,8 +291,8 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
     if (widget.audioReactivity.enabled &&
         widget.audioReactivity.reactToSpectral &&
         _audioFeatures != null) {
-      final hueShift = DesignTokens.dominantFreqToHueShift(_audioFeatures!.dominantFreq);
-      baseColor = DesignTokens.adjustHue(baseColor, hueShift * widget.audioReactivity.sensitivity);
+      final hue = DesignTokens.dominantFreqToHueShift(_audioFeatures!.dominantFreq);
+      baseColor = DesignTokens.adjustHue(baseColor, hue * widget.audioReactivity.sensitivity);
     }
 
     return baseColor;
@@ -310,7 +310,7 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
                    widget.audioReactivity.sensitivity;
     }
 
-    return intensity * widget.style.glowIntensity;
+    return intensity * widget.style.intensity;
   }
 
   /// Get border width for current state
@@ -331,7 +331,7 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
   /// Get border style decoration
   BoxDecoration getBorderDecoration({bool isSelected = false}) {
     final color = getStateColor();
-    final glowIntensity = getGlowIntensity();
+    final intensity = getGlowIntensity();
     final borderWidth = getBorderWidth(isSelected: isSelected);
 
     return BoxDecoration(
@@ -339,12 +339,12 @@ abstract class ReactiveComponentState<T extends ReactiveComponent> extends State
       border: widget.style.showBorder
           ? Border.all(color: color, width: borderWidth)
           : null,
-      boxShadow: widget.style.showGlow && glowIntensity > 0
+      boxShadow: widget.style.showGlow && intensity > 0
           ? [
               BoxShadow(
-                color: color.withOpacity(glowIntensity / 10),
-                blurRadius: glowIntensity,
-                spreadRadius: glowIntensity / 2,
+                color: color.withOpacity(intensity / 10),
+                blurRadius: intensity,
+                spreadRadius: intensity / 2,
               ),
             ]
           : null,
