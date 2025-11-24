@@ -40,13 +40,12 @@ class VisualProvider with ChangeNotifier {
   double _rotationVelocityYW = 0.0;
   double _rotationVelocityZW = 0.0;
 
-  // Visual parameters
+  // Visual parameters (ACTUAL VIB3+ names)
   double _rotationSpeed = 1.0;       // Base rotation speed multiplier
-  int _gridDensity = 5;      // Subdivision level (3-8)
-  double _intensity = 0.8;    // Vertex intensity (0-1)
-  double _hue = 180.0;          // Color hue offset (0-360°)
-  double _intensity = 1.0;       // Bloom/glow amount (0-3)
-  double _chaos = 0.0;      // Chromatic aberration (0-10)
+  int _gridDensity = 5;              // Subdivision level (3-8) - VIB3+ gridDensity
+  double _intensity = 0.8;           // Brightness/glow (0-1) - VIB3+ intensity
+  double _hue = 180.0;               // Color hue offset (0-360°) - VIB3+ hue
+  double _chaos = 0.0;               // Chromatic aberration (0-10) - VIB3+ chaos
 
   // Geometry state
   int _activeVertexCount = 120;      // Current vertex count
@@ -55,9 +54,8 @@ class VisualProvider with ChangeNotifier {
   double _geometryComplexity = 0.5;   // Complexity measure (0-1)
   GeometryMetadata? _currentGeometryMetadata;
 
-  // Projection parameters
-  double _dimension = 8.0;   // Camera distance (5-15)
-  double _dimension = 2.0;      // Holographic layer depth (0-5)
+  // Projection parameters (ACTUAL VIB3+ name)
+  double _dimension = 3.5;       // Projection dimension (1.0-4.0) - VIB3+ dimension
 
   // WebView controller (for JavaScript bridge)
   WebViewController? _webViewController;
@@ -83,13 +81,12 @@ class VisualProvider with ChangeNotifier {
   int get gridDensity => _gridDensity;
   double get intensity => _intensity;
   double get hue => _hue;
-  double get intensity => _intensity;
   double get chaos => _chaos;
   int get activeVertexCount => _activeVertexCount;
   double get morphFactor => _morphFactor;
+  double get morphParameter => _morphFactor;  // Alias for backward compatibility
   int get currentGeometry => _currentGeometry;
   GeometryMetadata? get currentGeometryMetadata => _currentGeometryMetadata;
-  double get dimension => _dimension;
   double get dimension => _dimension;
   bool get isAnimating => _isAnimating;
 
