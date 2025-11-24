@@ -111,20 +111,40 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
       )
       ..setNavigationDelegate(
         NavigationDelegate(
+          onPageStarted: (String url) {
+            debugPrint('🔄 Page loading started: $url');
+          },
           onPageFinished: (String url) async {
             debugPrint('📄 Page loaded: $url');
+
+            // Wait a moment for JavaScript to initialize
+            await Future.delayed(const Duration(milliseconds: 500));
+
             await _injectHelperFunctions();
+
+            // Wait another moment for systems to initialize
+            await Future.delayed(const Duration(milliseconds: 300));
+
             setState(() {
               _isLoading = false;
             });
             debugPrint('✅ VIB34D WebView ready');
           },
           onWebResourceError: (WebResourceError error) {
-            setState(() {
-              _errorMessage = error.description;
-              _isLoading = false;
-            });
-            debugPrint('❌ WebView error: ${error.description}');
+            // Log all resource errors but only show critical ones to user
+            debugPrint('❌ WebView Resource Error:');
+            debugPrint('   Type: ${error.errorType}');
+            debugPrint('   Code: ${error.errorCode}');
+            debugPrint('   Description: ${error.description}');
+            debugPrint('   URL: ${error.url}');
+
+            // Only show main page load errors to user
+            if (error.url == null || error.url!.contains('index.html')) {
+              setState(() {
+                _errorMessage = 'Failed to load visualization:\n${error.description}';
+                _isLoading = false;
+              });
+            }
           },
         ),
       );
@@ -132,16 +152,22 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
     // CRITICAL: Enable file access from file:// URLs (needed for Vite bundled assets)
     // This allows the HTML file to load CSS/JS from relative file:// paths
     if (_webViewController.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
-      (_webViewController.platform as AndroidWebViewController)
-        .setMediaPlaybackRequiresUserGesture(false);
-    }
+      final androidController = _webViewController.platform as AndroidWebViewController;
 
-    // Enable universal file access for Android WebView to load bundled CSS/JS
-    await _webViewController.runJavaScript('''
-      // This runs before page load to configure WebView settings
-      console.log('🔧 Configuring WebView for local file access');
-    ''');
+      // Enable debugging to see console output
+      AndroidWebViewController.enableDebugging(true);
+
+      // Allow file access from file URLs (CRITICAL for loading bundled JS/CSS)
+      await androidController.setAllowFileAccess(true);
+
+      // Allow access to content URLs
+      await androidController.setAllowContentAccess(true);
+
+      // Disable media playback gesture requirement
+      await androidController.setMediaPlaybackRequiresUserGesture(false);
+
+      debugPrint('✅ Android WebView: File access enabled for bundled assets');
+    }
 
     // Load VIB3+ from bundled local assets (Vite build with relative paths)
     await _webViewController.loadFlutterAsset('assets/vib3_dist/index.html');
@@ -206,7 +232,16 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
           console.log('✅ Console forwarding to Flutter enabled');
         })();
 
-        // STEP 1: Hide VIB3+ standalone UI controls (synthesizer has its own)
+        // STEP 1: Log VIB3+ initialization status
+        console.log('📊 VIB3+ Status Check:');
+        console.log('  - window.switchSystem:', typeof window.switchSystem);
+        console.log('  - window.updateParameter:', typeof window.updateParameter);
+        console.log('  - window.currentSystem:', window.currentSystem);
+        console.log('  - window.engine:', !!window.engine);
+        console.log('  - window.quantumEngine:', !!window.quantumEngine);
+        console.log('  - window.holographicSystem:', !!window.holographicSystem);
+
+        // STEP 2: Hide VIB3+ standalone UI controls (synthesizer has its own)
         const hideVIB3UI = () => {
           const style = document.createElement('style');
           style.id = 'synth-vib3-ui-override';
@@ -286,13 +321,17 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
               display: none !important;
             }
 
-            /* CRITICAL: Disable ALL VIB3+ touch/mouse event handling */
+            /* IMPORTANT: Allow canvas interaction during initialization */
+            /* Touch events will be managed by Flutter after initialization */
             .canvas-container,
             #canvasContainer,
-            .holographic-layers,
+            .holographic-layers {
+              pointer-events: auto !important;
+            }
+
             canvas {
-              pointer-events: none !important;
-              touch-action: none !important;
+              pointer-events: auto !important;
+              touch-action: auto !important;
             }
           \`;
           document.head.appendChild(style);
@@ -325,23 +364,14 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
               systemSelector.style.pointerEvents = 'all';
             }
 
-            // CRITICAL: Disable ALL VIB3+ event listeners on canvas/layers
-            const disableTouchElements = [
-              '.canvas-container', '#canvasContainer',
-              '.holographic-layers', 'canvas'
-            ];
-            disableTouchElements.forEach(selector => {
-              const elements = document.querySelectorAll(selector);
-              elements.forEach(el => {
-                el.style.pointerEvents = 'none';
-                el.style.touchAction = 'none';
-                // Remove all event listeners (clone and replace)
-                const clone = el.cloneNode(true);
-                el.parentNode.replaceChild(clone, el);
-              });
+            // Ensure canvas is visible and interactive
+            const canvases = document.querySelectorAll('canvas');
+            console.log(\`✅ Found \${canvases.length} canvas elements\`);
+            canvases.forEach((canvas, i) => {
+              console.log(\`  Canvas \${i}: \${canvas.width}x\${canvas.height}, visible: \${canvas.offsetWidth > 0}\`);
             });
 
-            FlutterBridge.postMessage('INFO: VIB3+ UI hidden + ALL touch events disabled');
+            FlutterBridge.postMessage('INFO: VIB3+ UI hidden, canvas enabled');
           }, 100);
         };
 
