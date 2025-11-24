@@ -24,6 +24,9 @@ class VIB34DNativeBridge {
   // Current visualization system (quantum, holographic, or faceted)
   String _currentSystem = 'quantum';
 
+  // Console message callback for debug overlay
+  Function(String message, String type)? onConsoleMessage;
+
   // Parameter state
   Map<String, dynamic> _parameters = {
     // Quantum/Holographic parameters
@@ -55,6 +58,20 @@ class VIB34DNativeBridge {
   Future<void> initialize(WebViewController controller, {String initialSystem = 'faceted'}) async {
     _webViewController = controller;
     _currentSystem = initialSystem;
+
+    // Set up JavaScript channel for console messages
+    await _webViewController.addJavaScriptChannel(
+      'consoleMessage',
+      onMessageReceived: (JavaScriptMessage message) {
+        // Message format: {"message": "...", "type": "log|error|warn|info"}
+        try {
+          final data = jsonDecode(message.message);
+          onConsoleMessage?.call(data['message'], data['type']);
+        } catch (e) {
+          print('❌ Error parsing console message: $e');
+        }
+      },
+    );
 
     // Load the HTML wrapper that imports and runs the THREE systems
     final html = await _buildVisualizationHTML();
@@ -107,6 +124,54 @@ class VIB34DNativeBridge {
   </div>
 
   <script type="module">
+    // === CONSOLE FORWARDING TO FLUTTER ===
+    const originalConsole = {
+      log: console.log.bind(console),
+      error: console.error.bind(console),
+      warn: console.warn.bind(console),
+      info: console.info.bind(console)
+    };
+
+    console.log = function(...args) {
+      originalConsole.log(...args);
+      if (window.consoleMessage) {
+        window.consoleMessage.postMessage(JSON.stringify({
+          message: args.join(' '),
+          type: 'log'
+        }));
+      }
+    };
+
+    console.error = function(...args) {
+      originalConsole.error(...args);
+      if (window.consoleMessage) {
+        window.consoleMessage.postMessage(JSON.stringify({
+          message: args.join(' '),
+          type: 'error'
+        }));
+      }
+    };
+
+    console.warn = function(...args) {
+      originalConsole.warn(...args);
+      if (window.consoleMessage) {
+        window.consoleMessage.postMessage(JSON.stringify({
+          message: args.join(' '),
+          type: 'warn'
+        }));
+      }
+    };
+
+    console.info = function(...args) {
+      originalConsole.info(...args);
+      if (window.consoleMessage) {
+        window.consoleMessage.postMessage(JSON.stringify({
+          message: args.join(' '),
+          type: 'info'
+        }));
+      }
+    };
+
     // === QUANTUM SYSTEM ===
     $quantumJS
 

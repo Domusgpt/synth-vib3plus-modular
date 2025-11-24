@@ -12,11 +12,13 @@
  * A Paul Phillips Manifestation
  */
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import '../providers/visual_provider.dart';
 import '../providers/audio_provider.dart';
+import '../ui/debug/webview_console_overlay.dart';
 
 class VIB34DWidget extends StatefulWidget {
   final VisualProvider visualProvider;
@@ -36,6 +38,8 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
   late WebViewController _webViewController;
   bool _isLoading = true;
   String? _errorMessage;
+  final GlobalKey<WebViewConsoleOverlayState> _consoleKey = GlobalKey();
+  final ValueNotifier<String> _systemStateNotifier = ValueNotifier<String>('Unknown');
 
   @override
   void initState() {
@@ -56,6 +60,48 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
             setState(() {
               _errorMessage = message.message.substring(6);
             });
+          }
+        },
+      )
+      ..addJavaScriptChannel(
+        'consoleMessage',
+        onMessageReceived: (JavaScriptMessage message) {
+          // Message format: {"message": "...", "type": "log|error|warn|info"}
+          try {
+            final data = jsonDecode(message.message);
+            final msg = data['message'] as String;
+            final type = data['type'] as String;
+
+            // Forward to debug console
+            ConsoleMessageType msgType;
+            switch (type) {
+              case 'error':
+                msgType = ConsoleMessageType.error;
+                break;
+              case 'warn':
+                msgType = ConsoleMessageType.warn;
+                break;
+              case 'info':
+                msgType = ConsoleMessageType.info;
+                break;
+              default:
+                msgType = ConsoleMessageType.log;
+            }
+
+            _consoleKey.currentState?.addMessage(msg, msgType);
+
+            // Update system state if message contains system info
+            if (msg.contains('Switched to') || msg.contains('system initialized')) {
+              if (msg.contains('quantum')) {
+                _systemStateNotifier.value = 'Quantum System';
+              } else if (msg.contains('holographic')) {
+                _systemStateNotifier.value = 'Holographic System';
+              } else if (msg.contains('faceted')) {
+                _systemStateNotifier.value = 'Faceted System';
+              }
+            }
+          } catch (e) {
+            debugPrint('❌ Error parsing console message: $e');
           }
         },
       )
@@ -104,6 +150,58 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
   Future<void> _injectHelperFunctions() async {
     try {
       await _webViewController.runJavaScript('''
+        // STEP 0: Intercept console messages and forward to Flutter
+        (function() {
+          const originalConsole = {
+            log: console.log.bind(console),
+            error: console.error.bind(console),
+            warn: console.warn.bind(console),
+            info: console.info.bind(console)
+          };
+
+          console.log = function(...args) {
+            originalConsole.log(...args);
+            if (window.consoleMessage) {
+              window.consoleMessage.postMessage(JSON.stringify({
+                message: args.join(' '),
+                type: 'log'
+              }));
+            }
+          };
+
+          console.error = function(...args) {
+            originalConsole.error(...args);
+            if (window.consoleMessage) {
+              window.consoleMessage.postMessage(JSON.stringify({
+                message: args.join(' '),
+                type: 'error'
+              }));
+            }
+          };
+
+          console.warn = function(...args) {
+            originalConsole.warn(...args);
+            if (window.consoleMessage) {
+              window.consoleMessage.postMessage(JSON.stringify({
+                message: args.join(' '),
+                type: 'warn'
+              }));
+            }
+          };
+
+          console.info = function(...args) {
+            originalConsole.info(...args);
+            if (window.consoleMessage) {
+              window.consoleMessage.postMessage(JSON.stringify({
+                message: args.join(' '),
+                type: 'info'
+              }));
+            }
+          };
+
+          console.log('✅ Console forwarding to Flutter enabled');
+        })();
+
         // STEP 1: Hide VIB3+ standalone UI controls (synthesizer has its own)
         const hideVIB3UI = () => {
           const style = document.createElement('style');
@@ -301,65 +399,75 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        WebViewWidget(controller: _webViewController),
+    return WebViewConsoleOverlay(
+      key: _consoleKey,
+      systemStateNotifier: _systemStateNotifier,
+      child: Stack(
+        children: [
+          WebViewWidget(controller: _webViewController),
 
-        // Loading indicator
-        if (_isLoading)
-          Container(
-            color: Colors.black,
-            child: const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(color: Colors.cyan),
-                  SizedBox(height: 20),
-                  Text(
-                    'Loading VIB34D Systems...',
-                    style: TextStyle(
-                      color: Colors.cyan,
-                      fontSize: 16,
-                      fontFamily: 'monospace',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-        // Error message
-        if (_errorMessage != null)
-          Container(
-            color: Colors.black,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
+          // Loading indicator
+          if (_isLoading)
+            Container(
+              color: Colors.black,
+              child: const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 48),
-                    const SizedBox(height: 20),
+                    CircularProgressIndicator(color: Colors.cyan),
+                    SizedBox(height: 20),
                     Text(
-                      'Error Loading Visualization',
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      'Loading VIB34D Systems...',
+                      style: TextStyle(
+                        color: Colors.cyan,
+                        fontSize: 16,
+                        fontFamily: 'monospace',
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      _errorMessage!,
-                      style: const TextStyle(color: Colors.white70),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-      ],
+
+          // Error message
+          if (_errorMessage != null)
+            Container(
+              color: Colors.black,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Error Loading Visualization',
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.white70),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _systemStateNotifier.dispose();
+    super.dispose();
   }
 }
