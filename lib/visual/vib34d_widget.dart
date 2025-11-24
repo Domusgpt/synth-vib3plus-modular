@@ -404,15 +404,33 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
           FlutterBridge.postMessage('ERROR: ' + e.message);
         });
 
-        // STEP 4: Notify Flutter when VIB3+ is ready
-        if (window.switchSystem) {
-          FlutterBridge.postMessage('READY: VIB3+ systems loaded');
-        } else {
+        // STEP 4: Initialize to faceted system and notify Flutter when VIB3+ is ready
+        (async function() {
+          if (window.switchSystem) {
+            console.log('🎯 VIB3+ ready - switching to faceted system...');
+            console.log('  Current system:', window.currentSystem);
+            try {
+              await window.switchSystem('faceted');
+              console.log('✅ Successfully switched to faceted system');
+              console.log('  New system:', window.currentSystem);
+              FlutterBridge.postMessage('READY: VIB3+ faceted system active');
+            } catch (error) {
+              console.error('❌ Failed to switch to faceted:', error);
+              FlutterBridge.postMessage('ERROR: Failed to switch to faceted system');
+            }
+          } else {
           // Wait for systems to load
           const checkReady = setInterval(() => {
             if (window.switchSystem) {
               clearInterval(checkReady);
-              FlutterBridge.postMessage('READY: VIB3+ systems loaded');
+              console.log('🎯 VIB3+ ready (after wait) - switching to faceted system...');
+              window.switchSystem('faceted').then(() => {
+                console.log('✅ Successfully switched to faceted system (delayed)');
+                FlutterBridge.postMessage('READY: VIB3+ faceted system active');
+              }).catch((error) => {
+                console.error('❌ Failed to switch to faceted (delayed):', error);
+                FlutterBridge.postMessage('ERROR: Failed to switch to faceted system');
+              });
             }
           }, 100);
 
@@ -423,7 +441,8 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
               FlutterBridge.postMessage('ERROR: VIB3+ failed to initialize');
             }
           }, 10000);
-        }
+          }
+        })();
       ''');
       debugPrint('✅ Injected CSS UI override + helper functions into VIB3+ WebView');
     } catch (e) {
