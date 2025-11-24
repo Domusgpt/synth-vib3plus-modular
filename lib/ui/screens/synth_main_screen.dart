@@ -155,8 +155,12 @@ class _SynthMainContentState extends State<_SynthMainContent> {
           if (_shouldShowDebugOverlay(context))
             _buildDebugOverlay(context, uiState, visualProvider),
 
-          // Layer 8: WebView Debug Console (TOPMOST - always visible)
-          Positioned.fill(
+          // Layer 8: WebView Debug Console (positioned above bottom bezel)
+          Positioned(
+            bottom: SynthTheme.panelCollapsedHeight, // Position above collapsed bezel
+            left: 0,
+            right: 0,
+            top: 0,
             child: WebViewConsoleOverlay(
               key: _consoleKey,
               systemStateNotifier: _systemStateNotifier,
