@@ -4,12 +4,12 @@ allprojects {
         mavenCentral()
     }
 
-    // FORCE Java 21 for ALL projects including dependencies
+    // FORCE Java 17 for ALL projects including dependencies
     // Suppress obsolete options warnings from third-party plugins
     afterEvaluate {
         tasks.withType<JavaCompile>().configureEach {
-            sourceCompatibility = JavaVersion.VERSION_21.toString()
-            targetCompatibility = JavaVersion.VERSION_21.toString()
+            sourceCompatibility = JavaVersion.VERSION_17.toString()
+            targetCompatibility = JavaVersion.VERSION_17.toString()
 
             // Suppress warnings about obsolete Java versions
             options.compilerArgs.addAll(listOf(
@@ -17,9 +17,12 @@ allprojects {
                 "-Xlint:-deprecation"
             ))
 
-            // Verify we're using Java 21
-            options.isFork = true
-            options.forkOptions.javaHome = file("/usr/lib/jvm/java-21-openjdk-amd64")
+            // Use JAVA_HOME environment variable (works on GitHub Actions and local)
+            val javaHome = System.getenv("JAVA_HOME")
+            if (javaHome != null) {
+                options.isFork = true
+                options.forkOptions.javaHome = file(javaHome)
+            }
         }
     }
 }
@@ -34,11 +37,11 @@ subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 
-    // FORCE Java 21 for all subprojects - AGGRESSIVE enforcement
+    // FORCE Java 17 for all subprojects - AGGRESSIVE enforcement
     afterEvaluate {
         tasks.withType<JavaCompile> {
-            sourceCompatibility = JavaVersion.VERSION_21.toString()
-            targetCompatibility = JavaVersion.VERSION_21.toString()
+            sourceCompatibility = JavaVersion.VERSION_17.toString()
+            targetCompatibility = JavaVersion.VERSION_17.toString()
 
             // Suppress warnings from legacy third-party plugins
             options.compilerArgs.addAll(listOf(
@@ -46,9 +49,12 @@ subprojects {
                 "-Xlint:-deprecation"
             ))
 
-            // Force Java 21 JDK for compilation
-            options.isFork = true
-            options.forkOptions.javaHome = file("/usr/lib/jvm/java-21-openjdk-amd64")
+            // Use JAVA_HOME environment variable (works on GitHub Actions and local)
+            val javaHome = System.getenv("JAVA_HOME")
+            if (javaHome != null) {
+                options.isFork = true
+                options.forkOptions.javaHome = file(javaHome)
+            }
         }
     }
 }

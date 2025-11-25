@@ -95,7 +95,7 @@ class GeometryPanelContent extends StatelessWidget {
         const SizedBox(height: SynthTheme.spacingSmall),
         HolographicSlider(
           label: 'Distance',
-          value: visualProvider.projectionDistance,
+          value: visualProvider.dimension,
           min: 5.0,
           max: 15.0,
           unit: '',
@@ -105,7 +105,7 @@ class GeometryPanelContent extends StatelessWidget {
         ),
         HolographicSlider(
           label: 'Layer Depth',
-          value: visualProvider.layerSeparation,
+          value: visualProvider.dimension,
           min: 0.0,
           max: 5.0,
           unit: '',
@@ -115,7 +115,7 @@ class GeometryPanelContent extends StatelessWidget {
         ),
         HolographicSlider(
           label: 'Morph',
-          value: visualProvider.morphParameter,
+          value: visualProvider.morphFactor,
           min: 0.0,
           max: 1.0,
           unit: '%',

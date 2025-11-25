@@ -19,6 +19,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../ui/theme/synth_theme.dart';
+import '../core/geometry_library.dart';
 
 class VisualProvider with ChangeNotifier {
   // Current VIB34D system
@@ -39,23 +40,22 @@ class VisualProvider with ChangeNotifier {
   double _rotationVelocityYW = 0.0;
   double _rotationVelocityZW = 0.0;
 
-  // Visual parameters
+  // Visual parameters (ACTUAL VIB3+ names)
   double _rotationSpeed = 1.0;       // Base rotation speed multiplier
-  int _tessellationDensity = 5;      // Subdivision level (3-8)
-  double _vertexBrightness = 0.8;    // Vertex intensity (0-1)
-  double _hueShift = 180.0;          // Color hue offset (0-360°)
-  double _glowIntensity = 1.0;       // Bloom/glow amount (0-3)
-  double _rgbSplitAmount = 0.0;      // Chromatic aberration (0-10)
+  int _gridDensity = 5;              // Subdivision level (3-8) - VIB3+ gridDensity
+  double _intensity = 0.8;           // Brightness/glow (0-1) - VIB3+ intensity
+  double _hue = 180.0;               // Color hue offset (0-360°) - VIB3+ hue
+  double _chaos = 0.0;               // Chromatic aberration (0-10) - VIB3+ chaos
 
   // Geometry state
   int _activeVertexCount = 120;      // Current vertex count
-  double _morphParameter = 0.0;       // Geometry morph (0-1)
-  int _currentGeometry = 0;           // Geometry index (0-7)
+  double _morphFactor = 0.0;       // Geometry morph (0-1)
+  int _currentGeometry = 0;           // Geometry index (0-23 for full system)
   double _geometryComplexity = 0.5;   // Complexity measure (0-1)
+  GeometryMetadata? _currentGeometryMetadata;
 
-  // Projection parameters
-  double _projectionDistance = 8.0;   // Camera distance (5-15)
-  double _layerSeparation = 2.0;      // Holographic layer depth (0-5)
+  // Projection parameters (ACTUAL VIB3+ name)
+  double _dimension = 3.5;       // Projection dimension (1.0-4.0) - VIB3+ dimension
 
   // WebView controller (for JavaScript bridge)
   WebViewController? _webViewController;
@@ -70,6 +70,7 @@ class VisualProvider with ChangeNotifier {
 
   // Getters
   String get currentSystem => _currentSystem;
+  String get currentSystemName => _currentSystem; // Alias for compatibility
   double get rotationXY => _rotationXY;
   double get rotationXZ => _rotationXZ;
   double get rotationYZ => _rotationYZ;
@@ -77,16 +78,16 @@ class VisualProvider with ChangeNotifier {
   double get rotationYW => _rotationYW;
   double get rotationZW => _rotationZW;
   double get rotationSpeed => _rotationSpeed;
-  int get tessellationDensity => _tessellationDensity;
-  double get vertexBrightness => _vertexBrightness;
-  double get hueShift => _hueShift;
-  double get glowIntensity => _glowIntensity;
-  double get rgbSplitAmount => _rgbSplitAmount;
+  int get gridDensity => _gridDensity;
+  double get intensity => _intensity;
+  double get hue => _hue;
+  double get chaos => _chaos;
   int get activeVertexCount => _activeVertexCount;
-  double get morphParameter => _morphParameter;
+  double get morphFactor => _morphFactor;
+  double get morphParameter => _morphFactor;  // Alias for backward compatibility
   int get currentGeometry => _currentGeometry;
-  double get projectionDistance => _projectionDistance;
-  double get layerSeparation => _layerSeparation;
+  GeometryMetadata? get currentGeometryMetadata => _currentGeometryMetadata;
+  double get dimension => _dimension;
   bool get isAnimating => _isAnimating;
 
   /// Initialize WebView controller for VIB34D systems
@@ -105,15 +106,15 @@ class VisualProvider with ChangeNotifier {
     debugPrint('🔄 System Switching: $previousSystem → $systemName');
 
     // Update JavaScript system via WebView
-    // VIB3+ uses window.switchSystem(), not window.vib34d.switchSystem()
+    // VIB34D uses window.vib34d.switchSystem()
     if (_webViewController != null) {
       try {
         await _webViewController!.runJavaScript(
-          'if (window.switchSystem) { window.switchSystem("$systemName"); }'
+          'if (window.vib34d && window.vib34d.switchSystem) { window.vib34d.switchSystem("$systemName"); }'
         );
-        debugPrint('✅ VIB3+ system switched to $systemName');
+        debugPrint('✅ VIB34D system switched to $systemName');
       } catch (e) {
-        debugPrint('❌ Error switching VIB3+ system: $e');
+        debugPrint('❌ Error switching VIB34D system: $e');
       }
     } else {
       debugPrint('⚠️  WebView controller not initialized - system switch deferred');
@@ -153,50 +154,50 @@ class VisualProvider with ChangeNotifier {
 
   /// Set tessellation density (from audio modulation)
   void setTessellationDensity(int density) {
-    _tessellationDensity = density.clamp(3, 10);
+    _gridDensity = density.clamp(3, 10);
 
     // Update JavaScript
-    _updateJavaScriptParameter('tessellationDensity', _tessellationDensity);
+    _updateJavaScriptParameter('gridDensity', _gridDensity);
 
     notifyListeners();
   }
 
   /// Set vertex brightness (from audio modulation)
   void setVertexBrightness(double brightness) {
-    _vertexBrightness = brightness.clamp(0.0, 1.0);
+    _intensity = brightness.clamp(0.0, 1.0);
 
     // Update JavaScript
-    _updateJavaScriptParameter('vertexBrightness', _vertexBrightness);
+    _updateJavaScriptParameter('intensity', _intensity);
 
     notifyListeners();
   }
 
   /// Set hue shift (from audio modulation)
   void setHueShift(double hue) {
-    _hueShift = hue % 360.0;
+    _hue = hue % 360.0;
 
     // Update JavaScript
-    _updateJavaScriptParameter('hueShift', _hueShift);
+    _updateJavaScriptParameter('hue', _hue);
 
     notifyListeners();
   }
 
   /// Set glow intensity (from audio modulation)
   void setGlowIntensity(double intensity) {
-    _glowIntensity = intensity.clamp(0.0, 3.0);
+    _intensity = intensity.clamp(0.0, 3.0);
 
     // Update JavaScript
-    _updateJavaScriptParameter('glowIntensity', _glowIntensity);
+    _updateJavaScriptParameter('intensity', _intensity);
 
     notifyListeners();
   }
 
   /// Set RGB split amount (from audio modulation)
   void setRGBSplitAmount(double amount) {
-    _rgbSplitAmount = amount.clamp(0.0, 10.0);
+    _chaos = amount.clamp(0.0, 10.0);
 
     // Update JavaScript
-    _updateJavaScriptParameter('rgbSplitAmount', _rgbSplitAmount);
+    _updateJavaScriptParameter('chaos', _chaos);
 
     notifyListeners();
   }
@@ -248,37 +249,37 @@ class VisualProvider with ChangeNotifier {
 
   /// Get morph parameter (for wavetable modulation)
   double getMorphParameter() {
-    return _morphParameter;
+    return _morphFactor;
   }
 
   /// Set morph parameter
   void setMorphParameter(double morph) {
-    _morphParameter = morph.clamp(0.0, 1.0);
-    _updateJavaScriptParameter('morphParameter', _morphParameter);
+    _morphFactor = morph.clamp(0.0, 1.0);
+    _updateJavaScriptParameter('morphFactor', _morphFactor);
     notifyListeners();
   }
 
   /// Get projection distance (for reverb modulation)
   double getProjectionDistance() {
-    return _projectionDistance;
+    return _dimension;
   }
 
   /// Set projection distance
   void setProjectionDistance(double distance) {
-    _projectionDistance = distance.clamp(5.0, 15.0);
-    _updateJavaScriptParameter('projectionDistance', _projectionDistance);
+    _dimension = distance.clamp(5.0, 15.0);
+    _updateJavaScriptParameter('dimension', _dimension);
     notifyListeners();
   }
 
   /// Get layer separation (for delay modulation)
   double getLayerSeparation() {
-    return _layerSeparation;
+    return _dimension;
   }
 
   /// Set layer separation
   void setLayerSeparation(double separation) {
-    _layerSeparation = separation.clamp(0.0, 5.0);
-    _updateJavaScriptParameter('layerSeparation', _layerSeparation);
+    _dimension = separation.clamp(0.0, 5.0);
+    _updateJavaScriptParameter('dimension', _dimension);
     notifyListeners();
   }
 
@@ -292,20 +293,27 @@ class VisualProvider with ChangeNotifier {
     return _geometryComplexity;
   }
 
-  /// Set current geometry
-  void setGeometry(int geometryIndex) {
+  /// Set current geometry (now supports 0-23 full geometry system)
+  void setGeometry(int geometry) {
     final previousGeometry = _currentGeometry;
-    _currentGeometry = geometryIndex.clamp(0, 7);
+    _currentGeometry = geometry.clamp(0, 23);
 
     if (previousGeometry != _currentGeometry) {
+      // Get geometry metadata from library
+      _currentGeometryMetadata = GeometryLibrary.describeGeometry(_currentGeometry);
+
       debugPrint('🔷 Geometry Switching: $previousGeometry → $_currentGeometry');
+      debugPrint('   ${_currentGeometryMetadata?.fullName}');
+      debugPrint('   Synthesis: ${GeometryLibrary.getSynthesisBranch(_currentGeometry)}');
     }
 
-    _updateJavaScriptParameter('geometry', _currentGeometry);
+    // Send base geometry (0-7) to JavaScript
+    final decoded = GeometryLibrary.decodeGeometryIndex(_currentGeometry);
+    _updateJavaScriptParameter('geometry', decoded.base);
 
     // Update vertex count based on geometry
     final previousVertexCount = _activeVertexCount;
-    _activeVertexCount = _getVertexCountForGeometry(_currentGeometry);
+    _activeVertexCount = _getVertexCountForGeometry(decoded.base);
 
     if (previousVertexCount != _activeVertexCount) {
       debugPrint('   Vertex count: $previousVertexCount → $_activeVertexCount');
@@ -359,6 +367,8 @@ class VisualProvider with ChangeNotifier {
   }
 
   /// Get visual state for debugging/UI
+  Map<String, dynamic> get visualState => getVisualState();
+
   Map<String, dynamic> getVisualState() {
     return {
       'system': _currentSystem,
@@ -366,15 +376,15 @@ class VisualProvider with ChangeNotifier {
       'rotationYW': _rotationYW,
       'rotationZW': _rotationZW,
       'rotationSpeed': _rotationSpeed,
-      'tessellationDensity': _tessellationDensity,
-      'vertexBrightness': _vertexBrightness,
-      'hueShift': _hueShift,
-      'glowIntensity': _glowIntensity,
-      'rgbSplitAmount': _rgbSplitAmount,
+      'gridDensity': _gridDensity,
+      'intensity': _intensity,
+      'hue': _hue,
+      'intensity': _intensity,
+      'chaos': _chaos,
       'activeVertexCount': _activeVertexCount,
-      'morphParameter': _morphParameter,
-      'projectionDistance': _projectionDistance,
-      'layerSeparation': _layerSeparation,
+      'morphFactor': _morphFactor,
+      'dimension': _dimension,
+      'dimension': _dimension,
       'isAnimating': _isAnimating,
     };
   }
@@ -506,8 +516,8 @@ class VisualProvider with ChangeNotifier {
 
   /// Set layer depth (holographic layer separation from audio)
   void setLayerDepth(double depth) {
-    _layerSeparation = depth.clamp(0.0, 5.0);
-    _updateJavaScriptParameter('layerDepth', _layerSeparation);
+    _dimension = depth.clamp(0.0, 5.0);
+    _updateJavaScriptParameter('layerDepth', _dimension);
     notifyListeners();
   }
 

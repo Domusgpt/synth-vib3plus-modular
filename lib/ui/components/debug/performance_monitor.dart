@@ -260,7 +260,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
     return GlassmorphicContainer(
       width: widget.width,
       height: widget.height,
-      borderRadius: DesignTokens.radiusMedium,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
       child: Column(
         children: [
           // Header

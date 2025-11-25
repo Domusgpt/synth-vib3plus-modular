@@ -24,6 +24,9 @@ class VIB34DNativeBridge {
   // Current visualization system (quantum, holographic, or faceted)
   String _currentSystem = 'quantum';
 
+  // Console message callback for debug overlay
+  Function(String message, String type)? onConsoleMessage;
+
   // Parameter state
   Map<String, dynamic> _parameters = {
     // Quantum/Holographic parameters
@@ -52,8 +55,23 @@ class VIB34DNativeBridge {
   };
 
   /// Initialize the bridge and load the visualization HTML
-  Future<void> initialize(WebViewController controller) async {
+  Future<void> initialize(WebViewController controller, {String initialSystem = 'faceted'}) async {
     _webViewController = controller;
+    _currentSystem = initialSystem;
+
+    // Set up JavaScript channel for console messages
+    await _webViewController.addJavaScriptChannel(
+      'consoleMessage',
+      onMessageReceived: (JavaScriptMessage message) {
+        // Message format: {"message": "...", "type": "log|error|warn|info"}
+        try {
+          final data = jsonDecode(message.message);
+          onConsoleMessage?.call(data['message'], data['type']);
+        } catch (e) {
+          print('❌ Error parsing console message: $e');
+        }
+      },
+    );
 
     // Load the HTML wrapper that imports and runs the THREE systems
     final html = await _buildVisualizationHTML();
@@ -106,6 +124,54 @@ class VIB34DNativeBridge {
   </div>
 
   <script type="module">
+    // === CONSOLE FORWARDING TO FLUTTER ===
+    const originalConsole = {
+      log: console.log.bind(console),
+      error: console.error.bind(console),
+      warn: console.warn.bind(console),
+      info: console.info.bind(console)
+    };
+
+    console.log = function(...args) {
+      originalConsole.log(...args);
+      if (window.consoleMessage) {
+        window.consoleMessage.postMessage(JSON.stringify({
+          message: args.join(' '),
+          type: 'log'
+        }));
+      }
+    };
+
+    console.error = function(...args) {
+      originalConsole.error(...args);
+      if (window.consoleMessage) {
+        window.consoleMessage.postMessage(JSON.stringify({
+          message: args.join(' '),
+          type: 'error'
+        }));
+      }
+    };
+
+    console.warn = function(...args) {
+      originalConsole.warn(...args);
+      if (window.consoleMessage) {
+        window.consoleMessage.postMessage(JSON.stringify({
+          message: args.join(' '),
+          type: 'warn'
+        }));
+      }
+    };
+
+    console.info = function(...args) {
+      originalConsole.info(...args);
+      if (window.consoleMessage) {
+        window.consoleMessage.postMessage(JSON.stringify({
+          message: args.join(' '),
+          type: 'info'
+        }));
+      }
+    };
+
     // === QUANTUM SYSTEM ===
     $quantumJS
 
@@ -116,15 +182,55 @@ class VIB34DNativeBridge {
     $facetedJS
 
     // === FLUTTER BRIDGE ===
-    let currentSystem = 'quantum';
+    let currentSystem = '$_currentSystem';
     let quantumVisualizer = null;
     let holographicSystem = null;
     let facetedVisualizer = null;
+    let currentParameters = {};
 
-    // Initialize default system (Quantum)
+    // Initialize default system based on Flutter parameter
     window.addEventListener('load', () => {
-      initializeQuantumSystem();
+      switchSystem(currentSystem);
     });
+
+    function destroySystem(systemName) {
+      switch(systemName) {
+        case 'quantum':
+          if (quantumVisualizer) {
+            // Clean up quantum canvas
+            const quantumCanvas = document.getElementById('quantum-canvas');
+            const quantumCtx = quantumCanvas.getContext('webgl2') || quantumCanvas.getContext('webgl');
+            if (quantumCtx) {
+              quantumCtx.getExtension('WEBGL_lose_context')?.loseContext();
+            }
+            quantumVisualizer = null;
+            console.log('🗑️ Quantum system destroyed');
+          }
+          break;
+        case 'holographic':
+          if (holographicSystem) {
+            holographicSystem = null;
+            const holoCanvas = document.getElementById('holographic-canvas');
+            const holoCtx = holoCanvas.getContext('webgl2') || holoCanvas.getContext('webgl');
+            if (holoCtx) {
+              holoCtx.getExtension('WEBGL_lose_context')?.loseContext();
+            }
+            console.log('🗑️ Holographic system destroyed');
+          }
+          break;
+        case 'faceted':
+          if (facetedVisualizer) {
+            const facetedCanvas = document.getElementById('faceted-canvas');
+            const facetedCtx = facetedCanvas.getContext('webgl2') || facetedCanvas.getContext('webgl');
+            if (facetedCtx) {
+              facetedCtx.getExtension('WEBGL_lose_context')?.loseContext();
+            }
+            facetedVisualizer = null;
+            console.log('🗑️ Faceted system destroyed');
+          }
+          break;
+      }
+    }
 
     function initializeQuantumSystem() {
       quantumVisualizer = new QuantumHolographicVisualizer(
@@ -133,13 +239,22 @@ class VIB34DNativeBridge {
         0.9,
         0
       );
-      startRenderLoop();
-      console.log('✅ Quantum system initialized');
+      // Inject current parameters
+      if (Object.keys(currentParameters).length > 0) {
+        quantumVisualizer.updateParameters(currentParameters);
+      }
+      console.log('✅ Quantum system initialized with parameters:', currentParameters);
     }
 
     function initializeHolographicSystem() {
       holographicSystem = new HolographicSystem();
-      console.log('✅ Holographic system initialized');
+      // Inject current parameters
+      if (Object.keys(currentParameters).length > 0) {
+        holographicSystem.visualizers.forEach(viz => {
+          viz.updateParameters(currentParameters);
+        });
+      }
+      console.log('✅ Holographic system initialized with parameters:', currentParameters);
     }
 
     function initializeFacetedSystem() {
@@ -149,11 +264,20 @@ class VIB34DNativeBridge {
         0.9,
         0
       );
-      console.log('✅ Faceted system initialized');
+      // Inject current parameters
+      if (Object.keys(currentParameters).length > 0) {
+        facetedVisualizer.updateParameters(currentParameters);
+      }
+      console.log('✅ Faceted system initialized with parameters:', currentParameters);
     }
 
-    // Switch between systems
+    // Switch between systems with proper cleanup
     function switchSystem(systemName) {
+      // Destroy old system
+      if (currentSystem !== systemName) {
+        destroySystem(currentSystem);
+      }
+
       currentSystem = systemName;
 
       // Hide all canvases
@@ -183,35 +307,24 @@ class VIB34DNativeBridge {
     // Update parameters from Flutter
     function updateParameters(params) {
       const p = typeof params === 'string' ? JSON.parse(params) : params;
+      currentParameters = {...currentParameters, ...p};
 
       switch(currentSystem) {
         case 'quantum':
           if (quantumVisualizer) {
-            quantumVisualizer.updateParameters({
-              geometry: p.geometry || 0,
-              gridDensity: p.gridDensity || 15,
-              morphFactor: p.morphFactor || 1.0,
-              chaos: p.chaos || 0.2,
-              speed: p.speed || 1.0,
-              hue: p.hue || 200,
-              intensity: p.intensity || 0.5,
-              saturation: p.saturation || 0.8,
-              rot4dXW: p.rot4dXW || 0.0,
-              rot4dYW: p.rot4dYW || 0.0,
-              rot4dZW: p.rot4dZW || 0.0
-            });
+            quantumVisualizer.updateParameters(currentParameters);
           }
           break;
         case 'holographic':
           if (holographicSystem) {
             holographicSystem.visualizers.forEach(viz => {
-              viz.updateParameters(p);
+              viz.updateParameters(currentParameters);
             });
           }
           break;
         case 'faceted':
           if (facetedVisualizer) {
-            facetedVisualizer.updateParameters(p);
+            facetedVisualizer.updateParameters(currentParameters);
           }
           break;
       }
@@ -238,8 +351,12 @@ class VIB34DNativeBridge {
       }
     }
 
-    // Render loop
+    // Render loop (start after first system switch)
+    let renderLoopStarted = false;
     function startRenderLoop() {
+      if (renderLoopStarted) return;
+      renderLoopStarted = true;
+
       function render() {
         switch(currentSystem) {
           case 'quantum':
@@ -258,7 +375,13 @@ class VIB34DNativeBridge {
         requestAnimationFrame(render);
       }
       render();
+      console.log('🎬 Render loop started');
     }
+
+    // Start render loop after initial system loads
+    window.addEventListener('load', () => {
+      setTimeout(() => startRenderLoop(), 100);
+    });
 
     // Expose functions to Flutter
     window.vib34d = {

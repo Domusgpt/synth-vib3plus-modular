@@ -332,6 +332,12 @@ class AudioFeatures {
   double get totalEnergy =>
     (bassEnergy * 0.4) + (midEnergy * 0.35) + (highEnergy * 0.25);
 
+  /// Backward compatibility alias for UI components
+  double get transient => transientDensity;
+
+  /// Backward compatibility alias for UI components
+  double get dominantFreq => fundamentalFreq;
+
   /// Normalize all features to 0-1 range
   AudioFeatures normalize({
     double bassMax = 2.0,
