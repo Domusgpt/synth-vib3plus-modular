@@ -1,29 +1,30 @@
-/**
- * Performance Monitor
- *
- * Real-time performance monitoring dashboard for tracking FPS, audio latency,
- * memory usage, CPU usage, and system health metrics.
- *
- * Features:
- * - Real-time FPS graph (target: 60 FPS)
- * - Audio latency monitoring (<10ms target)
- * - Memory usage tracking
- * - CPU usage monitoring
- * - Parameter update rate tracking (60 Hz target)
- * - Active voice count
- * - Particle count
- * - WebView communication latency
- * - Historical performance graphs
- * - Performance warnings and alerts
- * - Exportable performance logs
- *
- * Part of the Integration Layer (Phase 3.5)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Performance Monitor
+///
+/// Real-time performance monitoring dashboard for tracking FPS, audio latency,
+/// memory usage, CPU usage, and system health metrics.
+///
+/// Features:
+/// - Real-time FPS graph (target: 60 FPS)
+/// - Audio latency monitoring (<10ms target)
+/// - Memory usage tracking
+/// - CPU usage monitoring
+/// - Parameter update rate tracking (60 Hz target)
+/// - Active voice count
+/// - Particle count
+/// - WebView communication latency
+/// - Historical performance graphs
+/// - Performance warnings and alerts
+/// - Exportable performance logs
+///
+/// Part of the Integration Layer (Phase 3.5)
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:async';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../../theme/design_tokens.dart';
@@ -36,13 +37,13 @@ import '../../effects/glassmorphic_container.dart';
 /// Performance metrics snapshot
 class PerformanceMetrics {
   final double fps;
-  final double audioLatency;      // Milliseconds
-  final double memoryUsage;        // MB
-  final double cpuUsage;           // 0-1
+  final double audioLatency; // Milliseconds
+  final double memoryUsage; // MB
+  final double cpuUsage; // 0-1
   final int activeVoices;
   final int particleCount;
   final double parameterUpdateRate; // Hz
-  final double webViewLatency;     // Milliseconds
+  final double webViewLatency; // Milliseconds
   final DateTime timestamp;
 
   const PerformanceMetrics({
@@ -58,19 +59,13 @@ class PerformanceMetrics {
   });
 
   bool get isHealthy =>
-      fps >= 55 &&
-      audioLatency < 15 &&
-      parameterUpdateRate >= 55;
+      fps >= 55 && audioLatency < 15 && parameterUpdateRate >= 55;
 
   bool get hasWarnings =>
-      fps < 55 ||
-      audioLatency >= 15 ||
-      parameterUpdateRate < 55;
+      fps < 55 || audioLatency >= 15 || parameterUpdateRate < 55;
 
   bool get hasCriticalIssues =>
-      fps < 30 ||
-      audioLatency >= 30 ||
-      parameterUpdateRate < 30;
+      fps < 30 || audioLatency >= 30 || parameterUpdateRate < 30;
 }
 
 // ============================================================================
@@ -80,7 +75,7 @@ class PerformanceMetrics {
 /// Tracks performance metrics over time
 class PerformanceTracker {
   final List<PerformanceMetrics> _history = [];
-  static const int maxHistoryLength = 300;  // 5 minutes at 60 FPS
+  static const int maxHistoryLength = 300; // 5 minutes at 60 FPS
 
   // FPS tracking
   final List<double> _frameTimes = [];
@@ -189,13 +184,13 @@ class PerformanceMonitor extends StatefulWidget {
   final bool showWarnings;
 
   const PerformanceMonitor({
-    Key? key,
+    super.key,
     required this.tracker,
     this.width = 400,
     this.height = 600,
     this.showGraphs = true,
     this.showWarnings = true,
-  }) : super(key: key);
+  });
 
   @override
   State<PerformanceMonitor> createState() => _PerformanceMonitorState();
@@ -245,11 +240,11 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
   }
 
   // Placeholder implementations - would connect to actual providers
-  double _estimateMemoryUsage() => 0.0;  // TODO: Implement
-  double _estimateCpuUsage() => 0.0;     // TODO: Implement
-  int _getActiveVoices() => 0;           // TODO: Implement
-  int _getParticleCount() => 0;          // TODO: Implement
-  double _getWebViewLatency() => 0.0;    // TODO: Implement
+  double _estimateMemoryUsage() => 0.0; // TODO: Implement
+  double _estimateCpuUsage() => 0.0; // TODO: Implement
+  int _getActiveVoices() => 0; // TODO: Implement
+  int _getParticleCount() => 0; // TODO: Implement
+  double _getWebViewLatency() => 0.0; // TODO: Implement
 
   @override
   Widget build(BuildContext context) {
@@ -260,7 +255,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
     return GlassmorphicContainer(
       width: widget.width,
       height: widget.height,
-      borderRadius: DesignTokens.radiusMedium,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
       child: Column(
         children: [
           // Header
@@ -289,7 +284,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -304,7 +299,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           const SizedBox(width: DesignTokens.spacing2),
           Text(
             'Performance Monitor',
-            style: DesignTokens.headingMedium,
+            style: DesignTokens.headlineMedium,
           ),
           const Spacer(),
           Container(
@@ -333,25 +328,37 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
         children: [
           Row(
             children: [
-              Expanded(child: _buildMetricCard('FPS', _currentMetrics!.fps, 'fps', 60)),
+              Expanded(
+                  child:
+                      _buildMetricCard('FPS', _currentMetrics!.fps, 'fps', 60)),
               const SizedBox(width: DesignTokens.spacing2),
-              Expanded(child: _buildMetricCard('Latency', _currentMetrics!.audioLatency, 'ms', 10)),
+              Expanded(
+                  child: _buildMetricCard(
+                      'Latency', _currentMetrics!.audioLatency, 'ms', 10)),
             ],
           ),
           const SizedBox(height: DesignTokens.spacing2),
           Row(
             children: [
-              Expanded(child: _buildMetricCard('Update Rate', _currentMetrics!.parameterUpdateRate, 'Hz', 60)),
+              Expanded(
+                  child: _buildMetricCard('Update Rate',
+                      _currentMetrics!.parameterUpdateRate, 'Hz', 60)),
               const SizedBox(width: DesignTokens.spacing2),
-              Expanded(child: _buildMetricCard('Voices', _currentMetrics!.activeVoices.toDouble(), '', 8)),
+              Expanded(
+                  child: _buildMetricCard('Voices',
+                      _currentMetrics!.activeVoices.toDouble(), '', 8)),
             ],
           ),
           const SizedBox(height: DesignTokens.spacing2),
           Row(
             children: [
-              Expanded(child: _buildMetricCard('Particles', _currentMetrics!.particleCount.toDouble(), '', 500)),
+              Expanded(
+                  child: _buildMetricCard('Particles',
+                      _currentMetrics!.particleCount.toDouble(), '', 500)),
               const SizedBox(width: DesignTokens.spacing2),
-              Expanded(child: _buildMetricCard('Memory', _currentMetrics!.memoryUsage, 'MB', 200)),
+              Expanded(
+                  child: _buildMetricCard(
+                      'Memory', _currentMetrics!.memoryUsage, 'MB', 200)),
             ],
           ),
         ],
@@ -359,17 +366,19 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
     );
   }
 
-  Widget _buildMetricCard(String label, double value, String unit, double target) {
+  Widget _buildMetricCard(
+      String label, double value, String unit, double target) {
     final isGood = value <= target || (label == 'FPS' && value >= target);
-    final color = isGood ? DesignTokens.stateSuccess : DesignTokens.stateWarning;
+    final color =
+        isGood ? DesignTokens.stateSuccess : DesignTokens.stateWarning;
 
     return Container(
       padding: const EdgeInsets.all(DesignTokens.spacing2),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
         border: Border.all(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -379,7 +388,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           Text(
             label,
             style: DesignTokens.labelSmall.copyWith(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: DesignTokens.spacing1),
@@ -389,7 +398,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
             children: [
               Text(
                 value.toStringAsFixed(value >= 10 ? 0 : 1),
-                style: DesignTokens.headingMedium.copyWith(
+                style: DesignTokens.headlineMedium.copyWith(
                   color: color,
                   fontSize: 24,
                 ),
@@ -400,7 +409,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
                   child: Text(
                     unit,
                     style: DesignTokens.labelSmall.copyWith(
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha: 0.4),
                     ),
                   ),
                 ),
@@ -409,7 +418,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           const SizedBox(height: DesignTokens.spacing1),
           LinearProgressIndicator(
             value: (value / target).clamp(0.0, 1.0),
-            backgroundColor: Colors.white.withOpacity(0.1),
+            backgroundColor: Colors.white.withValues(alpha: 0.1),
             valueColor: AlwaysStoppedAnimation(color),
             minHeight: 2,
           ),
@@ -449,7 +458,8 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
     );
   }
 
-  Widget _buildGraph(String label, List<double> values, Color color, double maxValue) {
+  Widget _buildGraph(
+      String label, List<double> values, Color color, double maxValue) {
     if (values.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(DesignTokens.spacing3),
@@ -457,7 +467,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           child: Text(
             'Collecting $label data...',
             style: DesignTokens.labelSmall.copyWith(
-              color: Colors.white.withOpacity(0.4),
+              color: Colors.white.withValues(alpha: 0.4),
             ),
           ),
         ),
@@ -472,7 +482,7 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           Text(
             label,
             style: DesignTokens.labelSmall.copyWith(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: DesignTokens.spacing2),
@@ -497,18 +507,20 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
       warnings.add('Low FPS: ${_currentMetrics!.fps.toStringAsFixed(1)}');
     }
     if (_currentMetrics!.audioLatency >= 15) {
-      warnings.add('High audio latency: ${_currentMetrics!.audioLatency.toStringAsFixed(1)}ms');
+      warnings.add(
+          'High audio latency: ${_currentMetrics!.audioLatency.toStringAsFixed(1)}ms');
     }
     if (_currentMetrics!.parameterUpdateRate < 55) {
-      warnings.add('Low parameter update rate: ${_currentMetrics!.parameterUpdateRate.toStringAsFixed(1)} Hz');
+      warnings.add(
+          'Low parameter update rate: ${_currentMetrics!.parameterUpdateRate.toStringAsFixed(1)} Hz');
     }
 
     return Container(
       padding: const EdgeInsets.all(DesignTokens.spacing3),
       decoration: BoxDecoration(
         color: _currentMetrics!.hasCriticalIssues
-            ? DesignTokens.stateError.withOpacity(0.2)
-            : DesignTokens.stateWarning.withOpacity(0.2),
+            ? DesignTokens.stateError.withValues(alpha: 0.2)
+            : DesignTokens.stateWarning.withValues(alpha: 0.2),
         border: Border(
           top: BorderSide(
             color: _currentMetrics!.hasCriticalIssues
@@ -547,14 +559,14 @@ class _PerformanceMonitorState extends State<PerformanceMonitor> {
           ),
           const SizedBox(height: DesignTokens.spacing2),
           ...warnings.map((warning) => Padding(
-            padding: const EdgeInsets.only(bottom: DesignTokens.spacing1),
-            child: Text(
-              '• $warning',
-              style: DesignTokens.labelSmall.copyWith(
-                color: Colors.white.withOpacity(0.8),
-              ),
-            ),
-          )),
+                padding: const EdgeInsets.only(bottom: DesignTokens.spacing1),
+                child: Text(
+                  '• $warning',
+                  style: DesignTokens.labelSmall.copyWith(
+                    color: Colors.white.withValues(alpha: 0.8),
+                  ),
+                ),
+              )),
         ],
       ),
     );
@@ -588,7 +600,7 @@ class _GraphPainter extends CustomPainter {
     if (values.isEmpty) return;
 
     final paint = Paint()
-      ..color = color.withOpacity(0.6)
+      ..color = color.withValues(alpha: 0.6)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
@@ -597,8 +609,8 @@ class _GraphPainter extends CustomPainter {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          color.withOpacity(0.3),
-          color.withOpacity(0.0),
+          color.withValues(alpha: 0.3),
+          color.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
@@ -635,7 +647,7 @@ class _GraphPainter extends CustomPainter {
 
     // Draw target line
     final targetPaint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
+      ..color = Colors.white.withValues(alpha: 0.3)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -661,9 +673,9 @@ class CompactPerformanceOverlay extends StatelessWidget {
   final PerformanceMetrics metrics;
 
   const CompactPerformanceOverlay({
-    Key? key,
+    super.key,
     required this.metrics,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -673,10 +685,10 @@ class CompactPerformanceOverlay extends StatelessWidget {
         vertical: DesignTokens.spacing1,
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
         border: Border.all(
-          color: _getHealthColor().withOpacity(0.5),
+          color: _getHealthColor().withValues(alpha: 0.5),
           width: 1,
         ),
       ),
@@ -702,7 +714,8 @@ class CompactPerformanceOverlay extends StatelessWidget {
 
   Widget _buildCompactMetric(String label, double value, double target) {
     final isGood = value >= target || (label == 'LAT' && value <= target);
-    final color = isGood ? DesignTokens.stateSuccess : DesignTokens.stateWarning;
+    final color =
+        isGood ? DesignTokens.stateSuccess : DesignTokens.stateWarning;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -710,7 +723,7 @@ class CompactPerformanceOverlay extends StatelessWidget {
         Text(
           label,
           style: DesignTokens.labelSmall.copyWith(
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
             fontSize: 9,
           ),
         ),

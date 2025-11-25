@@ -1,19 +1,20 @@
-/**
- * Audio → Visual Modulation System
- *
- * Maps real-time audio analysis to visual parameters:
- * - Bass Energy (20-250 Hz) → 4D Rotation Speed
- * - Mid Energy (250-2000 Hz) → Tessellation Density
- * - High Energy (2000-8000 Hz) → Vertex Brightness
- * - Spectral Centroid → Hue Shift
- * - RMS Amplitude → Glow Intensity
- * - Stereo Width → RGB Split Amount
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio → Visual Modulation System
+///
+/// Maps real-time audio analysis to visual parameters:
+/// - Bass Energy (20-250 Hz) → 4D Rotation Speed
+/// - Mid Energy (250-2000 Hz) → Tessellation Density
+/// - High Energy (2000-8000 Hz) → Vertex Brightness
+/// - Spectral Centroid → Hue Shift
+/// - RMS Amplitude → Glow Intensity
+/// - Stereo Width → RGB Split Amount
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/foundation.dart';
-import 'dart:typed_data';
 import 'dart:math' as math;
 import '../providers/audio_provider.dart';
 import '../providers/visual_provider.dart';
@@ -122,8 +123,8 @@ class AudioToVisualModulator {
     final high = features['highEnergy'] ?? 0.0;
 
     return (bass - _lastLoggedBass).abs() > 0.1 ||
-           (mid - _lastLoggedMid).abs() > 0.1 ||
-           (high - _lastLoggedHigh).abs() > 0.1;
+        (mid - _lastLoggedMid).abs() > 0.1 ||
+        (high - _lastLoggedHigh).abs() > 0.1;
   }
 
   /// Log current modulation state for debugging
@@ -136,17 +137,19 @@ class AudioToVisualModulator {
 
     // Get mapped visual values
     final rotSpeed = _mappings['bassEnergy_to_rotationSpeed']?.map(bass) ?? 0.0;
-    final tessellation = _mappings['midEnergy_to_tessellationDensity']?.map(mid) ?? 0.0;
-    final brightness = _mappings['highEnergy_to_vertexBrightness']?.map(high) ?? 0.0;
+    final tessellation =
+        _mappings['midEnergy_to_tessellationDensity']?.map(mid) ?? 0.0;
+    final brightness =
+        _mappings['highEnergy_to_vertexBrightness']?.map(high) ?? 0.0;
     final hue = _mappings['spectralCentroid_to_hueShift']?.map(centroid) ?? 0.0;
     final glow = _mappings['rms_to_glowIntensity']?.map(rms) ?? 0.0;
 
     debugPrint('🎨 Audio→Visual: '
-      'bass=${(bass * 100).toStringAsFixed(0)}%→speed=${rotSpeed.toStringAsFixed(2)}x | '
-      'mid=${(mid * 100).toStringAsFixed(0)}%→tess=${tessellation.toStringAsFixed(0)} | '
-      'high=${(high * 100).toStringAsFixed(0)}%→bright=${brightness.toStringAsFixed(2)} | '
-      'centroid=${centroid.toStringAsFixed(0)}Hz→hue=${hue.toStringAsFixed(0)}° | '
-      'rms=${(rms * 100).toStringAsFixed(0)}%→glow=${glow.toStringAsFixed(2)}');
+        'bass=${(bass * 100).toStringAsFixed(0)}%→speed=${rotSpeed.toStringAsFixed(2)}x | '
+        'mid=${(mid * 100).toStringAsFixed(0)}%→tess=${tessellation.toStringAsFixed(0)} | '
+        'high=${(high * 100).toStringAsFixed(0)}%→bright=${brightness.toStringAsFixed(2)} | '
+        'centroid=${centroid.toStringAsFixed(0)}Hz→hue=${hue.toStringAsFixed(0)}° | '
+        'rms=${(rms * 100).toStringAsFixed(0)}%→glow=${glow.toStringAsFixed(2)}');
 
     _lastLoggedBass = bass;
     _lastLoggedMid = mid;

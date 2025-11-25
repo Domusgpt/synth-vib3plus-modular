@@ -1,20 +1,22 @@
-/**
- * Resize Handle Widget
- *
- * Interactive handles for resizing panels. Supports corner and edge
- * handles with visual feedback and snap-to-grid behavior.
- *
- * Features:
- * - Corner handles (8 directions)
- * - Edge handles (4 directions)
- * - Visual feedback (hover, active)
- * - Snap-to-grid support
- * - Touch-optimized sizes
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 2
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Resize Handle Widget
+///
+/// Interactive handles for resizing panels. Supports corner and edge
+/// handles with visual feedback and snap-to-grid behavior.
+///
+/// Features:
+/// - Corner handles (8 directions)
+/// - Edge handles (4 directions)
+/// - Visual feedback (hover, active)
+/// - Snap-to-grid support
+/// - Touch-optimized sizes
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../theme/design_tokens.dart';
@@ -39,9 +41,9 @@ extension ResizeDirectionExtension on ResizeDirection {
   /// Check if this is a corner handle
   bool get isCorner {
     return this == ResizeDirection.topLeft ||
-           this == ResizeDirection.topRight ||
-           this == ResizeDirection.bottomLeft ||
-           this == ResizeDirection.bottomRight;
+        this == ResizeDirection.topRight ||
+        this == ResizeDirection.bottomLeft ||
+        this == ResizeDirection.bottomRight;
   }
 
   /// Check if this is an edge handle
@@ -50,29 +52,29 @@ extension ResizeDirectionExtension on ResizeDirection {
   /// Check if this affects top edge
   bool get affectsTop {
     return this == ResizeDirection.topLeft ||
-           this == ResizeDirection.topCenter ||
-           this == ResizeDirection.topRight;
+        this == ResizeDirection.topCenter ||
+        this == ResizeDirection.topRight;
   }
 
   /// Check if this affects bottom edge
   bool get affectsBottom {
     return this == ResizeDirection.bottomLeft ||
-           this == ResizeDirection.bottomCenter ||
-           this == ResizeDirection.bottomRight;
+        this == ResizeDirection.bottomCenter ||
+        this == ResizeDirection.bottomRight;
   }
 
   /// Check if this affects left edge
   bool get affectsLeft {
     return this == ResizeDirection.topLeft ||
-           this == ResizeDirection.centerLeft ||
-           this == ResizeDirection.bottomLeft;
+        this == ResizeDirection.centerLeft ||
+        this == ResizeDirection.bottomLeft;
   }
 
   /// Check if this affects right edge
   bool get affectsRight {
     return this == ResizeDirection.topRight ||
-           this == ResizeDirection.centerRight ||
-           this == ResizeDirection.bottomRight;
+        this == ResizeDirection.centerRight ||
+        this == ResizeDirection.bottomRight;
   }
 
   /// Get mouse cursor for this direction
@@ -109,7 +111,7 @@ class ResizeHandle extends StatefulWidget {
   final double size;
 
   const ResizeHandle({
-    Key? key,
+    super.key,
     required this.direction,
     required this.onResize,
     this.onResizeStart,
@@ -117,7 +119,7 @@ class ResizeHandle extends StatefulWidget {
     this.visible = true,
     this.color = DesignTokens.stateActive,
     this.size = 12.0,
-  }) : super(key: key);
+  });
 
   @override
   State<ResizeHandle> createState() => _ResizeHandleState();
@@ -135,9 +137,13 @@ class _ResizeHandleState extends State<ResizeHandle> {
     }
 
     final isActive = _isHovering || _isDragging;
+    final constraints = _getPositionConstraints();
 
     return Positioned(
-      ..._getPositionConstraints(),
+      top: constraints['top'],
+      left: constraints['left'],
+      right: constraints['right'],
+      bottom: constraints['bottom'],
       child: MouseRegion(
         cursor: widget.direction.cursor,
         onEnter: (_) => setState(() => _isHovering = true),
@@ -151,12 +157,10 @@ class _ResizeHandleState extends State<ResizeHandle> {
             height: widget.size,
             decoration: BoxDecoration(
               color: isActive
-                  ? widget.color.withOpacity(0.8)
-                  : widget.color.withOpacity(0.4),
+                  ? widget.color.withValues(alpha: 0.8)
+                  : widget.color.withValues(alpha: 0.4),
               border: Border.all(
-                color: isActive
-                    ? widget.color
-                    : widget.color.withOpacity(0.6),
+                color: isActive ? widget.color : widget.color.withValues(alpha: 0.6),
                 width: isActive ? 2.0 : 1.0,
               ),
               borderRadius: widget.direction.isCorner
@@ -165,7 +169,7 @@ class _ResizeHandleState extends State<ResizeHandle> {
               boxShadow: isActive
                   ? [
                       BoxShadow(
-                        color: widget.color.withOpacity(0.5),
+                        color: widget.color.withValues(alpha: 0.5),
                         blurRadius: 8,
                         spreadRadius: 2,
                       ),
@@ -267,7 +271,7 @@ class ResizeHandleSet extends StatelessWidget {
   final double size;
 
   const ResizeHandleSet({
-    Key? key,
+    super.key,
     required this.onResize,
     this.onResizeStart,
     this.onResizeEnd,
@@ -275,7 +279,7 @@ class ResizeHandleSet extends StatelessWidget {
     this.showEdges = true,
     this.color = DesignTokens.stateActive,
     this.size = 12.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -368,11 +372,11 @@ class ResizePreviewOverlay extends StatelessWidget {
   final bool show;
 
   const ResizePreviewOverlay({
-    Key? key,
+    super.key,
     required this.previewRect,
     this.color = DesignTokens.stateActive,
     this.show = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -391,7 +395,7 @@ class ResizePreviewOverlay extends StatelessWidget {
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
           ),
           child: Center(
             child: Text(

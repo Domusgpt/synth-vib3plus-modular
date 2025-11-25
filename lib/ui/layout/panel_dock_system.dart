@@ -1,25 +1,26 @@
-/**
- * Panel Docking System
- *
- * Manages panel docking with snap-to-edge functionality, magnetic
- * snapping, collision detection, and auto-layout when docked.
- *
- * Features:
- * - 5 dock zones (top, bottom, left, right, float)
- * - Magnetic snapping with distance threshold
- * - Collision detection
- * - Auto-layout when docked
- * - Dock zone visualization
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 2
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Panel Docking System
+///
+/// Manages panel docking with snap-to-edge functionality, magnetic
+/// snapping, collision detection, and auto-layout when docked.
+///
+/// Features:
+/// - 5 dock zones (top, bottom, left, right, float)
+/// - Magnetic snapping with distance threshold
+/// - Collision detection
+/// - Auto-layout when docked
+/// - Dock zone visualization
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/design_tokens.dart';
-import 'flexible_layout.dart';
 
 // ============================================================================
 // DOCK ZONE
@@ -27,10 +28,10 @@ import 'flexible_layout.dart';
 
 /// Docking zones
 enum DockZone {
-  top,      // Docked to top edge
-  bottom,   // Docked to bottom edge
-  left,     // Docked to left edge
-  right,    // Docked to right edge
+  top, // Docked to top edge
+  bottom, // Docked to bottom edge
+  left, // Docked to left edge
+  right, // Docked to right edge
   floating, // Not docked (free positioning)
 }
 
@@ -77,12 +78,12 @@ extension DockZoneExtension on DockZone {
 
 /// Docking system configuration
 class DockConfig {
-  final double snapDistance;        // Pixels from edge to trigger snap
-  final double magneticStrength;    // 0-1, how strong the magnetic pull is
+  final double snapDistance; // Pixels from edge to trigger snap
+  final double magneticStrength; // 0-1, how strong the magnetic pull is
   final bool enableCollisionDetection;
-  final bool enableAutoLayout;      // Auto-arrange docked panels
-  final double dockedPanelSize;     // Default size for docked panels
-  final EdgeInsets dockZoneMargin;  // Margin around dock zones
+  final bool enableAutoLayout; // Auto-arrange docked panels
+  final double dockedPanelSize; // Default size for docked panels
+  final EdgeInsets dockZoneMargin; // Margin around dock zones
 
   const DockConfig({
     this.snapDistance = 50.0,
@@ -130,7 +131,7 @@ class DockedPanelInfo {
   final String id;
   final DockZone zone;
   final Rect rect;
-  final int order;  // Order within dock zone (for auto-layout)
+  final int order; // Order within dock zone (for auto-layout)
 
   const DockedPanelInfo({
     required this.id,
@@ -198,9 +199,7 @@ class PanelDockSystem extends ChangeNotifier {
 
   /// Get all panels in dock zone
   List<DockedPanelInfo> getPanelsInZone(DockZone zone) {
-    return _panels.values
-        .where((panel) => panel.zone == zone)
-        .toList()
+    return _panels.values.where((panel) => panel.zone == zone).toList()
       ..sort((a, b) => a.order.compareTo(b.order));
   }
 
@@ -255,7 +254,7 @@ class PanelDockSystem extends ChangeNotifier {
 
     // Get panels in this zone
     final panelsInZone = getPanelsInZone(zone);
-    final order = panelsInZone.length;  // New panel goes at end
+    final order = panelsInZone.length; // New panel goes at end
 
     // Calculate position based on zone and order
     switch (zone) {
@@ -341,7 +340,8 @@ class PanelDockSystem extends ChangeNotifier {
   }
 
   /// Get all colliding panels
-  List<DockedPanelInfo> getCollidingPanels(Rect rect, {String? excludePanelId}) {
+  List<DockedPanelInfo> getCollidingPanels(Rect rect,
+      {String? excludePanelId}) {
     final collisions = <DockedPanelInfo>[];
 
     for (final entry in _panels.entries) {
@@ -381,15 +381,15 @@ class PanelDockSystem extends ChangeNotifier {
       }
     }
 
-    return null;  // Couldn't find non-colliding position
+    return null; // Couldn't find non-colliding position
   }
 
   /// Check if rect is within container bounds
   bool _isRectInBounds(Rect rect) {
     return rect.left >= 0 &&
-           rect.top >= 0 &&
-           rect.right <= containerSize.width &&
-           rect.bottom <= containerSize.height;
+        rect.top >= 0 &&
+        rect.right <= containerSize.width &&
+        rect.bottom <= containerSize.height;
   }
 
   // ============================================================================
@@ -457,12 +457,12 @@ class DockZoneIndicator extends StatelessWidget {
   final double opacity;
 
   const DockZoneIndicator({
-    Key? key,
+    super.key,
     required this.zone,
     this.isActive = false,
     this.color = DesignTokens.stateActive,
     this.opacity = 0.3,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -483,9 +483,9 @@ class DockZoneIndicator extends StatelessWidget {
             child: AnimatedContainer(
               duration: DesignTokens.micro,
               decoration: BoxDecoration(
-                color: color.withOpacity(isActive ? opacity * 2 : opacity),
+                color: color.withValues(alpha: isActive ? opacity * 2 : opacity),
                 border: Border.all(
-                  color: color.withOpacity(isActive ? 0.8 : 0.4),
+                  color: color.withValues(alpha: isActive ? 0.8 : 0.4),
                   width: isActive ? 2.0 : 1.0,
                 ),
                 borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
@@ -496,14 +496,14 @@ class DockZoneIndicator extends StatelessWidget {
                   children: [
                     Icon(
                       zone.icon,
-                      color: color.withOpacity(isActive ? 1.0 : 0.6),
+                      color: color.withValues(alpha: isActive ? 1.0 : 0.6),
                       size: 48,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       zone.label,
                       style: DesignTokens.headlineMedium.copyWith(
-                        color: color.withOpacity(isActive ? 1.0 : 0.6),
+                        color: color.withValues(alpha: isActive ? 1.0 : 0.6),
                       ),
                     ),
                   ],

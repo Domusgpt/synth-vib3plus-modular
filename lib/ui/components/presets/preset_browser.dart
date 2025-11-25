@@ -1,27 +1,28 @@
-/**
- * Enhanced Preset Browser
- *
- * Advanced preset browsing and management interface with search, filtering,
- * categorization, visual previews, favorites, and tags.
- *
- * Features:
- * - Visual preset cards with geometry preview
- * - Search by name, description, tags
- * - Filter by category, geometry system, synthesis type
- * - Favorites system
- * - User/factory preset separation
- * - Import/export presets
- * - Preset rating system
- * - Recently used tracking
- * - Preset comparison mode
- * - Bulk operations (delete, export, tag)
- *
- * Part of the Integration Layer (Phase 3.5)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Enhanced Preset Browser
+///
+/// Advanced preset browsing and management interface with search, filtering,
+/// categorization, visual previews, favorites, and tags.
+///
+/// Features:
+/// - Visual preset cards with geometry preview
+/// - Search by name, description, tags
+/// - Filter by category, geometry system, synthesis type
+/// - Favorites system
+/// - User/factory preset separation
+/// - Import/export presets
+/// - Preset rating system
+/// - Recently used tracking
+/// - Preset comparison mode
+/// - Bulk operations (delete, export, tag)
+///
+/// Part of the Integration Layer (Phase 3.5)
+///
+/// A Paul Phillips Manifestation
+///
 
-import 'dart:math' as math;
+library;
+
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
@@ -99,12 +100,12 @@ class PresetMetadata {
   final String author;
   final PresetCategory category;
   final List<String> tags;
-  final int geometryIndex;  // 0-23
-  final String visualSystem;  // Quantum, Faceted, Holographic
-  final String synthesisType;  // Direct, FM, Ring Mod
+  final int geometryIndex; // 0-23
+  final String visualSystem; // Quantum, Faceted, Holographic
+  final String synthesisType; // Direct, FM, Ring Mod
   final bool isFactory;
   final bool isFavorite;
-  final double rating;  // 0-5
+  final double rating; // 0-5
   final DateTime createdAt;
   final DateTime? lastUsed;
   final int useCount;
@@ -167,7 +168,16 @@ class PresetMetadata {
     final coreIndex = geometryIndex ~/ 8;
     final baseIndex = geometryIndex % 8;
     final coreNames = ['Base', 'Hypersphere', 'Hypertetrahedron'];
-    final baseNames = ['Tetrahedron', 'Hypercube', 'Sphere', 'Torus', 'Klein Bottle', 'Fractal', 'Wave', 'Crystal'];
+    final baseNames = [
+      'Tetrahedron',
+      'Hypercube',
+      'Sphere',
+      'Torus',
+      'Klein Bottle',
+      'Fractal',
+      'Wave',
+      'Crystal'
+    ];
     return '${coreNames[coreIndex]} ${baseNames[baseIndex]}';
   }
 }
@@ -200,7 +210,8 @@ class PresetFilter {
       final query = searchQuery.toLowerCase();
       final matchesName = preset.name.toLowerCase().contains(query);
       final matchesDesc = preset.description.toLowerCase().contains(query);
-      final matchesTags = preset.tags.any((tag) => tag.toLowerCase().contains(query));
+      final matchesTags =
+          preset.tags.any((tag) => tag.toLowerCase().contains(query));
       final matchesAuthor = preset.author.toLowerCase().contains(query);
 
       if (!matchesName && !matchesDesc && !matchesTags && !matchesAuthor) {
@@ -214,12 +225,14 @@ class PresetFilter {
     }
 
     // Visual systems
-    if (visualSystems.isNotEmpty && !visualSystems.contains(preset.visualSystem)) {
+    if (visualSystems.isNotEmpty &&
+        !visualSystems.contains(preset.visualSystem)) {
       return false;
     }
 
     // Synthesis types
-    if (synthesisTypes.isNotEmpty && !synthesisTypes.contains(preset.synthesisType)) {
+    if (synthesisTypes.isNotEmpty &&
+        !synthesisTypes.contains(preset.synthesisType)) {
       return false;
     }
 
@@ -271,7 +284,7 @@ class PresetBrowser extends StatefulWidget {
   final double height;
 
   const PresetBrowser({
-    Key? key,
+    super.key,
     required this.presets,
     this.onPresetSelected,
     this.onPresetFavorited,
@@ -280,7 +293,7 @@ class PresetBrowser extends StatefulWidget {
     this.onExportPresets,
     this.width = 900,
     this.height = 700,
-  }) : super(key: key);
+  });
 
   @override
   State<PresetBrowser> createState() => _PresetBrowserState();
@@ -289,7 +302,7 @@ class PresetBrowser extends StatefulWidget {
 class _PresetBrowserState extends State<PresetBrowser> {
   PresetFilter _filter = const PresetFilter();
   final TextEditingController _searchController = TextEditingController();
-  String _sortBy = 'name';  // name, date, rating, recent
+  String _sortBy = 'name'; // name, date, rating, recent
   final Set<String> _selectedPresets = {};
 
   @override
@@ -330,7 +343,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
     return GlassmorphicContainer(
       width: widget.width,
       height: widget.height,
-      borderRadius: DesignTokens.radiusMedium,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
       child: Column(
         children: [
           // Header with search
@@ -345,8 +358,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
           ),
 
           // Action bar
-          if (_selectedPresets.isNotEmpty)
-            _buildActionBar(),
+          if (_selectedPresets.isNotEmpty) _buildActionBar(),
         ],
       ),
     );
@@ -358,7 +370,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -371,13 +383,13 @@ class _PresetBrowserState extends State<PresetBrowser> {
               const SizedBox(width: DesignTokens.spacing2),
               Text(
                 'Preset Browser',
-                style: DesignTokens.headingMedium,
+                style: DesignTokens.headlineMedium,
               ),
               const Spacer(),
               Text(
                 '${_filteredPresets.length} presets',
                 style: DesignTokens.labelSmall.copyWith(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -395,7 +407,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
             decoration: InputDecoration(
               hintText: 'Search presets...',
               hintStyle: DesignTokens.bodyMedium.copyWith(
-                color: Colors.white.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.4),
               ),
               prefixIcon: const Icon(Icons.search, size: 20),
               suffixIcon: _searchController.text.isNotEmpty
@@ -410,11 +422,11 @@ class _PresetBrowserState extends State<PresetBrowser> {
                     )
                   : null,
               filled: true,
-              fillColor: Colors.white.withOpacity(0.05),
+              fillColor: Colors.white.withValues(alpha: 0.05),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
                 borderSide: BorderSide(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                 ),
               ),
             ),
@@ -428,10 +440,10 @@ class _PresetBrowserState extends State<PresetBrowser> {
     return Container(
       padding: const EdgeInsets.all(DesignTokens.spacing2),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -484,7 +496,8 @@ class _PresetBrowserState extends State<PresetBrowser> {
                   isActive,
                   () {
                     setState(() {
-                      final newCategories = Set<PresetCategory>.from(_filter.categories);
+                      final newCategories =
+                          Set<PresetCategory>.from(_filter.categories);
                       if (isActive) {
                         newCategories.remove(category);
                       } else {
@@ -510,10 +523,10 @@ class _PresetBrowserState extends State<PresetBrowser> {
         vertical: DesignTokens.spacing1,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
         ),
       ),
       child: DropdownButton<String>(
@@ -524,7 +537,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
           });
         },
         underline: const SizedBox(),
-        dropdownColor: Colors.black.withOpacity(0.9),
+        dropdownColor: Colors.black.withValues(alpha: 0.9),
         style: DesignTokens.labelSmall,
         items: const [
           DropdownMenuItem(value: 'name', child: Text('Sort: Name')),
@@ -554,11 +567,11 @@ class _PresetBrowserState extends State<PresetBrowser> {
         ),
         decoration: BoxDecoration(
           color: isActive
-              ? effectiveColor.withOpacity(0.3)
-              : Colors.white.withOpacity(0.05),
+              ? effectiveColor.withValues(alpha: 0.3)
+              : Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
           border: Border.all(
-            color: isActive ? effectiveColor : Colors.white.withOpacity(0.2),
+            color: isActive ? effectiveColor : Colors.white.withValues(alpha: 0.2),
             width: isActive ? 2 : 1,
           ),
         ),
@@ -566,13 +579,18 @@ class _PresetBrowserState extends State<PresetBrowser> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 14, color: isActive ? effectiveColor : Colors.white.withOpacity(0.6)),
+              Icon(icon,
+                  size: 14,
+                  color: isActive
+                      ? effectiveColor
+                      : Colors.white.withValues(alpha: 0.6)),
               const SizedBox(width: DesignTokens.spacing1),
             ],
             Text(
               label,
               style: DesignTokens.labelSmall.copyWith(
-                color: isActive ? effectiveColor : Colors.white.withOpacity(0.6),
+                color:
+                    isActive ? effectiveColor : Colors.white.withValues(alpha: 0.6),
               ),
             ),
           ],
@@ -592,20 +610,20 @@ class _PresetBrowserState extends State<PresetBrowser> {
             Icon(
               Icons.search_off,
               size: 64,
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
             ),
             const SizedBox(height: DesignTokens.spacing3),
             Text(
               'No presets found',
-              style: DesignTokens.headingMedium.copyWith(
-                color: Colors.white.withOpacity(0.4),
+              style: DesignTokens.headlineMedium.copyWith(
+                color: Colors.white.withValues(alpha: 0.4),
               ),
             ),
             const SizedBox(height: DesignTokens.spacing2),
             Text(
               'Try adjusting your filters or search query',
               style: DesignTokens.bodyMedium.copyWith(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha: 0.3),
               ),
             ),
           ],
@@ -646,12 +664,12 @@ class _PresetBrowserState extends State<PresetBrowser> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
+          color: Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
           border: Border.all(
             color: isSelected
                 ? DesignTokens.stateActive
-                : preset.category.color.withOpacity(0.3),
+                : preset.category.color.withValues(alpha: 0.3),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -663,7 +681,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
               flex: 2,
               child: Container(
                 decoration: BoxDecoration(
-                  color: preset.category.color.withOpacity(0.1),
+                  color: preset.category.color.withValues(alpha: 0.1),
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(DesignTokens.radiusMedium),
                   ),
@@ -699,9 +717,13 @@ class _PresetBrowserState extends State<PresetBrowser> {
                         ),
                         IconButton(
                           icon: Icon(
-                            preset.isFavorite ? Icons.favorite : Icons.favorite_border,
+                            preset.isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
                             size: 16,
-                            color: preset.isFavorite ? DesignTokens.stateActive : Colors.white.withOpacity(0.4),
+                            color: preset.isFavorite
+                                ? DesignTokens.stateActive
+                                : Colors.white.withValues(alpha: 0.4),
                           ),
                           onPressed: () {
                             widget.onPresetFavorited?.call(preset);
@@ -713,7 +735,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
                       Text(
                         preset.description,
                         style: DesignTokens.labelSmall.copyWith(
-                          color: Colors.white.withOpacity(0.6),
+                          color: Colors.white.withValues(alpha: 0.6),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -727,7 +749,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: preset.category.color.withOpacity(0.2),
+                            color: preset.category.color.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -761,10 +783,10 @@ class _PresetBrowserState extends State<PresetBrowser> {
     return Container(
       padding: const EdgeInsets.all(DesignTokens.spacing3),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
         border: Border(
           top: BorderSide(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             width: 1,
           ),
         ),

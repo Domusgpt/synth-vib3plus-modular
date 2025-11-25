@@ -1,17 +1,25 @@
-/**
- * Enhanced Parameter Mapping System
- *
- * Professional parameter mapping with:
- * - Musical scaling curves (exponential, logarithmic, S-curve)
- * - Velocity sensitivity
- * - Aftertouch/pressure support
- * - Smart parameter ranges optimized for human perception
- * - Preset-based mapping configurations
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Enhanced Parameter Mapping System
+///
+/// Professional parameter mapping with:
+/// - Musical scaling curves (exponential, logarithmic, S-curve)
+/// - Velocity sensitivity
+/// - Aftertouch/pressure support
+/// - Smart parameter ranges optimized for human perception
+/// - Preset-based mapping configurations
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
+
+/// Hyperbolic tangent function (tanh) - not in dart:math
+double _tanh(double x) {
+  final e2x = math.exp(2 * x);
+  return (e2x - 1) / (e2x + 1);
+}
 
 /// Enhanced mapping curve types
 enum MappingCurve {
@@ -60,9 +68,11 @@ class EnhancedMapping {
       }
       // Scale to account for dead zone
       if (normalized > 0.5) {
-        normalized = 0.5 + (normalized - 0.5 - deadZone / 2) / (0.5 - deadZone / 2);
+        normalized =
+            0.5 + (normalized - 0.5 - deadZone / 2) / (0.5 - deadZone / 2);
       } else {
-        normalized = 0.5 - (0.5 - normalized - deadZone / 2) / (0.5 - deadZone / 2);
+        normalized =
+            0.5 - (0.5 - normalized - deadZone / 2) / (0.5 - deadZone / 2);
       }
     } else {
       // Unipolar: 0 is start
@@ -103,7 +113,7 @@ class EnhancedMapping {
       case MappingCurve.scurve:
         // Smooth S-curve using tanh
         final scaled = (input - 0.5) * 6.0; // Scale to ±3
-        return (math.tanh(scaled) + 1.0) / 2.0;
+        return (_tanh(scaled) + 1.0) / 2.0;
 
       case MappingCurve.quadratic:
         return input * input;
@@ -276,7 +286,7 @@ class VelocityCurve {
         break;
       case MappingCurve.scurve:
         // Soft at extremes, responsive in middle
-        curved = (math.tanh((curved - 0.5) * 4) + 1) / 2;
+        curved = (_tanh((curved - 0.5) * 4) + 1) / 2;
         break;
       default:
         break;
@@ -326,7 +336,7 @@ class PressureCurve {
       case MappingCurve.logarithmic:
         return math.sqrt(curved);
       case MappingCurve.scurve:
-        return (math.tanh((curved - 0.5) * 4) + 1) / 2;
+        return (_tanh((curved - 0.5) * 4) + 1) / 2;
       default:
         return curved;
     }
@@ -362,7 +372,8 @@ class ScaleQuantizer {
   }
 
   /// Predefined scales
-  static const chromatic = ScaleQuantizer([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+  static const chromatic =
+      ScaleQuantizer([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
   static const major = ScaleQuantizer([0, 2, 4, 5, 7, 9, 11]);
   static const minor = ScaleQuantizer([0, 2, 3, 5, 7, 8, 10]);
   static const pentatonicMajor = ScaleQuantizer([0, 2, 4, 7, 9]);
@@ -382,18 +393,16 @@ class ParameterSmoother {
   double _target;
   final double _sampleRate;
   double _smoothTime; // Seconds
-  MappingCurve _curve;
 
   ParameterSmoother({
     required double sampleRate,
     double initial = 0.0,
     double smoothTime = 0.05, // 50ms default
-    MappingCurve curve = MappingCurve.linear,
+    MappingCurve curve = MappingCurve.linear, // Reserved for future implementation
   })  : _current = initial,
         _target = initial,
         _sampleRate = sampleRate,
-        _smoothTime = smoothTime,
-        _curve = curve;
+        _smoothTime = smoothTime;
 
   /// Set new target value
   void setTarget(double value) {
@@ -433,6 +442,6 @@ class ParameterSmoother {
 
   /// Set curve type
   void setCurve(MappingCurve curve) {
-    _curve = curve;
+    // TODO: Implement different curve types (currently only linear)
   }
 }

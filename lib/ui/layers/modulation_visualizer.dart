@@ -1,27 +1,28 @@
-/**
- * Modulation Visualizer
- *
- * Visual representation of active parameter modulations.
- * Shows animated connection lines between source and target
- * parameters with strength indicators and color coding.
- *
- * Features:
- * - Curved bezier connection lines
- * - Animated particle flow along paths
- * - Color-coded by source type (audio/visual/LFO)
- * - Strength-based thickness and opacity
- * - Audio-reactive pulsing
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Modulation Visualizer
+///
+/// Visual representation of active parameter modulations.
+/// Shows animated connection lines between source and target
+/// parameters with strength indicators and color coding.
+///
+/// Features:
+/// - Curved bezier connection lines
+/// - Animated particle flow along paths
+/// - Color-coded by source type (audio/visual/LFO)
+/// - Strength-based thickness and opacity
+/// - Audio-reactive pulsing
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../audio/audio_analyzer.dart';
 import '../theme/design_tokens.dart';
-import '../effects/glassmorphic_container.dart';
 
 // ============================================================================
 // MODULATION SOURCE
@@ -29,11 +30,11 @@ import '../effects/glassmorphic_container.dart';
 
 /// Type of modulation source
 enum ModulationSourceType {
-  audio,      // Audio features (RMS, spectral, etc.)
-  visual,     // Visual parameters (rotation, morph, etc.)
-  lfo,        // LFO modulator
-  envelope,   // Envelope
-  manual,     // User control
+  audio, // Audio features (RMS, spectral, etc.)
+  visual, // Visual parameters (rotation, morph, etc.)
+  lfo, // LFO modulator
+  envelope, // Envelope
+  manual, // User control
 }
 
 /// Modulation source
@@ -41,8 +42,8 @@ class ModulationSource {
   final String id;
   final String label;
   final ModulationSourceType type;
-  final Offset position;    // Screen position
-  double currentValue;      // 0-1
+  final Offset position; // Screen position
+  double currentValue; // 0-1
 
   ModulationSource({
     required this.id,
@@ -73,7 +74,7 @@ class ModulationSource {
 class ModulationTarget {
   final String id;
   final String label;
-  final Offset position;    // Screen position
+  final Offset position; // Screen position
 
   ModulationTarget({
     required this.id,
@@ -90,9 +91,9 @@ class ModulationTarget {
 class ModulationConnection {
   final ModulationSource source;
   final ModulationTarget target;
-  double strength;          // 0-1, modulation depth
+  double strength; // 0-1, modulation depth
   bool enabled;
-  double animationPhase;    // 0-1, for animated particles
+  double animationPhase; // 0-1, for animated particles
 
   ModulationConnection({
     required this.source,
@@ -104,7 +105,7 @@ class ModulationConnection {
   /// Update animation
   void update(double dt) {
     if (!enabled) return;
-    animationPhase = (animationPhase + dt * 0.5) % 1.0;  // 2-second loop
+    animationPhase = (animationPhase + dt * 0.5) % 1.0; // 2-second loop
   }
 
   /// Get control point for bezier curve
@@ -113,7 +114,7 @@ class ModulationConnection {
     final midY = (source.position.dy + target.position.dy) / 2;
 
     // Arc upward for visual separation
-    final arcHeight = -50.0 - (strength * 50.0);  // Stronger = higher arc
+    final arcHeight = -50.0 - (strength * 50.0); // Stronger = higher arc
 
     return Offset(midX, midY + arcHeight);
   }
@@ -142,7 +143,7 @@ class ModulationVisualizer {
   bool enabled;
   bool showLabels;
   bool showParticles;
-  double particleCount;  // Particles per connection
+  double particleCount; // Particles per connection
 
   ModulationVisualizer({
     this.enabled = true,
@@ -167,8 +168,8 @@ class ModulationVisualizer {
 
   /// Remove connection
   void removeConnection(String sourceId, String targetId) {
-    connections.removeWhere((c) =>
-        c.source.id == sourceId && c.target.id == targetId);
+    connections
+        .removeWhere((c) => c.source.id == sourceId && c.target.id == targetId);
   }
 
   /// Update connection strength
@@ -196,11 +197,7 @@ class ModulationVisualizer {
     for (final connection in connections) {
       connection.update(dt);
 
-      // Audio-reactive strength modulation
-      if (audioFeatures != null) {
-        final pulse = 1.0 + (audioFeatures.rms * 0.3);
-        // Don't modify base strength, just use for visual pulsing
-      }
+      // Audio-reactive strength modulation handled in paint method
     }
   }
 
@@ -251,12 +248,12 @@ class ModulationVisualizer {
     // Opacity based on strength and audio
     final opacity = (connection.strength * 0.7 + 0.3) * pulse;
 
-    // Width based on strength
-    final strokeWidth = 1.0 + (connection.strength * 3.0);
+    // Width based on strength and pulse (AUDIO-REACTIVE!)
+    final strokeWidth = (1.0 + (connection.strength * 3.0)) * pulse;
 
-    // Create gradient along path
+    // Create gradient along path with opacity applied
     final paint = Paint()
-      ..shader = _createConnectionGradient(connection, pulse)
+      ..shader = _createConnectionGradient(connection, pulse, opacity)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
@@ -265,18 +262,20 @@ class ModulationVisualizer {
     canvas.drawPath(path, paint);
   }
 
-  /// Create gradient shader for connection
-  Shader _createConnectionGradient(ModulationConnection connection, double pulse) {
+  /// Create gradient shader for connection with audio-reactive opacity
+  Shader _createConnectionGradient(
+      ModulationConnection connection, double pulse, double opacity) {
     final sourceColor = connection.source.color;
     final targetColor = DesignTokens.stateActive;
 
+    // Use pre-calculated opacity value for consistency
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        sourceColor.withOpacity((connection.strength * 0.7 + 0.3) * pulse),
-        sourceColor.withOpacity((connection.strength * 0.5 + 0.2) * pulse),
-        targetColor.withOpacity((connection.strength * 0.3 + 0.1) * pulse),
+        sourceColor.withValues(alpha: (0.7 * opacity).clamp(0.0, 1.0)),
+        sourceColor.withValues(alpha: (0.5 * opacity).clamp(0.0, 1.0)),
+        targetColor.withValues(alpha: (0.3 * opacity).clamp(0.0, 1.0)),
       ],
       stops: const [0.0, 0.5, 1.0],
     ).createShader(Rect.fromPoints(
@@ -299,7 +298,7 @@ class ModulationVisualizer {
       final opacity = connection.strength * (1.0 - (t - 0.5).abs() * 2);
 
       final paint = Paint()
-        ..color = color.withOpacity(opacity.clamp(0.0, 1.0))
+        ..color = color.withValues(alpha: opacity.clamp(0.0, 1.0))
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, particleSize);
 
       canvas.drawCircle(position, particleSize, paint);
@@ -332,13 +331,8 @@ class ModulationVisualizer {
   }
 
   /// Paint single label
-  void _paintLabel(
-    Canvas canvas,
-    Offset position,
-    String text,
-    Color color,
-    {required bool isSource}
-  ) {
+  void _paintLabel(Canvas canvas, Offset position, String text, Color color,
+      {required bool isSource}) {
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -354,7 +348,8 @@ class ModulationVisualizer {
 
     // Offset label from connection point
     final offset = isSource
-        ? Offset(position.dx - textPainter.width - 8, position.dy - textPainter.height / 2)
+        ? Offset(position.dx - textPainter.width - 8,
+            position.dy - textPainter.height / 2)
         : Offset(position.dx + 8, position.dy - textPainter.height / 2);
 
     // Draw background
@@ -366,7 +361,7 @@ class ModulationVisualizer {
     );
 
     final bgPaint = Paint()
-      ..color = Colors.black.withOpacity(0.7)
+      ..color = Colors.black.withValues(alpha: 0.7)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
 
     canvas.drawRRect(
@@ -379,7 +374,8 @@ class ModulationVisualizer {
   }
 
   /// Paint strength indicator
-  void _paintStrengthIndicator(Canvas canvas, Offset position, double strength) {
+  void _paintStrengthIndicator(
+      Canvas canvas, Offset position, double strength) {
     final size = 16.0;
     final rect = Rect.fromCenter(
       center: position,
@@ -389,22 +385,22 @@ class ModulationVisualizer {
 
     // Background circle
     final bgPaint = Paint()
-      ..color = Colors.black.withOpacity(0.7)
+      ..color = Colors.black.withValues(alpha: 0.7)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(position, size / 2, bgPaint);
 
     // Strength arc
     final arcPaint = Paint()
-      ..color = DesignTokens.stateActive.withOpacity(0.8)
+      ..color = DesignTokens.stateActive.withValues(alpha: 0.8)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
       rect,
-      -math.pi / 2,  // Start at top
-      strength * 2 * math.pi,  // Arc based on strength
+      -math.pi / 2, // Start at top
+      strength * 2 * math.pi, // Arc based on strength
       false,
       arcPaint,
     );

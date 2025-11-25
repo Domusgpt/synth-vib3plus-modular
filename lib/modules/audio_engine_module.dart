@@ -1,19 +1,20 @@
-/**
- * Audio Engine Module - Professional Synthesis Lifecycle Management
- *
- * HYBRID WRAPPER: Wraps existing AudioProvider with professional
- * module infrastructure (logging, diagnostics, health monitoring).
- *
- * Manages PCM audio output, synthesis engine, voice management,
- * and audio performance monitoring.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio Engine Module - Professional Synthesis Lifecycle Management
+///
+/// HYBRID WRAPPER: Wraps existing AudioProvider with professional
+/// module infrastructure (logging, diagnostics, health monitoring).
+///
+/// Manages PCM audio output, synthesis engine, voice management,
+/// and audio performance monitoring.
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import '../core/synth_module.dart';
 import '../core/synth_logger.dart';
 import '../providers/audio_provider.dart';
-import '../audio/audio_analyzer.dart';
 
 class AudioEngineModule extends SynthModule {
   @override
@@ -61,8 +62,7 @@ class AudioEngineModule extends SynthModule {
 
   @override
   bool get isHealthy {
-    return _isInitialized &&
-           provider.currentFeatures != null;
+    return _isInitialized && provider.currentFeatures != null;
   }
 
   @override
@@ -76,7 +76,8 @@ class AudioEngineModule extends SynthModule {
       'bufferSize': 512,
       'activeVoices': provider.getVoiceCount(),
       'isPlaying': provider.isPlaying,
-      'uptime': '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
+      'uptime':
+          '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
       'notesTriggered': _noteOnCount,
       'notesReleased': _noteOffCount,
       'activeNotes': provider.activeNotes.length,
@@ -159,9 +160,7 @@ class AudioEngineModule extends SynthModule {
   void switchGeometry(int geometryIndex) {
     if (!_isInitialized) return;
 
-    final oldConfig = provider.getSynthesisConfig();
     provider.setGeometry(geometryIndex);
-    final newConfig = provider.getSynthesisConfig();
 
     SynthLogger.geometrySwitch(
       geometryIndex - 1 < 0 ? 0 : geometryIndex - 1,

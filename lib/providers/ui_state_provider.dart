@@ -1,16 +1,17 @@
-/**
- * UI State Provider
- *
- * Manages all UI state including panel visibility, layout configuration,
- * XY pad settings, orb controller position, and keyboard mode.
- *
- * This provider works alongside AudioProvider and VisualProvider to provide
- * comprehensive state management for the entire application.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// UI State Provider
+///
+/// Manages all UI state including panel visibility, layout configuration,
+/// XY pad settings, orb controller position, and keyboard mode.
+///
+/// This provider works alongside AudioProvider and VisualProvider to provide
+/// comprehensive state management for the entire application.
+///
+/// A Paul Phillips Manifestation
+///
 
-import 'package:flutter/foundation.dart';
+library;
+
 import 'package:flutter/material.dart';
 import '../ui/theme/synth_theme.dart';
 
@@ -22,9 +23,9 @@ enum DeviceType {
 
 /// Keyboard layout modes
 enum KeyboardLayout {
-  scrolling,  // 2 octaves visible, horizontal scroll
-  locked,     // Fixed range with adjustable size
-  thumbPads,  // Ergonomic thumb pads (portrait only)
+  scrolling, // 2 octaves visible, horizontal scroll
+  locked, // Fixed range with adjustable size
+  thumbPads, // Ergonomic thumb pads (portrait only)
 }
 
 /// XY axis assignment options
@@ -75,7 +76,7 @@ class UIStateProvider with ChangeNotifier {
   Offset _orbPosition = const Offset(50, 300);
   bool _orbVisible = true;
   double _orbPitchBendRange = 2.0; // ±2 semitones default
-  double _orbVibratoDepth = 1.0;   // 1 semitone max
+  double _orbVibratoDepth = 1.0; // 1 semitone max
 
   // Keyboard mode
   bool _keyboardMode = false;
@@ -85,36 +86,42 @@ class UIStateProvider with ChangeNotifier {
 
   // Thumb pads (portrait mode)
   bool _thumbPadsVisible = true;
-  String _leftPadParameter = 'octave';    // Fixed
-  String _rightPadParameter = 'volume';   // Assignable
+  final String _leftPadParameter = 'octave'; // Fixed
+  String _rightPadParameter = 'volume'; // Assignable
 
   // XY pad configuration
   XYAxisParameter _xyAxisX = XYAxisParameter.pitch;
   XYAxisParameter _xyAxisY = XYAxisParameter.filterCutoff;
 
   // Pitch configuration (X-axis when pitch is assigned)
-  int _pitchRangeStart = 48;  // C3 (MIDI note)
-  int _pitchRangeEnd = 72;    // C5 (MIDI note)
-  String _pitchScale = 'chromatic'; // chromatic, major, minor, pentatonic, blues
-  int _pitchRootNote = 0;     // C (0-11 for C-B)
+  int _pitchRangeStart = 48; // C3 (MIDI note)
+  int _pitchRangeEnd = 72; // C5 (MIDI note)
+  String _pitchScale =
+      'chromatic'; // chromatic, major, minor, pentatonic, blues
+  int _pitchRootNote = 0; // C (0-11 for C-B)
 
   // Parameter ranges (Y-axis assignments)
   final Map<XYAxisParameter, ParameterRange> _parameterRanges = {
     XYAxisParameter.pitch: const ParameterRange(min: 0, max: 127, unit: 'note'),
-    XYAxisParameter.filterCutoff: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
-    XYAxisParameter.resonance: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
-    XYAxisParameter.fmDepth: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
-    XYAxisParameter.ringModMix: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.filterCutoff:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.resonance:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.fmDepth:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.ringModMix:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
     XYAxisParameter.morph: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
     XYAxisParameter.chaos: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
-    XYAxisParameter.brightness: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
+    XYAxisParameter.brightness:
+        const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
     XYAxisParameter.reverb: const ParameterRange(min: 0.0, max: 1.0, unit: '%'),
   };
 
   // Visual feedback configuration
   bool _showTouchRipples = true;
   bool _showNoteGrid = false; // Grid overlay on XY pad
-  double _touchRippleDuration = 0.8; // seconds
+  final double _touchRippleDuration = 0.8; // seconds
 
   // Top bezel visibility
   bool _topBezelVisible = true;
@@ -127,8 +134,8 @@ class UIStateProvider with ChangeNotifier {
   // Tilt integration
   bool _tiltEnabled = false;
   String _tiltXMapping = 'orbHorizontal'; // What X-tilt controls
-  String _tiltYMapping = 'orbVertical';   // What Y-tilt controls
-  double _tiltSensitivity = 1.0;          // Multiplier
+  String _tiltYMapping = 'orbVertical'; // What Y-tilt controls
+  double _tiltSensitivity = 1.0; // Multiplier
 
   UIStateProvider() {
     debugPrint('✅ UIStateProvider initialized');
@@ -187,7 +194,8 @@ class UIStateProvider with ChangeNotifier {
     if (_panelStates.containsKey(panelName)) {
       _panelStates[panelName] = !_panelStates[panelName]!;
       notifyListeners();
-      debugPrint('🎛️ Panel "$panelName" ${_panelStates[panelName]! ? "opened" : "closed"}');
+      debugPrint(
+          '🎛️ Panel "$panelName" ${_panelStates[panelName]! ? "opened" : "closed"}');
     }
   }
 
@@ -581,5 +589,6 @@ class UIStateProvider with ChangeNotifier {
   }
 
   // System colors (derived from current visual system)
-  SystemColors get currentSystemColors => SystemColors.quantum; // Placeholder - should get from VisualProvider
+  SystemColors get currentSystemColors =>
+      SystemColors.quantum; // Placeholder - should get from VisualProvider
 }

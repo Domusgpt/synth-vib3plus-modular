@@ -1,18 +1,20 @@
-/**
- * Audio Analyzer
- *
- * Performs real-time FFT analysis and audio feature extraction
- * for driving visual parameter modulation in the VIB34D system.
- *
- * Features:
- * - FFT computation with configurable window size
- * - Frequency band energy extraction (bass, mid, high)
- * - Spectral centroid calculation
- * - RMS amplitude computation
- * - Stereo width analysis
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Audio Analyzer
+///
+/// Performs real-time FFT analysis and audio feature extraction
+/// for driving visual parameter modulation in the VIB34D system.
+///
+/// Features:
+/// - FFT computation with configurable window size
+/// - Frequency band energy extraction (bass, mid, high)
+/// - Spectral centroid calculation
+/// - RMS amplitude computation
+/// - Stereo width analysis
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -114,9 +116,6 @@ class AudioAnalyzer {
     final magnitudes = computeFFT(audioBuffer);
     final rms = computeRMS(audioBuffer);
 
-    // Detect transients
-    final isTransient = detectTransient(rms);
-
     return AudioFeatures(
       bassEnergy: getBandEnergy(magnitudes, bassMin, bassMax),
       midEnergy: getBandEnergy(magnitudes, midMin, midMax),
@@ -202,7 +201,7 @@ class AudioAnalyzer {
   double detectPitch(Float32List audioBuffer) {
     // Autocorrelation method for pitch detection
     final minPeriod = (sampleRate / 1000.0).round(); // 1000 Hz max
-    final maxPeriod = (sampleRate / 60.0).round();   // 60 Hz min
+    final maxPeriod = (sampleRate / 60.0).round(); // 60 Hz min
 
     double maxCorrelation = 0.0;
     int bestPeriod = minPeriod;
@@ -241,8 +240,8 @@ class AudioAnalyzer {
       _transientTimestamps.add(now);
 
       // Clean up old timestamps (older than 1 second)
-      _transientTimestamps.removeWhere((timestamp) =>
-          now - timestamp > transientWindowMs);
+      _transientTimestamps
+          .removeWhere((timestamp) => now - timestamp > transientWindowMs);
     }
 
     return isTransient;
@@ -253,8 +252,8 @@ class AudioAnalyzer {
     final now = DateTime.now().millisecondsSinceEpoch;
 
     // Clean up old timestamps
-    _transientTimestamps.removeWhere((timestamp) =>
-        now - timestamp > transientWindowMs);
+    _transientTimestamps
+        .removeWhere((timestamp) => now - timestamp > transientWindowMs);
 
     return _transientTimestamps.length.toDouble();
   }
@@ -287,7 +286,9 @@ class AudioAnalyzer {
 
   /// Convert frequency to FFT bin index
   int _freqToBin(double freq) {
-    return (freq * fftSize / sampleRate).round().clamp(0, _magnitudes.length - 1);
+    return (freq * fftSize / sampleRate)
+        .round()
+        .clamp(0, _magnitudes.length - 1);
   }
 
   /// Convert FFT bin index to frequency
@@ -296,7 +297,8 @@ class AudioAnalyzer {
   }
 
   /// Normalize magnitude values to 0-1 range with smoothing
-  double normalizeEnergy(double energy, {double maxExpected = 1.0, double smoothing = 0.8}) {
+  double normalizeEnergy(double energy,
+      {double maxExpected = 1.0, double smoothing = 0.8}) {
     final normalized = (energy / maxExpected).clamp(0.0, 1.0);
     return math.pow(normalized, smoothing).toDouble();
   }
@@ -304,16 +306,16 @@ class AudioAnalyzer {
 
 /// Audio features extracted from analysis
 class AudioFeatures {
-  final double bassEnergy;        // 20-250 Hz
-  final double midEnergy;         // 250-2000 Hz
-  final double highEnergy;        // 2000-8000 Hz
-  final double spectralCentroid;  // Brightness (Hz)
-  final double spectralFlux;      // Rate of timbre change
-  final double fundamentalFreq;   // Pitch (Hz)
-  final double rms;               // Amplitude
-  final double stereoWidth;       // Stereo spread (0-1)
-  final double transientDensity;  // Transients per second
-  final double noiseContent;      // 0=harmonic, 1=noisy
+  final double bassEnergy; // 20-250 Hz
+  final double midEnergy; // 250-2000 Hz
+  final double highEnergy; // 2000-8000 Hz
+  final double spectralCentroid; // Brightness (Hz)
+  final double spectralFlux; // Rate of timbre change
+  final double fundamentalFreq; // Pitch (Hz)
+  final double rms; // Amplitude
+  final double stereoWidth; // Stereo spread (0-1)
+  final double transientDensity; // Transients per second
+  final double noiseContent; // 0=harmonic, 1=noisy
 
   const AudioFeatures({
     required this.bassEnergy,
@@ -330,7 +332,13 @@ class AudioFeatures {
 
   /// Compute overall energy (weighted average)
   double get totalEnergy =>
-    (bassEnergy * 0.4) + (midEnergy * 0.35) + (highEnergy * 0.25);
+      (bassEnergy * 0.4) + (midEnergy * 0.35) + (highEnergy * 0.25);
+
+  /// Alias for fundamentalFreq (dominantFreq is used in some legacy code)
+  double get dominantFreq => fundamentalFreq;
+
+  /// Alias for transientDensity (transient is used in some legacy code)
+  double get transient => transientDensity;
 
   /// Normalize all features to 0-1 range
   AudioFeatures normalize({
@@ -360,15 +368,15 @@ class AudioFeatures {
   @override
   String toString() {
     return 'AudioFeatures('
-           'bass: ${bassEnergy.toStringAsFixed(3)}, '
-           'mid: ${midEnergy.toStringAsFixed(3)}, '
-           'high: ${highEnergy.toStringAsFixed(3)}, '
-           'centroid: ${spectralCentroid.toStringAsFixed(1)} Hz, '
-           'flux: ${spectralFlux.toStringAsFixed(3)}, '
-           'pitch: ${fundamentalFreq.toStringAsFixed(1)} Hz, '
-           'rms: ${rms.toStringAsFixed(3)}, '
-           'width: ${stereoWidth.toStringAsFixed(3)}, '
-           'transients: ${transientDensity.toStringAsFixed(1)}/s, '
-           'noise: ${noiseContent.toStringAsFixed(3)})';
+        'bass: ${bassEnergy.toStringAsFixed(3)}, '
+        'mid: ${midEnergy.toStringAsFixed(3)}, '
+        'high: ${highEnergy.toStringAsFixed(3)}, '
+        'centroid: ${spectralCentroid.toStringAsFixed(1)} Hz, '
+        'flux: ${spectralFlux.toStringAsFixed(3)}, '
+        'pitch: ${fundamentalFreq.toStringAsFixed(1)} Hz, '
+        'rms: ${rms.toStringAsFixed(3)}, '
+        'width: ${stereoWidth.toStringAsFixed(3)}, '
+        'transients: ${transientDensity.toStringAsFixed(1)}/s, '
+        'noise: ${noiseContent.toStringAsFixed(3)})';
   }
 }

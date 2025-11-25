@@ -1,22 +1,23 @@
-/**
- * Layout Provider
- *
- * State management for layout system. Manages current layout preset,
- * panel positions, docking, and persistence to SharedPreferences.
- *
- * Features:
- * - Current layout state management
- * - Layout preset switching
- * - Panel position/size tracking
- * - Persistence to local storage
- * - Undo/redo support
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 2
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Layout Provider
+///
+/// State management for layout system. Manages current layout preset,
+/// panel positions, docking, and persistence to SharedPreferences.
+///
+/// Features:
+/// - Current layout state management
+/// - Layout preset switching
+/// - Panel position/size tracking
+/// - Persistence to local storage
+/// - Undo/redo support
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
+///
+/// A Paul Phillips Manifestation
+///
 
-import 'dart:convert';
+library;
+
 import 'package:flutter/material.dart';
 import '../models/layout_preset.dart';
 import '../ui/layout/flexible_layout.dart';
@@ -30,7 +31,7 @@ import '../ui/layout/panel_dock_system.dart';
 class LayoutState {
   final LayoutPreset currentPreset;
   final Map<String, PanelLayoutData> panels;
-  final bool isModified;  // Has been modified since loading preset
+  final bool isModified; // Has been modified since loading preset
   final LayoutBreakpoint breakpoint;
 
   const LayoutState({
@@ -275,7 +276,7 @@ class LayoutProvider extends ChangeNotifier {
     final panel = _state.panels[id];
     if (panel == null) return;
 
-    if (panel.visible == visible) return;  // No change
+    if (panel.visible == visible) return; // No change
 
     _saveToUndoStack();
 
@@ -330,13 +331,14 @@ class LayoutProvider extends ChangeNotifier {
   /// Suggest preset for breakpoint (internal)
   void _suggestPresetForBreakpoint(LayoutBreakpoint breakpoint) {
     // Find best matching factory preset for new breakpoint
-    final matchingPresets = FactoryPresets.getAll()
-        .where((p) => p.targetBreakpoint == breakpoint);
+    final matchingPresets =
+        FactoryPresets.getAll().where((p) => p.targetBreakpoint == breakpoint);
 
     if (matchingPresets.isNotEmpty) {
       // Could show dialog to user asking if they want to switch
       // For now, just notify that we have suggestions
-      debugPrint('Suggested preset for $breakpoint: ${matchingPresets.first.name}');
+      debugPrint(
+          'Suggested preset for $breakpoint: ${matchingPresets.first.name}');
     }
   }
 
@@ -416,7 +418,8 @@ class LayoutProvider extends ChangeNotifier {
   Map<String, dynamic> toJson() {
     return {
       'currentPresetId': _state.currentPreset.id,
-      'panels': _state.panels.map((key, value) => MapEntry(key, value.toJson())),
+      'panels':
+          _state.panels.map((key, value) => MapEntry(key, value.toJson())),
       'isModified': _state.isModified,
       'breakpoint': _state.breakpoint.name,
       'userPresets': _userPresets.map((p) => p.toJson()).toList(),
@@ -431,7 +434,8 @@ class LayoutProvider extends ChangeNotifier {
       if (json.containsKey('userPresets')) {
         final presetList = json['userPresets'] as List;
         _userPresets.addAll(
-          presetList.map((p) => LayoutPreset.fromJson(p as Map<String, dynamic>)),
+          presetList
+              .map((p) => LayoutPreset.fromJson(p as Map<String, dynamic>)),
         );
       }
 

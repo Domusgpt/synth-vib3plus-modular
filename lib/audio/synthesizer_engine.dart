@@ -1,18 +1,20 @@
-/**
- * Synthesizer Engine - Professional Audio Implementation
- *
- * Core audio synthesis system with:
- * - ADSR envelope system for natural note articulation
- * - 8-voice polyphony with voice stealing
- * - Stereo output with panning and width control
- * - Noise generator for textural content
- * - Bidirectional parameter coupling to VIB34D visual system
- * - Multi-mode filter with resonance
- * - Dual oscillators with FM and ring modulation
- * - Effects: reverb, delay with adjustable mix
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Synthesizer Engine - Professional Audio Implementation
+///
+/// Core audio synthesis system with:
+/// - ADSR envelope system for natural note articulation
+/// - 8-voice polyphony with voice stealing
+/// - Stereo output with panning and width control
+/// - Noise generator for textural content
+/// - Bidirectional parameter coupling to VIB34D visual system
+/// - Multi-mode filter with resonance
+/// - Dual oscillators with FM and ring modulation
+/// - Effects: reverb, delay with adjustable mix
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -36,10 +38,10 @@ enum FilterType {
 
 /// ADSR Envelope for natural note articulation
 class ADSREnvelope {
-  double attack = 0.01;   // 10ms
-  double decay = 0.1;     // 100ms
-  double sustain = 0.7;   // 70% level
-  double release = 0.3;   // 300ms
+  double attack = 0.01; // 10ms
+  double decay = 0.1; // 100ms
+  double sustain = 0.7; // 70% level
+  double release = 0.3; // 300ms
 
   double _level = 0.0;
   double _time = 0.0;
@@ -161,11 +163,17 @@ class Voice {
   }
 }
 
-/// Voice manager for polyphonic synthesis
+/// Voice manager for polyphonic synthesis with intelligent voice stealing
 class VoiceManager {
   final List<Voice> voices;
   final double sampleRate;
   final int maxVoices;
+
+  // Track velocity and start time for each voice (for intelligent stealing)
+  final Map<int, double> _voiceVelocities = {};
+  final Map<int, DateTime> _voiceStartTimes = {};
+
+  static const double velocityEpsilon = 1e-9;
 
   VoiceManager({
     required this.sampleRate,
@@ -175,19 +183,65 @@ class VoiceManager {
           (_) => Voice(sampleRate: sampleRate),
         );
 
-  /// Allocate voice for new note
-  Voice? allocateVoice(int midiNote, double frequency) {
+  /// Allocate voice for new note with intelligent voice stealing
+  /// Uses velocity-based stealing (quieter notes first) + age-based secondary
+  Voice? allocateVoice(int midiNote, double frequency,
+      {double velocity = 0.8}) {
     // First, try to find an inactive voice
-    for (final voice in voices) {
-      if (!voice.isActive) {
-        voice.noteOn(midiNote, frequency);
-        return voice;
+    for (int i = 0; i < voices.length; i++) {
+      if (!voices[i].isActive) {
+        voices[i].noteOn(midiNote, frequency);
+        _voiceVelocities[i] = velocity;
+        _voiceStartTimes[i] = DateTime.now();
+        return voices[i];
       }
     }
 
-    // If all voices active, steal oldest (voice 0)
-    voices[0].noteOn(midiNote, frequency);
-    return voices[0];
+    // All voices active - need to steal
+    // Find voice with lowest velocity, or oldest if velocities are equal
+    int? victimIndex;
+    double? lowestVelocity;
+    DateTime? oldestTime;
+
+    for (int i = 0; i < voices.length; i++) {
+      final voiceVel = _voiceVelocities[i] ?? 0.8;
+      final voiceTime = _voiceStartTimes[i] ?? DateTime.now();
+
+      if (victimIndex == null) {
+        victimIndex = i;
+        lowestVelocity = voiceVel;
+        oldestTime = voiceTime;
+        continue;
+      }
+
+      // PRIMARY: Compare velocity (steal quieter notes)
+      final velocityDiff = (voiceVel - lowestVelocity!).abs();
+      if (velocityDiff > velocityEpsilon) {
+        if (voiceVel < lowestVelocity) {
+          victimIndex = i;
+          lowestVelocity = voiceVel;
+          oldestTime = voiceTime;
+        }
+        continue;
+      }
+
+      // SECONDARY: Same velocity, compare age (steal older notes)
+      if (voiceTime.isBefore(oldestTime!)) {
+        victimIndex = i;
+        lowestVelocity = voiceVel;
+        oldestTime = voiceTime;
+      }
+    }
+
+    // Steal the selected voice
+    if (victimIndex != null) {
+      voices[victimIndex].noteOn(midiNote, frequency);
+      _voiceVelocities[victimIndex] = velocity;
+      _voiceStartTimes[victimIndex] = DateTime.now();
+      return voices[victimIndex];
+    }
+
+    return null;
   }
 
   /// Release voice for note
@@ -255,7 +309,7 @@ class SynthesizerEngine {
 
   // Filter
   late final Filter filter;
-  late final ADSREnvelope filterEnvelope;  // Envelope for filter modulation
+  late final ADSREnvelope filterEnvelope; // Envelope for filter modulation
   double filterEnvelopeAmount = 0.0; // 0-1, how much envelope affects filter
 
   // Effects
@@ -268,13 +322,20 @@ class SynthesizerEngine {
   double stereoWidth = 1.0; // 0 = mono, 1 = full stereo
 
   // Modulation inputs (from visual system)
-  double _osc1FreqModulation = 0.0;  // ±2 semitones
-  double _osc2FreqModulation = 0.0;  // ±2 semitones
+  double _osc1FreqModulation = 0.0; // ±2 semitones
+  double _osc2FreqModulation = 0.0; // ±2 semitones
   double _filterCutoffModulation = 0.0; // ±40%
   double _wavetablePositionModulation = 0.0; // 0-1
 
+  // Portamento/Glide system (Hermite smoothstep interpolation)
+  double _portamentoTime = 0.0; // seconds (0 = disabled)
+  double _glideCurrentFrequency = 440.0;
+  double _glideStartFrequency = 440.0;
+  double _glideTargetFrequency = 440.0;
+  bool _isGliding = false;
+  DateTime? _glideStartTime;
+
   // Legacy single-note tracking (for compatibility)
-  int _currentNote = 60;
 
   SynthesizerEngine({
     this.sampleRate = 44100.0,
@@ -314,6 +375,11 @@ class SynthesizerEngine {
   /// Generate audio buffer (mono for compatibility)
   Float32List generateBuffer(int frames) {
     final buffer = Float32List(frames);
+
+    // Update portamento/glide if active
+    if (_isGliding) {
+      _updatePortamento();
+    }
 
     for (int i = 0; i < frames; i++) {
       // Apply frequency modulation to all voices
@@ -442,14 +508,15 @@ class SynthesizerEngine {
 
   /// Set base note (MIDI note number) - allocates a new voice
   void setNote(int midiNote) {
-    _currentNote = midiNote;
     final freq = _midiToFrequency(midiNote);
+    _triggerPortamento(freq); // Trigger glide to new frequency
     voiceManager.allocateVoice(midiNote, freq);
   }
 
   /// Note on (polyphonic)
   void noteOn(int midiNote) {
     final freq = _midiToFrequency(midiNote);
+    _triggerPortamento(freq); // Trigger glide to new frequency
     voiceManager.allocateVoice(midiNote, freq);
   }
 
@@ -531,6 +598,51 @@ class SynthesizerEngine {
   /// Convert MIDI note to frequency
   double _midiToFrequency(int midiNote) {
     return 440.0 * math.pow(2.0, (midiNote - 69) / 12.0);
+  }
+
+  /// Update portamento/glide (called per sample when gliding is active)
+  void _updatePortamento() {
+    if (!_isGliding) return;
+
+    final elapsed = DateTime.now().difference(_glideStartTime!).inMicroseconds / 1000000.0;
+    final progress = (elapsed / _portamentoTime).clamp(0.0, 1.0);
+
+    if (progress >= 1.0) {
+      // Glide complete
+      _glideCurrentFrequency = _glideTargetFrequency;
+      _isGliding = false;
+    } else {
+      // Hermite smoothstep interpolation (smooth acceleration/deceleration)
+      final smoothProgress = progress * progress * (3.0 - 2.0 * progress);
+      _glideCurrentFrequency = _glideStartFrequency +
+          (_glideTargetFrequency - _glideStartFrequency) * smoothProgress;
+    }
+  }
+
+
+  /// Set portamento time in seconds (0 = disabled, 0.001-5.0 = enabled)
+  void setPortamentoTime(double seconds) {
+    _portamentoTime = seconds.clamp(0.0, 5.0);
+  }
+
+  /// Get current portamento time
+  double get portamentoTime => _portamentoTime;
+
+  /// Trigger portamento glide to new frequency
+  void _triggerPortamento(double targetFrequency) {
+    if (_portamentoTime <= 0.0) {
+      // Portamento disabled, snap immediately
+      _glideCurrentFrequency = targetFrequency;
+      _glideTargetFrequency = targetFrequency;
+      _isGliding = false;
+      return;
+    }
+
+    // Start glide from current frequency to target
+    _glideStartFrequency = _glideCurrentFrequency;
+    _glideTargetFrequency = targetFrequency;
+    _glideStartTime = DateTime.now();
+    _isGliding = true;
   }
 }
 
@@ -614,7 +726,8 @@ class Filter {
   double process(double input) {
     // Apply cutoff modulation
     final modulatedCutoff = baseCutoff * (1.0 + cutoffModulation);
-    final normalizedCutoff = (2.0 * modulatedCutoff / sampleRate).clamp(0.01, 0.99);
+    final normalizedCutoff =
+        (2.0 * modulatedCutoff / sampleRate).clamp(0.01, 0.99);
 
     // Simple 2-pole filter
     final f = 2.0 * math.sin(math.pi * normalizedCutoff);

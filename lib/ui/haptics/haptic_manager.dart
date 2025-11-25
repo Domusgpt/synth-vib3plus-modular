@@ -1,24 +1,27 @@
-/**
- * Haptic Manager
- *
- * Comprehensive haptic feedback system for tactile UI response.
- * Provides musical haptics, pattern-based feedback, and intensity control.
- *
- * Features:
- * - Basic haptic types (light, medium, heavy, selection)
- * - Musical haptics (pitch-scaled vibrations)
- * - Pattern-based haptics (note on, preset load, system switch)
- * - Custom haptic sequences
- * - Intensity scaling (0.1-2.0x)
- * - Platform-adaptive (iOS/Android)
- * - Energy-efficient batching
- *
- * Part of the Integration Layer (Phase 3.5)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Haptic Manager
+///
+/// Comprehensive haptic feedback system for tactile UI response.
+/// Provides musical haptics, pattern-based feedback, and intensity control.
+///
+/// Features:
+/// - Basic haptic types (light, medium, heavy, selection)
+/// - Musical haptics (pitch-scaled vibrations)
+/// - Pattern-based haptics (note on, preset load, system switch)
+/// - Custom haptic sequences
+/// - Intensity scaling (0.1-2.0x)
+/// - Platform-adaptive (iOS/Android)
+/// - Energy-efficient batching
+///
+/// Part of the Integration Layer (Phase 3.5)
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 
@@ -28,13 +31,13 @@ import 'package:flutter/foundation.dart';
 
 /// Standard haptic feedback types
 enum HapticType {
-  light,        // Subtle tap
-  medium,       // Standard impact
-  heavy,        // Strong impact
-  selection,    // Selection change
-  error,        // Error indication
-  success,      // Success confirmation
-  warning,      // Warning indication
+  light, // Subtle tap
+  medium, // Standard impact
+  heavy, // Strong impact
+  selection, // Selection change
+  error, // Error indication
+  success, // Success confirmation
+  warning, // Warning indication
 }
 
 // ============================================================================
@@ -63,7 +66,7 @@ class HapticPattern {
 class HapticPulse {
   final Duration delay;
   final Duration duration;
-  final double intensity;  // 0-1
+  final double intensity; // 0-1
   final HapticType type;
 
   const HapticPulse({
@@ -90,12 +93,12 @@ class HapticManager {
 
   // Configuration
   bool _enabled = true;
-  double _intensity = 1.0;  // Global intensity multiplier (0.1-2.0)
+  double _intensity = 1.0; // Global intensity multiplier (0.1-2.0)
 
   // Batching
   final List<_QueuedHaptic> _queue = [];
   Timer? _processTimer;
-  static const Duration _batchInterval = Duration(milliseconds: 16);  // ~60 FPS
+  static const Duration _batchInterval = Duration(milliseconds: 16); // ~60 FPS
 
   // Rate limiting
   DateTime? _lastHapticTime;
@@ -299,7 +302,7 @@ class HapticManager {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Haptic feedback error: $e');
+        debugPrint('Haptic feedback error: $e');
       }
     }
   }

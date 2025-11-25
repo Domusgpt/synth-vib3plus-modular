@@ -1,17 +1,19 @@
-/**
- * Unified Parameter Panel - Audio-Visual Parity
- *
- * Each control affects BOTH sound and visuals simultaneously.
- * Visual reactivity is always on - parameters naturally emerge
- * from the hybrid control philosophy.
- *
- * Every slider shows:
- * - 🎵 Sonic effect (what it does to sound)
- * - 🎨 Visual effect (what it does to visualization)
- * - Base value (user control) ± Audio modulation (automatic)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Unified Parameter Panel - Audio-Visual Parity
+///
+/// Each control affects BOTH sound and visuals simultaneously.
+/// Visual reactivity is always on - parameters naturally emerge
+/// from the hybrid control philosophy.
+///
+/// Every slider shows:
+/// - 🎵 Sonic effect (what it does to sound)
+/// - 🎨 Visual effect (what it does to visualization)
+/// - Base value (user control) ± Audio modulation (automatic)
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +23,7 @@ import '../../providers/audio_provider.dart';
 import '../../providers/visual_provider.dart';
 
 class UnifiedParameterPanel extends StatelessWidget {
-  const UnifiedParameterPanel({Key? key}) : super(key: key);
+  const UnifiedParameterPanel({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -276,7 +278,8 @@ class UnifiedParameterPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoText(String sonicText, String visualText, SystemColors colors) {
+  Widget _buildInfoText(
+      String sonicText, String visualText, SystemColors colors) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: SynthTheme.spacingSmall),
       child: Column(
@@ -285,14 +288,14 @@ class UnifiedParameterPanel extends StatelessWidget {
           Text(
             sonicText,
             style: SynthTheme.textStyleBody.copyWith(
-              color: colors.primary.withOpacity(0.8),
+              color: colors.primary.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(height: 4),
           Text(
             visualText,
             style: SynthTheme.textStyleBody.copyWith(
-              color: colors.secondary.withOpacity(0.8),
+              color: colors.secondary.withValues(alpha: 0.8),
             ),
           ),
         ],
@@ -304,10 +307,10 @@ class UnifiedParameterPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(SynthTheme.spacingMedium),
       decoration: BoxDecoration(
-        color: colors.primary.withOpacity(0.05),
+        color: colors.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
         border: Border.all(
-          color: colors.primary.withOpacity(0.2),
+          color: colors.primary.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -324,19 +327,22 @@ class UnifiedParameterPanel extends StatelessWidget {
           const SizedBox(height: SynthTheme.spacingSmall),
           _buildReactivityItem('Bass Energy → XY Rotation', colors),
           _buildReactivityItem('Mid Energy → XZ Rotation', colors),
-          _buildReactivityItem('High Energy → YZ Rotation + Vertex Brightness', colors),
-          _buildReactivityItem('RMS Amplitude → Rotation Speed + Scale', colors),
+          _buildReactivityItem(
+              'High Energy → YZ Rotation + Vertex Brightness', colors),
+          _buildReactivityItem(
+              'RMS Amplitude → Rotation Speed + Scale', colors),
           _buildReactivityItem('Spectral Centroid → Hue Shift + Glow', colors),
           _buildReactivityItem('Spectral Flux → Morph Modulation', colors),
           _buildReactivityItem('Noise Content → Chaos Modulation', colors),
-          _buildReactivityItem('Transients → 4D Rotation + Particle Density', colors),
+          _buildReactivityItem(
+              'Transients → 4D Rotation + Particle Density', colors),
           _buildReactivityItem('Polyphony → Tessellation Density', colors),
           const SizedBox(height: SynthTheme.spacingSmall),
           Text(
             'All visual parameters automatically modulate based on sound analysis. '
             'Sliders set BASE values - audio reactivity adds ± modulation on top.',
             style: SynthTheme.textStyleCaption.copyWith(
-              color: colors.primary.withOpacity(0.6),
+              color: colors.primary.withValues(alpha: 0.6),
               fontStyle: FontStyle.italic,
             ),
           ),
@@ -356,14 +362,14 @@ class UnifiedParameterPanel extends StatelessWidget {
           Icon(
             Icons.arrow_forward,
             size: 12,
-            color: colors.primary.withOpacity(0.5),
+            color: colors.primary.withValues(alpha: 0.5),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               text,
               style: SynthTheme.textStyleCaption.copyWith(
-                color: colors.primary.withOpacity(0.7),
+                color: colors.primary.withValues(alpha: 0.7),
               ),
             ),
           ),

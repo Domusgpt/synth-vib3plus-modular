@@ -1,26 +1,27 @@
-/**
- * Particle System
- *
- * Audio-reactive particle effects for touch interactions and
- * musical events. Particles spawn on note triggers, respond to
- * audio features, and create dynamic visual feedback.
- *
- * Features:
- * - Object pooling (efficient memory management)
- * - Audio-reactive size/color/movement
- * - Multiple particle types (note, burst, ambient)
- * - Batch rendering for performance
- *
- * Part of the Next-Generation UI Redesign (v3.0)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Particle System
+///
+/// Audio-reactive particle effects for touch interactions and
+/// musical events. Particles spawn on note triggers, respond to
+/// audio features, and create dynamic visual feedback.
+///
+/// Features:
+/// - Object pooling (efficient memory management)
+/// - Audio-reactive size/color/movement
+/// - Multiple particle types (note, burst, ambient)
+/// - Batch rendering for performance
+///
+/// Part of the Next-Generation UI Redesign (v3.0)
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../audio/audio_analyzer.dart';
 import '../theme/design_tokens.dart';
-import '../effects/glassmorphic_container.dart';
 
 // ============================================================================
 // PARTICLE MODEL
@@ -32,8 +33,8 @@ class Particle {
   Offset velocity;
   Color color;
   double size;
-  double lifetime;      // Remaining lifetime in seconds
-  double maxLifetime;   // Initial lifetime
+  double lifetime; // Remaining lifetime in seconds
+  double maxLifetime; // Initial lifetime
   double opacity;
   double rotation;
   double rotationSpeed;
@@ -62,8 +63,8 @@ class Particle {
     final color = HSLColor.fromAHSL(1.0, hue, 0.8, 0.5).toColor();
 
     // Map velocity to size and speed
-    final size = 2.0 + (velocity * 8.0);  // 2-10px
-    final speed = 50.0 + (velocity * 150.0);  // 50-200 px/s
+    final size = 2.0 + (velocity * 8.0); // 2-10px
+    final speed = 50.0 + (velocity * 150.0); // 50-200 px/s
 
     // Random direction
     final angle = math.Random().nextDouble() * math.pi * 2;
@@ -77,7 +78,7 @@ class Particle {
       velocity: velocityVector,
       color: color,
       size: size,
-      lifetime: 1.0 + (velocity * 1.0),  // 1-2 seconds
+      lifetime: 1.0 + (velocity * 1.0), // 1-2 seconds
       type: ParticleType.note,
     )..rotationSpeed = (math.Random().nextDouble() - 0.5) * 4.0;
   }
@@ -115,7 +116,7 @@ class Particle {
       position: position,
       velocity: Offset(
         (random.nextDouble() - 0.5) * 20.0,
-        -20.0 - (random.nextDouble() * 30.0),  // Float upward
+        -20.0 - (random.nextDouble() * 30.0), // Float upward
       ),
       color: color,
       size: 1.0 + (random.nextDouble() * 3.0),
@@ -130,7 +131,7 @@ class Particle {
     position += velocity * dt;
 
     // Apply drag
-    velocity *= math.pow(0.95, dt * 60);  // Frame-independent
+    velocity *= math.pow(0.95, dt * 60).toDouble(); // Frame-independent
 
     // Update rotation
     rotation += rotationSpeed * dt;
@@ -151,7 +152,8 @@ class Particle {
       size *= pulse;
 
       // Hue shift with dominant frequency
-      final hueShift = DesignTokens.dominantFreqToHueShift(audioFeatures.dominantFreq);
+      final hueShift =
+          DesignTokens.dominantFreqToHueShift(audioFeatures.dominantFreq);
       color = DesignTokens.adjustHue(color, hueShift * dt * 60);
     }
   }
@@ -175,9 +177,9 @@ class Particle {
 
 /// Particle type
 enum ParticleType {
-  note,     // Musical note trigger
-  burst,    // Explosion/impact
-  ambient,  // Background atmosphere
+  note, // Musical note trigger
+  burst, // Explosion/impact
+  ambient, // Background atmosphere
 }
 
 // ============================================================================
@@ -337,7 +339,7 @@ class ParticleSystem {
   void _paintBatch(Canvas canvas, List<Particle> particles) {
     for (final particle in particles) {
       final paint = Paint()
-        ..color = particle.color.withOpacity(particle.opacity)
+        ..color = particle.color.withValues(alpha: particle.opacity)
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, particle.size / 2);
 
       // Rotate canvas for this particle

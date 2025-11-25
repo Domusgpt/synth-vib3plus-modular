@@ -1,16 +1,18 @@
-/**
- * Collapsible Bezel Component
- *
- * Base widget for bottom bezel panels that slide up from the bottom edge.
- * Features smooth animations, glassmorphic styling, and lock functionality.
- *
- * Visual States:
- * - Collapsed: 56px height showing tab button
- * - Expanded: 300px height showing full content
- * - Locked: Long-press to keep panel open
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Collapsible Bezel Component
+///
+/// Base widget for bottom bezel panels that slide up from the bottom edge.
+/// Features smooth animations, glassmorphic styling, and lock functionality.
+///
+/// Visual States:
+/// - Collapsed: 56px height showing tab button
+/// - Expanded: 300px height showing full content
+/// - Locked: Long-press to keep panel open
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../theme/synth_theme.dart';
@@ -29,13 +31,13 @@ class CollapsibleBezel extends StatefulWidget {
   final SystemColors systemColors;
 
   const CollapsibleBezel({
-    Key? key,
+    super.key,
     required this.panelId,
     required this.label,
     required this.icon,
     required this.content,
     required this.systemColors,
-  }) : super(key: key);
+  });
 
   @override
   State<CollapsibleBezel> createState() => _CollapsibleBezelState();
@@ -152,9 +154,8 @@ class _CollapsibleBezelState extends State<CollapsibleBezel>
                         widget.label,
                         style: SynthTheme.textStyleBody.copyWith(
                           color: theme.getTextColor(isExpanded),
-                          fontWeight: isExpanded
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+                          fontWeight:
+                              isExpanded ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
                       if (_isLocked) ...[
@@ -205,9 +206,9 @@ class BottomBezelContainer extends StatelessWidget {
   final SystemColors systemColors;
 
   const BottomBezelContainer({
-    Key? key,
+    super.key,
     required this.systemColors,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +227,7 @@ class BottomBezelContainer extends StatelessWidget {
             Container(
               height: SynthTheme.panelCollapsedHeight,
               decoration: BoxDecoration(
-                color: SynthTheme.panelBackground.withOpacity(0.8),
+                color: SynthTheme.panelBackground.withValues(alpha: 0.8),
                 border: Border(
                   top: BorderSide(
                     color: SynthTheme.borderSubtle,
@@ -361,7 +362,8 @@ class BottomBezelContainer extends StatelessWidget {
     }
   }
 
-  Widget _getExpandedPanelContent(BuildContext context, UIStateProvider uiState) {
+  Widget _getExpandedPanelContent(
+      BuildContext context, UIStateProvider uiState) {
     final id = _getExpandedPanelId(uiState);
     switch (id) {
       case 'parameters':
@@ -377,4 +379,3 @@ class BottomBezelContainer extends StatelessWidget {
     }
   }
 }
-

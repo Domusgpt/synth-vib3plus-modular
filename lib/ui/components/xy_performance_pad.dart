@@ -1,18 +1,20 @@
-/**
- * XY Performance Pad
- *
- * Primary interaction surface overlaying the 4D visualization.
- * Features multi-touch support (up to 8 simultaneous notes),
- * scale quantization, holographic touch feedback, and dual-axis
- * parameter control.
- *
- * Visual Feedback:
- * - Touch ripples with system-color glow
- * - Sustaining notes show persistent indicators
- * - Scale-aware grid overlay (optional)
- *
- * A Paul Phillips Manifestation
- */
+///
+/// XY Performance Pad
+///
+/// Primary interaction surface overlaying the 4D visualization.
+/// Features multi-touch support (up to 8 simultaneous notes),
+/// scale quantization, holographic touch feedback, and dual-axis
+/// parameter control.
+///
+/// Visual Feedback:
+/// - Touch ripples with system-color glow
+/// - Sustaining notes show persistent indicators
+/// - Scale-aware grid overlay (optional)
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,11 +30,11 @@ class XYPerformancePad extends StatefulWidget {
   final Widget? backgroundVisualization;
 
   const XYPerformancePad({
-    Key? key,
+    super.key,
     required this.systemColors,
     this.showGrid = false,
     this.backgroundVisualization,
-  }) : super(key: key);
+  });
 
   @override
   State<XYPerformancePad> createState() => _XYPerformancePadState();
@@ -55,7 +57,8 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     super.dispose();
   }
 
-  void _handleTouchStart(PointerDownEvent event, UIStateProvider uiState, AudioProvider audioProvider, VisualProvider visualProvider) {
+  void _handleTouchStart(PointerDownEvent event, UIStateProvider uiState,
+      AudioProvider audioProvider, VisualProvider visualProvider) {
     if (_activeTouches.length >= 8) return; // Max 8 touches
 
     final touchId = event.pointer;
@@ -90,10 +93,12 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     // Create ripple animation
     _createRippleAnimation(touchId);
 
-    debugPrint('🎹 Touch $touchId: Note $midiNote, Y-Param: ${yValue.toStringAsFixed(2)}');
+    debugPrint(
+        '🎹 Touch $touchId: Note $midiNote, Y-Param: ${yValue.toStringAsFixed(2)}');
   }
 
-  void _handleTouchMove(PointerMoveEvent event, UIStateProvider uiState, AudioProvider audioProvider, VisualProvider visualProvider) {
+  void _handleTouchMove(PointerMoveEvent event, UIStateProvider uiState,
+      AudioProvider audioProvider, VisualProvider visualProvider) {
     final touchId = event.pointer;
     if (!_activeTouches.containsKey(touchId)) return;
 
@@ -130,7 +135,8 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     });
   }
 
-  void _handleTouchEnd(PointerUpEvent event, UIStateProvider uiState, AudioProvider audioProvider) {
+  void _handleTouchEnd(PointerUpEvent event, UIStateProvider uiState,
+      AudioProvider audioProvider) {
     final touchId = event.pointer;
     if (!_activeTouches.containsKey(touchId)) return;
 
@@ -175,7 +181,8 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     return normalizedY;
   }
 
-  void _applyYAxisParameter(double value, UIStateProvider uiState, AudioProvider audioProvider, VisualProvider visualProvider) {
+  void _applyYAxisParameter(double value, UIStateProvider uiState,
+      AudioProvider audioProvider, VisualProvider visualProvider) {
     final yAxis = uiState.xyAxisY;
 
     switch (yAxis) {
@@ -238,8 +245,10 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     final visualProvider = Provider.of<VisualProvider>(context);
 
     return Listener(
-      onPointerDown: (event) => _handleTouchStart(event, uiState, audioProvider, visualProvider),
-      onPointerMove: (event) => _handleTouchMove(event, uiState, audioProvider, visualProvider),
+      onPointerDown: (event) =>
+          _handleTouchStart(event, uiState, audioProvider, visualProvider),
+      onPointerMove: (event) =>
+          _handleTouchMove(event, uiState, audioProvider, visualProvider),
       onPointerUp: (event) => _handleTouchEnd(event, uiState, audioProvider),
       child: Stack(
         children: [
@@ -285,7 +294,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
         vertical: SynthTheme.spacingSmall,
       ),
       decoration: BoxDecoration(
-        color: SynthTheme.panelBackground.withOpacity(0.8),
+        color: SynthTheme.panelBackground.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(SynthTheme.radiusMedium),
         border: Border.all(color: SynthTheme.borderSubtle),
       ),
@@ -352,7 +361,20 @@ class _XYPerformancePadState extends State<XYPerformancePad>
   }
 
   String _getMidiNoteName(int midiNote) {
-    final noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    final noteNames = [
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B'
+    ];
     final octave = (midiNote ~/ 12) - 1;
     final noteName = noteNames[midiNote % 12];
     return '$noteName$octave';
@@ -400,7 +422,7 @@ class TouchIndicatorPainter extends CustomPainter {
         final rippleOpacity = (1.0 - rippleAnimation.value / 80.0) * 0.5;
 
         final ripplePaint = Paint()
-          ..color = systemColors.primary.withOpacity(rippleOpacity)
+          ..color = systemColors.primary.withValues(alpha: rippleOpacity)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.0;
 
@@ -409,11 +431,11 @@ class TouchIndicatorPainter extends CustomPainter {
 
       // Touch indicator (sustaining note)
       final indicatorPaint = Paint()
-        ..color = systemColors.primary.withOpacity(0.8)
+        ..color = systemColors.primary.withValues(alpha: 0.8)
         ..style = PaintingStyle.fill;
 
       final glowPaint = Paint()
-        ..color = systemColors.primary.withOpacity(0.3)
+        ..color = systemColors.primary.withValues(alpha: 0.3)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
 
       // Glow
@@ -445,7 +467,20 @@ class TouchIndicatorPainter extends CustomPainter {
   }
 
   String _getMidiNoteName(int midiNote) {
-    final noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    final noteNames = [
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B'
+    ];
     final octave = (midiNote ~/ 12) - 1;
     final noteName = noteNames[midiNote % 12];
     return '$noteName$octave';
@@ -472,7 +507,7 @@ class XYGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
-      ..color = systemColors.primary.withOpacity(0.1)
+      ..color = systemColors.primary.withValues(alpha: 0.1)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -491,7 +526,7 @@ class XYGridPainter extends CustomPainter {
 
     // Octave markers (thicker lines)
     final octaveMarkerPaint = Paint()
-      ..color = systemColors.primary.withOpacity(0.3)
+      ..color = systemColors.primary.withValues(alpha: 0.3)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 

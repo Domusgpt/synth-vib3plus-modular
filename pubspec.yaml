@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.6.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -62,6 +62,7 @@ dependencies:
   uuid: ^4.5.1                        # Unique IDs (updated - breaking change)
   path_provider: ^2.1.5               # File system paths (updated)
   webview_flutter: ^4.10.0            # WebView for VIB34D systems (updated)
+  webview_flutter_android: ^4.10.0    # Android-specific WebView configuration
   sensors_plus: ^6.1.1                # Accelerometer/gyroscope for tilt control (updated)
 
 dev_dependencies:
@@ -94,7 +95,8 @@ flutter:
     - assets/js/  # VIB34D JavaScript visualization systems
     - assets/src/  # VIB3+ engine source files
     - assets/styles/  # VIB3+ CSS styles
-    - assets/vib3_dist/  # VIB3+ Bundled (Vite build for Android WebView)
+    - assets/vib3_dist/  # VIB3+ Bundled (Vite build for Android WebView - DEPRECATED)
+    - assets/vib3_smart/  # VIB3+ Smart Canvas (lazy initialization, single WebGL context)
     - assets/vib34d_viewer.html  # VIB34D WebView HTML file
     - assets/vib3plus_viewer.html  # VIB3+ Working System
 

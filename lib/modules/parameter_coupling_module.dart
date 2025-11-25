@@ -1,20 +1,22 @@
-/**
- * Parameter Coupling Module - Bidirectional Audio↔Visual Modulation
- *
- * Orchestrates 60 FPS parameter coupling between audio synthesis
- * and VIB3+ visualization. Runs two independent modulation systems:
- * - Audio→Visual: FFT analysis modulates rotation, tessellation, colors
- * - Visual→Audio: 6D rotation modulates oscillators, filters, effects
- *
- * IMPORTANT: Audio reactivity is ALWAYS ON - this is a core feature,
- * not optional. The 19 ELEGANT_PAIRINGS are always active. User sliders
- * set BASE values, and audio analysis adds ± modulation on top.
- *
- * Enable/disable methods exist for debugging only and should NEVER be
- * exposed in the UI.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Parameter Coupling Module - Bidirectional Audio↔Visual Modulation
+///
+/// Orchestrates 60 FPS parameter coupling between audio synthesis
+/// and VIB3+ visualization. Runs two independent modulation systems:
+/// - Audio→Visual: FFT analysis modulates rotation, tessellation, colors
+/// - Visual→Audio: 6D rotation modulates oscillators, filters, effects
+///
+/// IMPORTANT: Audio reactivity is ALWAYS ON - this is a core feature,
+/// not optional. The 19 ELEGANT_PAIRINGS are always active. User sliders
+/// set BASE values, and audio analysis adds ± modulation on top.
+///
+/// Enable/disable methods exist for debugging only and should NEVER be
+/// exposed in the UI.
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -31,12 +33,11 @@ class ParameterCouplingModule extends SynthModule {
 
   @override
   List<Type> get dependencies => [
-    AudioEngineModule,
-    VisualBridgeModule,
-  ];
+        AudioEngineModule,
+        VisualBridgeModule,
+      ];
 
   late AudioEngineModule _audioModule;
-  late VisualBridgeModule _visualModule;
 
   late AudioToVisualModulator _audioToVisual;
   late VisualToAudioModulator _visualToAudio;
@@ -69,7 +70,7 @@ class ParameterCouplingModule extends SynthModule {
   @override
   bool get isHealthy {
     return _isRunning &&
-           _averageUpdateTime < 16.67; // Less than one frame at 60 FPS
+        _averageUpdateTime < 16.67; // Less than one frame at 60 FPS
   }
 
   @override
@@ -95,7 +96,8 @@ class ParameterCouplingModule extends SynthModule {
       },
       'averageUpdateTime': '${_averageUpdateTime.toStringAsFixed(2)}ms',
       'totalUpdates': _updateCount,
-      'uptime': '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
+      'uptime':
+          '${uptime.inMinutes}:${(uptime.inSeconds % 60).toString().padLeft(2, '0')}',
       'healthy': isHealthy,
     };
   }
@@ -107,7 +109,6 @@ class ParameterCouplingModule extends SynthModule {
   /// Set module dependencies (called by ModuleManager after initialization)
   void setDependencies(AudioEngineModule audio, VisualBridgeModule visual) {
     _audioModule = audio;
-    _visualModule = visual;
 
     // Create modulators with the actual provider instances
     _audioToVisual = AudioToVisualModulator(
@@ -177,7 +178,8 @@ class ParameterCouplingModule extends SynthModule {
   /// Set update rate (FPS)
   void setUpdateRate(double fps) {
     if (fps < 1.0 || fps > 120.0) {
-      SynthLogger.warning('ParameterCoupling', 'Invalid FPS: $fps (must be 1-120)');
+      SynthLogger.warning(
+          'ParameterCoupling', 'Invalid FPS: $fps (must be 1-120)');
       return;
     }
 
@@ -240,14 +242,14 @@ class ParameterCouplingModule extends SynthModule {
       _updateCount++;
 
       // Track update duration
-      final elapsed = DateTime.now().difference(startTime).inMicroseconds / 1000.0;
+      final elapsed =
+          DateTime.now().difference(startTime).inMicroseconds / 1000.0;
       _recordUpdateDuration(elapsed);
 
       // Performance warning if update takes too long
       if (elapsed > 16.67) {
         SynthLogger.performanceWarning(
-          'Parameter coupling update took ${elapsed.toStringAsFixed(2)}ms (>16.67ms)'
-        );
+            'Parameter coupling update took ${elapsed.toStringAsFixed(2)}ms (>16.67ms)');
       }
     } catch (e, stackTrace) {
       SynthLogger.error('ParameterCoupling', 'Update failed: $e');
@@ -266,7 +268,7 @@ class ParameterCouplingModule extends SynthModule {
       _updateDurations.removeAt(0);
     }
 
-    _averageUpdateTime = _updateDurations.reduce((a, b) => a + b) /
-                         _updateDurations.length;
+    _averageUpdateTime =
+        _updateDurations.reduce((a, b) => a + b) / _updateDurations.length;
   }
 }

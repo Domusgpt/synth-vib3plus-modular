@@ -1,16 +1,18 @@
-/**
- * VIB34D Widget
- *
- * Flutter WebView widget that displays the THREE VIB34D visualization systems
- * with full bidirectional parameter coupling to audio synthesis.
- *
- * Integrates with:
- * - VisualProvider for parameter state
- * - AudioProvider for audio-reactive modulation
- * - ParameterBridge for bidirectional coupling
- *
- * A Paul Phillips Manifestation
- */
+///
+/// VIB34D Widget
+///
+/// Flutter WebView widget that displays the THREE VIB34D visualization systems
+/// with full bidirectional parameter coupling to audio synthesis.
+///
+/// Integrates with:
+/// - VisualProvider for parameter state
+/// - AudioProvider for audio-reactive modulation
+/// - ParameterBridge for bidirectional coupling
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -23,10 +25,10 @@ class VIB34DWidget extends StatefulWidget {
   final AudioProvider audioProvider;
 
   const VIB34DWidget({
-    Key? key,
+    super.key,
     required this.visualProvider,
     required this.audioProvider,
-  }) : super(key: key);
+  });
 
   @override
   State<VIB34DWidget> createState() => _VIB34DWidgetState();
@@ -84,7 +86,7 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
     if (_webViewController.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
       (_webViewController.platform as AndroidWebViewController)
-        .setMediaPlaybackRequiresUserGesture(false);
+          .setMediaPlaybackRequiresUserGesture(false);
     }
 
     // Enable universal file access for Android WebView to load bundled CSS/JS
@@ -93,207 +95,75 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
       console.log('🔧 Configuring WebView for local file access');
     ''');
 
-    // Load VIB3+ from bundled local assets (Vite build with relative paths)
-    await _webViewController.loadFlutterAsset('assets/vib3_dist/index.html');
+    // Load VIB3+ Smart Canvas (lazy initialization, single WebGL context)
+    await _webViewController.loadFlutterAsset('assets/vib3_smart/index.html');
 
     // Attach controller to visual provider
     widget.visualProvider.setWebViewController(_webViewController);
   }
 
-  /// Inject CSS to hide VIB3+ standalone UI and helper functions for parameter updates
+  /// Inject helper functions and notify Flutter when VIB3+ Smart Canvas is ready
   Future<void> _injectHelperFunctions() async {
     try {
       await _webViewController.runJavaScript('''
-        // STEP 1: Hide VIB3+ standalone UI controls (synthesizer has its own)
-        const hideVIB3UI = () => {
-          const style = document.createElement('style');
-          style.id = 'synth-vib3-ui-override';
-          style.textContent = \`
-            /* Hide top bar logo and action buttons, but KEEP system selector visible */
-            .top-bar .logo-section,
-            .top-bar .action-section {
-              display: none !important;
-              visibility: hidden !important;
-              opacity: 0 !important;
-              pointer-events: none !important;
-            }
+        // Smart Canvas Setup (simplified - no UI to hide)
+        console.log('🌉 Flutter bridge initializing...');
 
-            /* Keep top-bar and system-selector visible and functional */
-            .top-bar {
-              display: flex !important;
-              justify-content: center !important;
-              align-items: center !important;
-              padding: 8px 0 !important;
-              background: rgba(0, 0, 0, 0.8) !important;
-            }
-
-            .system-selector {
-              display: flex !important;
-              visibility: visible !important;
-              opacity: 1 !important;
-              pointer-events: all !important;
-            }
-
-            /* Hide control panel and all bezel UI */
-            .control-panel,
-            #controlPanel,
-            .bezel-header,
-            .bezel-tabs,
-            .bezel-tab,
-            .bezel-content {
-              display: none !important;
-              visibility: hidden !important;
-              opacity: 0 !important;
-              pointer-events: none !important;
-            }
-
-            /* Hide diagnostics panel */
-            .diagnostics-panel,
-            #diagnosticsPanel,
-            .system-diagnostics {
-              display: none !important;
-              visibility: hidden !important;
-              opacity: 0 !important;
-              pointer-events: none !important;
-            }
-
-            /* Ensure canvas container takes full space */
-            .canvas-container,
-            #canvasContainer {
-              position: absolute !important;
-              top: 0 !important;
-              left: 0 !important;
-              width: 100% !important;
-              height: 100% !important;
-              z-index: 1 !important;
-            }
-
-            /* Ensure holographic layers take full space */
-            .holographic-layers {
-              position: absolute !important;
-              top: 0 !important;
-              left: 0 !important;
-              width: 100% !important;
-              height: 100% !important;
-            }
-
-            /* Hide all buttons that aren't from Flutter */
-            body > button,
-            .top-bar button,
-            .control-panel button {
-              display: none !important;
-            }
-
-            /* CRITICAL: Disable ALL VIB3+ touch/mouse event handling */
-            .canvas-container,
-            #canvasContainer,
-            .holographic-layers,
-            canvas {
-              pointer-events: none !important;
-              touch-action: none !important;
-            }
-          \`;
-          document.head.appendChild(style);
-
-          // Also directly hide elements and disable touch events after DOM loads
-          setTimeout(() => {
-            // Hide ONLY logo and action buttons, keep system-selector visible
-            const elementsToHide = [
-              '.top-bar .logo-section', '.top-bar .action-section',
-              '.control-panel', '#controlPanel',
-              '.diagnostics-panel', '#diagnosticsPanel',
-              '.bezel-header'
-            ];
-            elementsToHide.forEach(selector => {
-              const elements = document.querySelectorAll(selector);
-              elements.forEach(el => {
-                el.style.display = 'none';
-                el.style.visibility = 'hidden';
-                el.style.opacity = '0';
-                el.style.pointerEvents = 'none';
-              });
-            });
-
-            // Ensure system-selector stays visible
-            const systemSelector = document.querySelector('.system-selector');
-            if (systemSelector) {
-              systemSelector.style.display = 'flex';
-              systemSelector.style.visibility = 'visible';
-              systemSelector.style.opacity = '1';
-              systemSelector.style.pointerEvents = 'all';
-            }
-
-            // CRITICAL: Disable ALL VIB3+ event listeners on canvas/layers
-            const disableTouchElements = [
-              '.canvas-container', '#canvasContainer',
-              '.holographic-layers', 'canvas'
-            ];
-            disableTouchElements.forEach(selector => {
-              const elements = document.querySelectorAll(selector);
-              elements.forEach(el => {
-                el.style.pointerEvents = 'none';
-                el.style.touchAction = 'none';
-                // Remove all event listeners (clone and replace)
-                const clone = el.cloneNode(true);
-                el.parentNode.replaceChild(clone, el);
-              });
-            });
-
-            FlutterBridge.postMessage('INFO: VIB3+ UI hidden + ALL touch events disabled');
-          }, 100);
-        };
-
-        // Apply immediately and after DOM loads
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', hideVIB3UI);
-        } else {
-          hideVIB3UI();
-        }
-
-        // STEP 2: Helper to batch parameter updates for better performance
+        // Batch parameter update helper (for performance)
         window.flutterUpdateParameters = function(params) {
-          if (!window.updateParameter) {
-            FlutterBridge.postMessage('ERROR: VIB3+ not ready yet');
-            return;
-          }
-
-          // Apply each parameter
-          Object.entries(params).forEach(([key, value]) => {
-            try {
-              window.updateParameter(key, value);
-            } catch (e) {
-              FlutterBridge.postMessage('ERROR: Failed to update ' + key + ': ' + e.message);
+          if (!window.updateParameters) {
+            console.warn('⚠️ updateParameters not available, falling back to individual calls');
+            if (!window.updateParameter) {
+              FlutterBridge.postMessage('ERROR: VIB3+ not ready yet');
+              return;
             }
-          });
+            Object.entries(params).forEach(([key, value]) => {
+              try {
+                window.updateParameter(key, value);
+              } catch (e) {
+                FlutterBridge.postMessage('ERROR: Failed to update ' + key + ': ' + e.message);
+              }
+            });
+          } else {
+            // Use batch update for better performance
+            window.updateParameters(params);
+          }
         };
 
-        // STEP 3: Error handler
+        // Error handler
         window.addEventListener('error', function(e) {
           FlutterBridge.postMessage('ERROR: ' + e.message);
         });
 
-        // STEP 4: Notify Flutter when VIB3+ is ready
-        if (window.switchSystem) {
-          FlutterBridge.postMessage('READY: VIB3+ systems loaded');
-        } else {
-          // Wait for systems to load
-          const checkReady = setInterval(() => {
-            if (window.switchSystem) {
-              clearInterval(checkReady);
-              FlutterBridge.postMessage('READY: VIB3+ systems loaded');
+        // Check if Smart Canvas is ready
+        const checkReady = () => {
+          if (window.switchSystem && window.updateParameter && window.canvasManager) {
+            FlutterBridge.postMessage('READY: VIB3+ Smart Canvas initialized');
+            FlutterBridge.postMessage('INFO: Lazy initialization enabled - systems load on demand');
+            return true;
+          }
+          return false;
+        };
+
+        // Try immediate check first
+        if (!checkReady()) {
+          // Wait for Smart Canvas to initialize
+          const readyInterval = setInterval(() => {
+            if (checkReady()) {
+              clearInterval(readyInterval);
             }
           }, 100);
 
           // Timeout after 10 seconds
           setTimeout(() => {
-            clearInterval(checkReady);
+            clearInterval(readyInterval);
             if (!window.switchSystem) {
-              FlutterBridge.postMessage('ERROR: VIB3+ failed to initialize');
+              FlutterBridge.postMessage('ERROR: VIB3+ Smart Canvas failed to initialize');
             }
           }, 10000);
         }
       ''');
-      debugPrint('✅ Injected CSS UI override + helper functions into VIB3+ WebView');
+      debugPrint('✅ Injected Smart Canvas bridge functions');
     } catch (e) {
       debugPrint('❌ Error injecting helper functions: $e');
     }
@@ -338,7 +208,8 @@ class _VIB34DWidgetState extends State<VIB34DWidget> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                    const Icon(Icons.error_outline,
+                        color: Colors.red, size: 48),
                     const SizedBox(height: 20),
                     Text(
                       'Error Loading Visualization',

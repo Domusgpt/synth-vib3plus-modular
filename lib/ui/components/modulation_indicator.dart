@@ -1,24 +1,26 @@
-/**
- * Modulation Indicator Widget
- *
- * Real-time visual feedback for parameter modulation showing active
- * audio-visual coupling with animated meters and value displays.
- *
- * Displays:
- * - Audio → Visual modulations (5 mappings)
- * - Visual → Audio modulations (6 mappings)
- * - Modulation depth with color-coded meters
- * - Current values and ranges
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Modulation Indicator Widget
+///
+/// Real-time visual feedback for parameter modulation showing active
+/// audio-visual coupling with animated meters and value displays.
+///
+/// Displays:
+/// - Audio → Visual modulations (5 mappings)
+/// - Visual → Audio modulations (6 mappings)
+/// - Modulation depth with color-coded meters
+/// - Current values and ranges
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/audio_provider.dart';
 import '../../providers/visual_provider.dart';
-import '../theme/synth_theme.dart';
+import '../theme/design_tokens.dart';
 
 class ModulationIndicator extends StatefulWidget {
   final bool showAudioToVisual;
@@ -26,11 +28,11 @@ class ModulationIndicator extends StatefulWidget {
   final bool compact;
 
   const ModulationIndicator({
-    Key? key,
+    super.key,
     this.showAudioToVisual = true,
     this.showVisualToAudio = true,
     this.compact = false,
-  }) : super(key: key);
+  });
 
   @override
   State<ModulationIndicator> createState() => _ModulationIndicatorState();
@@ -63,10 +65,10 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: SynthTheme.quantumCyan.withOpacity(0.3),
+          color: DesignTokens.quantum.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -97,14 +99,14 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
       children: [
         Icon(
           Icons.sync_alt,
-          color: SynthTheme.quantumCyan,
+          color: DesignTokens.quantum,
           size: 20,
         ),
         const SizedBox(width: 8),
         Text(
           'Active Modulations',
           style: TextStyle(
-            color: SynthTheme.quantumCyan,
+            color: DesignTokens.quantum,
             fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
@@ -118,10 +120,11 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
               height: 8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.green.withOpacity(0.5 + _pulseController.value * 0.5),
+                color: Colors.green
+                    .withValues(alpha: 0.5 + _pulseController.value * 0.5),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.green.withOpacity(0.5),
+                    color: Colors.green.withValues(alpha: 0.5),
                     blurRadius: 4 + _pulseController.value * 4,
                   ),
                 ],
@@ -165,13 +168,13 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
         _buildModulationMeter(
           'Mid → Tessellation',
           features.midEnergy,
-          '${(features.midEnergy * 5 + 3).toStringAsFixed(0)}',
+          (features.midEnergy * 5 + 3).toStringAsFixed(0),
           Colors.orange,
         ),
         _buildModulationMeter(
           'High → Brightness',
           features.highEnergy,
-          '${(features.highEnergy * 0.5 + 0.5).toStringAsFixed(2)}',
+          (features.highEnergy * 0.5 + 0.5).toStringAsFixed(2),
           Colors.yellow,
         ),
         _buildModulationMeter(
@@ -183,7 +186,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
         _buildModulationMeter(
           'RMS → Glow',
           features.rms,
-          '${(features.rms * 3.0).toStringAsFixed(2)}',
+          (features.rms * 3.0).toStringAsFixed(2),
           Colors.white,
         ),
       ],
@@ -194,44 +197,42 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
     AudioProvider audioProvider,
     VisualProvider visualProvider,
   ) {
-    final state = visualProvider.visualState;
-
     return Column(
       children: [
         _buildModulationMeter(
           'XW Rotation → Osc1 Freq',
-          (state.rotationXW.abs() / math.pi).clamp(0.0, 1.0),
-          '${(state.rotationXW / math.pi * 2).toStringAsFixed(2)} st',
+          (visualProvider.rotationXW.abs() / math.pi).clamp(0.0, 1.0),
+          '${(visualProvider.rotationXW / math.pi * 2).toStringAsFixed(2)} st',
           Colors.purple,
         ),
         _buildModulationMeter(
           'YW Rotation → Osc2 Freq',
-          (state.rotationYW.abs() / math.pi).clamp(0.0, 1.0),
-          '${(state.rotationYW / math.pi * 2).toStringAsFixed(2)} st',
+          (visualProvider.rotationYW.abs() / math.pi).clamp(0.0, 1.0),
+          '${(visualProvider.rotationYW / math.pi * 2).toStringAsFixed(2)} st',
           Colors.pink,
         ),
         _buildModulationMeter(
           'ZW Rotation → Filter Cutoff',
-          (state.rotationZW.abs() / math.pi).clamp(0.0, 1.0),
-          '${(state.rotationZW / math.pi * 40).toStringAsFixed(0)}%',
+          (visualProvider.rotationZW.abs() / math.pi).clamp(0.0, 1.0),
+          '${(visualProvider.rotationZW / math.pi * 40).toStringAsFixed(0)}%',
           Colors.blue,
         ),
         _buildModulationMeter(
           'Morph → Wavetable',
-          state.morph,
-          '${(state.morph * 100).toStringAsFixed(0)}%',
+          visualProvider.morphParameter,
+          '${(visualProvider.morphParameter * 100).toStringAsFixed(0)}%',
           Colors.teal,
         ),
         _buildModulationMeter(
           'Projection → Reverb',
-          state.projectionDistance.clamp(0.0, 1.0),
-          '${(state.projectionDistance * 100).toStringAsFixed(0)}%',
+          visualProvider.projectionDistance.clamp(0.0, 1.0),
+          '${(visualProvider.projectionDistance * 100).toStringAsFixed(0)}%',
           Colors.indigo,
         ),
         _buildModulationMeter(
           'Layer Depth → Delay',
-          state.layerDepth.clamp(0.0, 1.0),
-          '${(state.layerDepth * 500).toStringAsFixed(0)} ms',
+          visualProvider.layerSeparation.clamp(0.0, 1.0),
+          '${(visualProvider.layerSeparation * 500).toStringAsFixed(0)} ms',
           Colors.deepPurple,
         ),
       ],
@@ -256,7 +257,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
             child: Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: widget.compact ? 9 : 10,
               ),
               overflow: TextOverflow.ellipsis,
@@ -271,7 +272,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
                 Container(
                   height: widget.compact ? 12 : 16,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -283,7 +284,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          color.withOpacity(0.6),
+                          color.withValues(alpha: 0.6),
                           color,
                         ],
                       ),
@@ -291,7 +292,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
                       boxShadow: value > 0.3
                           ? [
                               BoxShadow(
-                                color: color.withOpacity(0.4),
+                                color: color.withValues(alpha: 0.4),
                                 blurRadius: 4,
                               ),
                             ]
@@ -328,7 +329,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
         child: Text(
           message,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
             fontSize: 11,
             fontStyle: FontStyle.italic,
           ),
@@ -340,7 +341,7 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
 
 /// Compact version for minimal space usage
 class CompactModulationIndicator extends StatelessWidget {
-  const CompactModulationIndicator({Key? key}) : super(key: key);
+  const CompactModulationIndicator({super.key});
 
   @override
   Widget build(BuildContext context) {

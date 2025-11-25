@@ -1,16 +1,18 @@
-/**
- * VIB34D Native Bridge
- *
- * Loads and controls the EXACT THREE JavaScript visualization systems:
- * - Quantum System (QuantumVisualizer.js)
- * - Holographic System (HolographicSystem.js)
- * - Faceted System (FacetedVisualizer.js)
- *
- * The JavaScript runs NATIVELY via WebView - we don't rewrite it!
- * We just pass parameters and get state back.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// VIB34D Native Bridge
+///
+/// Loads and controls the EXACT THREE JavaScript visualization systems:
+/// - Quantum System (QuantumVisualizer.js)
+/// - Holographic System (HolographicSystem.js)
+/// - Faceted System (FacetedVisualizer.js)
+///
+/// The JavaScript runs NATIVELY via WebView - we don't rewrite it!
+/// We just pass parameters and get state back.
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:async';
 import 'dart:convert';
@@ -25,7 +27,7 @@ class VIB34DNativeBridge {
   String _currentSystem = 'quantum';
 
   // Parameter state
-  Map<String, dynamic> _parameters = {
+  final Map<String, dynamic> _parameters = {
     // Quantum/Holographic parameters
     'geometry': 0,
     'gridDensity': 15.0,
@@ -59,15 +61,19 @@ class VIB34DNativeBridge {
     final html = await _buildVisualizationHTML();
     await _webViewController.loadHtmlString(html);
 
-    print('✅ VIB34D Native Bridge initialized with $_currentSystem system');
+    debugPrint(
+        '✅ VIB34D Native Bridge initialized with $_currentSystem system');
   }
 
   /// Build the HTML that loads and runs the THREE JavaScript systems
   Future<String> _buildVisualizationHTML() async {
     // Load the JavaScript files
-    final quantumJS = await rootBundle.loadString('assets/QuantumVisualizer.js');
-    final holographicJS = await rootBundle.loadString('assets/HolographicSystem.js');
-    final facetedJS = await rootBundle.loadString('assets/FacetedVisualizer.js');
+    final quantumJS =
+        await rootBundle.loadString('assets/QuantumVisualizer.js');
+    final holographicJS =
+        await rootBundle.loadString('assets/HolographicSystem.js');
+    final facetedJS =
+        await rootBundle.loadString('assets/FacetedVisualizer.js');
 
     return '''
 <!DOCTYPE html>
@@ -177,7 +183,7 @@ class VIB34DNativeBridge {
           break;
       }
 
-      console.log(\`🔄 Switched to \${systemName} system\`);
+      console.log(`🔄 Switched to \${systemName} system`);
     }
 
     // Update parameters from Flutter
@@ -278,20 +284,22 @@ class VIB34DNativeBridge {
   /// Switch between the THREE systems
   Future<void> switchSystem(String systemName) async {
     if (!['quantum', 'holographic', 'faceted'].contains(systemName)) {
-      print('❌ Invalid system name: $systemName');
+      debugPrint('❌ Invalid system name: $systemName');
       return;
     }
 
     _currentSystem = systemName;
-    await _webViewController.runJavaScript('window.vib34d.switchSystem("$systemName")');
-    print('🔄 Switched to $systemName system');
+    await _webViewController
+        .runJavaScript('window.vib34d.switchSystem("$systemName")');
+    debugPrint('🔄 Switched to $systemName system');
   }
 
   /// Update visual parameters
   Future<void> updateParameters(Map<String, dynamic> params) async {
     _parameters.addAll(params);
     final jsonParams = jsonEncode(_parameters);
-    await _webViewController.runJavaScript('window.vib34d.updateParameters(\'$jsonParams\')');
+    await _webViewController
+        .runJavaScript('window.vib34d.updateParameters(\'$jsonParams\')');
   }
 
   /// Update audio reactivity data (THIS IS THE CORE!)
@@ -308,7 +316,8 @@ class VIB34DNativeBridge {
       'energy': energy,
     });
 
-    await _webViewController.runJavaScript('window.vib34d.updateAudio(\'$audioData\')');
+    await _webViewController
+        .runJavaScript('window.vib34d.updateAudio(\'$audioData\')');
   }
 
   /// Get current system name

@@ -1,28 +1,29 @@
-/**
- * LED Ladder
- *
- * Discrete step control with LED-style visualization. Perfect for
- * parameters with discrete values (filter types, waveforms, etc.).
- *
- * Features:
- * - Vertical LED bar visualization
- * - Discrete steps (tap to select)
- * - Drag to sweep through values
- * - Glow effect on active LEDs
- * - Audio-reactive brightness
- * - Labels for each step (optional)
- * - Color coding by value
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// LED Ladder
+///
+/// Discrete step control with LED-style visualization. Perfect for
+/// parameters with discrete values (filter types, waveforms, etc.).
+///
+/// Features:
+/// - Vertical LED bar visualization
+/// - Discrete steps (tap to select)
+/// - Drag to sweep through values
+/// - Glow effect on active LEDs
+/// - Audio-reactive brightness
+/// - Labels for each step (optional)
+/// - Color coding by value
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+///
 
-import 'dart:math' as math;
+library;
+
 import 'package:flutter/material.dart';
+import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';
-import '../base/reactive_component.dart';
-import 'enhanced_slider.dart';  // For ParameterType
+import 'enhanced_slider.dart'; // For ParameterType
 
 // ============================================================================
 // LED LADDER CONFIGURATION
@@ -36,7 +37,7 @@ class LEDLadderConfig {
   final bool showLabels;
   final List<String>? stepLabels;
   final bool enableDrag;
-  final bool colorCoded;  // Gradient from bottom to top
+  final bool colorCoded; // Gradient from bottom to top
 
   const LEDLadderConfig({
     this.stepCount = 8,
@@ -79,14 +80,14 @@ class LEDLadderConfig {
 class LEDLadder extends StatefulWidget {
   final LEDLadderConfig config;
   final String label;
-  final int value;             // 0 to stepCount-1
+  final int value; // 0 to stepCount-1
   final int defaultValue;
   final ValueChanged<int>? onChanged;
   final ParameterType parameterType;
   final AudioFeatures? audioFeatures;
 
   const LEDLadder({
-    Key? key,
+    super.key,
     this.config = LEDLadderConfig.standard,
     required this.label,
     required this.value,
@@ -94,7 +95,7 @@ class LEDLadder extends StatefulWidget {
     this.onChanged,
     this.parameterType = ParameterType.generic,
     this.audioFeatures,
-  }) : super(key: key);
+  });
 
   @override
   State<LEDLadder> createState() => _LEDLadderState();
@@ -234,13 +235,12 @@ class _LEDLadderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final stepHeight = size.height / stepCount;
-    final ledHeight = stepHeight - 4;  // 4px gap
-    final ledWidth = size.width - 8;   // 4px margin each side
+    final ledHeight = stepHeight - 4; // 4px gap
+    final ledWidth = size.width - 8; // 4px margin each side
 
     // Audio-reactive brightness
-    final brightnessFactor = audioFeatures != null
-        ? 1.0 + (audioFeatures!.rms * 0.5)
-        : 1.0;
+    final brightnessFactor =
+        audioFeatures != null ? 1.0 + (audioFeatures!.rms * 0.5) : 1.0;
 
     // Draw each LED
     for (int i = 0; i < stepCount; i++) {
@@ -254,8 +254,8 @@ class _LEDLadderPainter extends CustomPainter {
         // Gradient from red (bottom) to green (top)
         final t = i / (stepCount - 1);
         ledColor = Color.lerp(
-          const Color(0xFFFF3366),  // Red
-          const Color(0xFF00FF88),  // Green
+          const Color(0xFFFF3366), // Red
+          const Color(0xFF00FF88), // Green
           t,
         )!;
       } else {
@@ -269,7 +269,7 @@ class _LEDLadderPainter extends CustomPainter {
         Size(ledWidth, ledHeight),
         ledColor,
         isActive,
-        i == value,  // Highlight current value
+        i == value, // Highlight current value
         brightnessFactor,
       );
     }
@@ -290,15 +290,13 @@ class _LEDLadderPainter extends CustomPainter {
     );
 
     // Background (inactive state)
-    final bgPaint = Paint()
-      ..color = color.withOpacity(0.1);
+    final bgPaint = Paint()..color = color.withValues(alpha: 0.1);
 
     canvas.drawRRect(rect, bgPaint);
 
     if (isActive) {
       // Active LED
-      final ledPaint = Paint()
-        ..color = color.withOpacity(0.8 * brightness);
+      final ledPaint = Paint()..color = color.withValues(alpha: 0.8 * brightness);
 
       canvas.drawRRect(rect, ledPaint);
 
@@ -306,8 +304,8 @@ class _LEDLadderPainter extends CustomPainter {
       final glowPaint = Paint()
         ..shader = RadialGradient(
           colors: [
-            color.withOpacity(0.6 * brightness),
-            color.withOpacity(0.0),
+            color.withValues(alpha: 0.6 * brightness),
+            color.withValues(alpha: 0.0),
           ],
         ).createShader(rect.outerRect)
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, isCurrent ? 4 : 2);
@@ -317,7 +315,7 @@ class _LEDLadderPainter extends CustomPainter {
       // Current value highlight
       if (isCurrent) {
         final highlightPaint = Paint()
-          ..color = Colors.white.withOpacity(0.4)
+          ..color = Colors.white.withValues(alpha: 0.4)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.0;
 
@@ -327,7 +325,7 @@ class _LEDLadderPainter extends CustomPainter {
 
     // Border
     final borderPaint = Paint()
-      ..color = isActive ? color : color.withOpacity(0.3)
+      ..color = isActive ? color : color.withValues(alpha: 0.3)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -337,7 +335,7 @@ class _LEDLadderPainter extends CustomPainter {
   @override
   bool shouldRepaint(_LEDLadderPainter oldDelegate) {
     return oldDelegate.value != value ||
-           oldDelegate.isDragging != isDragging ||
-           oldDelegate.audioFeatures != audioFeatures;
+        oldDelegate.isDragging != isDragging ||
+        oldDelegate.audioFeatures != audioFeatures;
   }
 }

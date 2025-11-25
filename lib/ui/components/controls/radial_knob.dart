@@ -1,29 +1,31 @@
-/**
- * Radial Knob
- *
- * Circular parameter control with arc visualization, value display,
- * and audio-reactive visuals.
- *
- * Features:
- * - Circular arc value indicator
- * - Drag to rotate control
- * - Value display at center
- * - Modulation indicator ring
- * - Fine control mode (vertical drag)
- * - Double-tap to reset
- * - Audio-reactive glow
- * - Tick marks for reference
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Radial Knob
+///
+/// Circular parameter control with arc visualization, value display,
+/// and audio-reactive visuals.
+///
+/// Features:
+/// - Circular arc value indicator
+/// - Drag to rotate control
+/// - Value display at center
+/// - Modulation indicator ring
+/// - Fine control mode (vertical drag)
+/// - Double-tap to reset
+/// - Audio-reactive glow
+/// - Tick marks for reference
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';
-import '../base/reactive_component.dart';
-import 'enhanced_slider.dart';  // For ParameterType
+import 'enhanced_slider.dart'; // For ParameterType
 
 // ============================================================================
 // KNOB CONFIGURATION
@@ -32,8 +34,8 @@ import 'enhanced_slider.dart';  // For ParameterType
 /// Radial knob configuration
 class KnobConfig {
   final double size;
-  final double minAngle;       // Radians
-  final double maxAngle;       // Radians
+  final double minAngle; // Radians
+  final double maxAngle; // Radians
   final bool showTicks;
   final int tickCount;
   final bool showValue;
@@ -42,8 +44,8 @@ class KnobConfig {
 
   const KnobConfig({
     this.size = 80.0,
-    this.minAngle = -2.356,  // -3π/4 (225°)
-    this.maxAngle = 2.356,   // 3π/4 (225°)
+    this.minAngle = -2.356, // -3π/4 (225°)
+    this.maxAngle = 2.356, // 3π/4 (225°)
     this.showTicks = true,
     this.tickCount = 11,
     this.showValue = true,
@@ -82,18 +84,18 @@ class KnobConfig {
 class RadialKnob extends StatefulWidget {
   final KnobConfig config;
   final String label;
-  final double value;          // 0-1
-  final double defaultValue;   // 0-1
+  final double value; // 0-1
+  final double defaultValue; // 0-1
   final ValueChanged<double>? onChanged;
   final VoidCallback? onChangeStart;
   final VoidCallback? onChangeEnd;
-  final double modulationAmount;  // 0-1
+  final double modulationAmount; // 0-1
   final ParameterType parameterType;
   final AudioFeatures? audioFeatures;
   final String Function(double)? valueFormatter;
 
   const RadialKnob({
-    Key? key,
+    super.key,
     this.config = KnobConfig.standard,
     required this.label,
     required this.value,
@@ -105,7 +107,7 @@ class RadialKnob extends StatefulWidget {
     this.parameterType = ParameterType.generic,
     this.audioFeatures,
     this.valueFormatter,
-  }) : super(key: key);
+  });
 
   @override
   State<RadialKnob> createState() => _RadialKnobState();
@@ -145,7 +147,8 @@ class _RadialKnobState extends State<RadialKnob> {
 
       // Fine vertical control (10x precision)
       final sensitivity = -1.0 / (widget.config.size * 10);
-      final newValue = (_valueAtDragStart! + (delta.dy * sensitivity)).clamp(0.0, 1.0);
+      final newValue =
+          (_valueAtDragStart! + (delta.dy * sensitivity)).clamp(0.0, 1.0);
       widget.onChanged?.call(newValue);
     } else {
       // Normal circular drag
@@ -156,7 +159,8 @@ class _RadialKnobState extends State<RadialKnob> {
       }
 
       final sensitivity = 1.0 / widget.config.size;
-      final newValue = (_valueAtDragStart! + (delta.dx * sensitivity)).clamp(0.0, 1.0);
+      final newValue =
+          (_valueAtDragStart! + (delta.dx * sensitivity)).clamp(0.0, 1.0);
       widget.onChanged?.call(newValue);
     }
   }
@@ -308,14 +312,14 @@ class _KnobPainter extends CustomPainter {
   void _drawBackground(Canvas canvas, Offset center, double radius) {
     // Outer circle
     final outerPaint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
+      ..color = Colors.white.withValues(alpha: 0.05)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, radius - 4, outerPaint);
 
     // Border
     final borderPaint = Paint()
-      ..color = color.withOpacity(isDragging ? 0.8 : 0.4)
+      ..color = color.withValues(alpha: isDragging ? 0.8 : 0.4)
       ..strokeWidth = isDragging ? 3.0 : 2.0
       ..style = PaintingStyle.stroke;
 
@@ -324,7 +328,7 @@ class _KnobPainter extends CustomPainter {
 
   void _drawTicks(Canvas canvas, Offset center, double radius) {
     final tickPaint = Paint()
-      ..color = color.withOpacity(0.3)
+      ..color = color.withValues(alpha: 0.3)
       ..strokeWidth = 1.0
       ..strokeCap = StrokeCap.round;
 
@@ -350,11 +354,12 @@ class _KnobPainter extends CustomPainter {
   }
 
   void _drawModulation(Canvas canvas, Offset center, double radius) {
-    final currentAngle = config.minAngle + (config.maxAngle - config.minAngle) * value;
+    final currentAngle =
+        config.minAngle + (config.maxAngle - config.minAngle) * value;
     final modRange = (config.maxAngle - config.minAngle) * modulationAmount / 2;
 
     final modPaint = Paint()
-      ..color = DesignTokens.stateWarning.withOpacity(0.3)
+      ..color = DesignTokens.stateWarning.withValues(alpha: 0.3)
       ..strokeWidth = 8.0
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -373,8 +378,8 @@ class _KnobPainter extends CustomPainter {
     final arcPaint = Paint()
       ..shader = SweepGradient(
         colors: [
-          color.withOpacity(0.3),
-          color.withOpacity(0.8),
+          color.withValues(alpha: 0.3),
+          color.withValues(alpha: 0.8),
         ],
         startAngle: config.minAngle,
         endAngle: config.minAngle + (config.maxAngle - config.minAngle) * value,
@@ -426,8 +431,8 @@ class _KnobPainter extends CustomPainter {
     final glowPaint = Paint()
       ..shader = RadialGradient(
         colors: [
-          color.withOpacity(audioFeatures!.rms * 0.5),
-          color.withOpacity(0.0),
+          color.withValues(alpha: audioFeatures!.rms * 0.5),
+          color.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromCircle(
         center: center,
@@ -441,9 +446,9 @@ class _KnobPainter extends CustomPainter {
   @override
   bool shouldRepaint(_KnobPainter oldDelegate) {
     return oldDelegate.value != value ||
-           oldDelegate.modulationAmount != modulationAmount ||
-           oldDelegate.isDragging != isDragging ||
-           oldDelegate.isFineControl != isFineControl ||
-           oldDelegate.audioFeatures != audioFeatures;
+        oldDelegate.modulationAmount != modulationAmount ||
+        oldDelegate.isDragging != isDragging ||
+        oldDelegate.isFineControl != isFineControl ||
+        oldDelegate.audioFeatures != audioFeatures;
   }
 }

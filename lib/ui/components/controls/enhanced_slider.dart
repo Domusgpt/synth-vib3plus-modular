@@ -1,29 +1,29 @@
-/**
- * Enhanced Slider
- *
- * Advanced parameter slider with multiple styles, value visualization,
- * modulation indicators, and musical curve mappings.
- *
- * Features:
- * - Multiple styles (horizontal, vertical)
- * - Value graph (historical values)
- * - Modulation indicator
- * - Range markers (min/mid/max)
- * - Color coding by parameter type
- * - Fine control mode (long-press)
- * - Double-tap to reset
- * - Audio-reactive visual effects
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Enhanced Slider
+///
+/// Advanced parameter slider with multiple styles, value visualization,
+/// modulation indicators, and musical curve mappings.
+///
+/// Features:
+/// - Multiple styles (horizontal, vertical)
+/// - Value graph (historical values)
+/// - Modulation indicator
+/// - Range markers (min/mid/max)
+/// - Color coding by parameter type
+/// - Fine control mode (long-press)
+/// - Double-tap to reset
+/// - Audio-reactive visual effects
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+///
 
-import 'dart:math' as math;
+library;
+
 import 'package:flutter/material.dart';
+import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';
-import '../../effects/glassmorphic_container.dart';
-import '../base/reactive_component.dart';
 
 // ============================================================================
 // SLIDER STYLE
@@ -31,8 +31,8 @@ import '../base/reactive_component.dart';
 
 /// Slider visual style
 enum SliderStyle {
-  linearHorizontal,  // Traditional horizontal
-  linearVertical,    // Traditional vertical
+  linearHorizontal, // Traditional horizontal
+  linearVertical, // Traditional vertical
 }
 
 // ============================================================================
@@ -41,27 +41,27 @@ enum SliderStyle {
 
 /// Parameter type for color coding
 enum ParameterType {
-  frequency,   // Blue
-  amplitude,   // Green
-  time,        // Yellow
-  modulation,  // Magenta
-  filter,      // Cyan
-  generic,     // White
+  frequency, // Blue
+  amplitude, // Green
+  time, // Yellow
+  modulation, // Magenta
+  filter, // Cyan
+  generic, // White
 }
 
 extension ParameterTypeExtension on ParameterType {
   Color get color {
     switch (this) {
       case ParameterType.frequency:
-        return const Color(0xFF00AAFF);  // Blue
+        return const Color(0xFF00AAFF); // Blue
       case ParameterType.amplitude:
-        return const Color(0xFF00FF88);  // Green
+        return const Color(0xFF00FF88); // Green
       case ParameterType.time:
-        return const Color(0xFFFFAA00);  // Yellow
+        return const Color(0xFFFFAA00); // Yellow
       case ParameterType.modulation:
-        return const Color(0xFFFF00FF);  // Magenta
+        return const Color(0xFFFF00FF); // Magenta
       case ParameterType.filter:
-        return const Color(0xFF00FFFF);  // Cyan
+        return const Color(0xFF00FFFF); // Cyan
       case ParameterType.generic:
         return Colors.white;
     }
@@ -80,7 +80,7 @@ class SliderConfig {
   final bool showModulation;
   final bool showRangeMarkers;
   final bool enableFineControl;
-  final double fineControlFactor;  // 0.1 = 10x precision
+  final double fineControlFactor; // 0.1 = 10x precision
   final double width;
   final double height;
 
@@ -133,17 +133,17 @@ class SliderConfig {
 class EnhancedSlider extends StatefulWidget {
   final SliderConfig config;
   final String label;
-  final double value;          // 0-1
-  final double defaultValue;   // 0-1
+  final double value; // 0-1
+  final double defaultValue; // 0-1
   final ValueChanged<double>? onChanged;
   final VoidCallback? onChangeStart;
   final VoidCallback? onChangeEnd;
-  final double modulationAmount;  // 0-1, for visualization
+  final double modulationAmount; // 0-1, for visualization
   final AudioFeatures? audioFeatures;
-  final String Function(double)? valueFormatter;  // Custom value display
+  final String Function(double)? valueFormatter; // Custom value display
 
   const EnhancedSlider({
-    Key? key,
+    super.key,
     this.config = SliderConfig.standard,
     required this.label,
     required this.value,
@@ -154,7 +154,7 @@ class EnhancedSlider extends StatefulWidget {
     this.modulationAmount = 0.0,
     this.audioFeatures,
     this.valueFormatter,
-  }) : super(key: key);
+  });
 
   @override
   State<EnhancedSlider> createState() => _EnhancedSliderState();
@@ -201,13 +201,12 @@ class _EnhancedSliderState extends State<EnhancedSlider> {
 
     final delta = widget.config.style == SliderStyle.linearHorizontal
         ? details.delta.dx
-        : -details.delta.dy;  // Invert for vertical
+        : -details.delta.dy; // Invert for vertical
 
-    final sensitivity = _isFineControl
-        ? widget.config.fineControlFactor
-        : 1.0;
+    final sensitivity = _isFineControl ? widget.config.fineControlFactor : 1.0;
 
-    final newValue = (widget.value + (delta / width) * sensitivity).clamp(0.0, 1.0);
+    final newValue =
+        (widget.value + (delta / width) * sensitivity).clamp(0.0, 1.0);
 
     widget.onChanged?.call(newValue);
   }
@@ -367,7 +366,7 @@ class _SliderPainter extends CustomPainter {
 
     // Background track
     final trackPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withValues(alpha: 0.1)
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
@@ -379,7 +378,7 @@ class _SliderPainter extends CustomPainter {
 
     // Value fill
     final fillPaint = Paint()
-      ..color = color.withOpacity(0.6)
+      ..color = color.withValues(alpha: 0.6)
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
@@ -414,7 +413,7 @@ class _SliderPainter extends CustomPainter {
 
     // Background track
     final trackPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withValues(alpha: 0.1)
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
@@ -426,7 +425,7 @@ class _SliderPainter extends CustomPainter {
 
     // Value fill
     final fillPaint = Paint()
-      ..color = color.withOpacity(0.6)
+      ..color = color.withValues(alpha: 0.6)
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
@@ -442,7 +441,7 @@ class _SliderPainter extends CustomPainter {
 
   void _drawRangeMarkers(Canvas canvas, Size size, double trackY) {
     final markerPaint = Paint()
-      ..color = color.withOpacity(0.3)
+      ..color = color.withValues(alpha: 0.3)
       ..strokeWidth = 1.0;
 
     // Min
@@ -471,7 +470,7 @@ class _SliderPainter extends CustomPainter {
     final modRange = modulationAmount * size.width / 2;
 
     final modPaint = Paint()
-      ..color = DesignTokens.stateWarning.withOpacity(0.3)
+      ..color = DesignTokens.stateWarning.withValues(alpha: 0.3)
       ..strokeWidth = 8.0
       ..strokeCap = StrokeCap.round;
 
@@ -495,7 +494,7 @@ class _SliderPainter extends CustomPainter {
     }
 
     final graphPaint = Paint()
-      ..color = color.withOpacity(0.2)
+      ..color = color.withValues(alpha: 0.2)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -505,7 +504,7 @@ class _SliderPainter extends CustomPainter {
   void _drawThumb(Canvas canvas, Offset position) {
     // Outer ring
     final outerPaint = Paint()
-      ..color = isDragging ? color : color.withOpacity(0.8)
+      ..color = isDragging ? color : color.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
@@ -514,7 +513,7 @@ class _SliderPainter extends CustomPainter {
 
     // Inner fill
     final innerPaint = Paint()
-      ..color = color.withOpacity(isDragging ? 0.8 : 0.6);
+      ..color = color.withValues(alpha: isDragging ? 0.8 : 0.6);
 
     canvas.drawCircle(position, outerRadius - 4, innerPaint);
 
@@ -533,8 +532,8 @@ class _SliderPainter extends CustomPainter {
       final glowPaint = Paint()
         ..shader = RadialGradient(
           colors: [
-            color.withOpacity(audioFeatures!.rms * 0.5),
-            color.withOpacity(0.0),
+            color.withValues(alpha: audioFeatures!.rms * 0.5),
+            color.withValues(alpha: 0.0),
           ],
         ).createShader(Rect.fromCircle(
           center: position,
@@ -549,9 +548,9 @@ class _SliderPainter extends CustomPainter {
   @override
   bool shouldRepaint(_SliderPainter oldDelegate) {
     return oldDelegate.value != value ||
-           oldDelegate.modulationAmount != modulationAmount ||
-           oldDelegate.isDragging != isDragging ||
-           oldDelegate.isFineControl != isFineControl ||
-           oldDelegate.audioFeatures != audioFeatures;
+        oldDelegate.modulationAmount != modulationAmount ||
+        oldDelegate.isDragging != isDragging ||
+        oldDelegate.isFineControl != isFineControl ||
+        oldDelegate.audioFeatures != audioFeatures;
   }
 }

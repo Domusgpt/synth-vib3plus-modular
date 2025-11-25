@@ -1,11 +1,13 @@
-/**
- * Enhanced Logging System for Synth-VIB3+
- *
- * Provides comprehensive, emoji-enriched logging that matches
- * the VIB3+ JavaScript codebase's logging style.
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Enhanced Logging System for Synth-VIB3+
+///
+/// Provides comprehensive, emoji-enriched logging that matches
+/// the VIB3+ JavaScript codebase's logging style.
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/foundation.dart';
 
@@ -79,7 +81,8 @@ class SynthLogger {
     required int bufferSize,
     required int channels,
   }) {
-    debugPrint('📊 PCM setup: $sampleRate Hz, $bufferSize samples, ${channels == 1 ? "mono" : "stereo"}');
+    debugPrint(
+        '📊 PCM setup: $sampleRate Hz, $bufferSize samples, ${channels == 1 ? "mono" : "stereo"}');
   }
 
   static void audioReady() {
@@ -87,7 +90,8 @@ class SynthLogger {
   }
 
   static void noteOn(int noteNumber, double velocity) {
-    debugPrint('🎹 Note ON: $noteNumber (velocity: ${velocity.toStringAsFixed(2)})');
+    debugPrint(
+        '🎹 Note ON: $noteNumber (velocity: ${velocity.toStringAsFixed(2)})');
   }
 
   static void noteOff(int noteNumber) {
@@ -139,8 +143,10 @@ class SynthLogger {
     required bool audioToVisual,
     required bool visualToAudio,
   }) {
-    debugPrint('✅ Audio→Visual modulation: ${audioToVisual ? "ENABLED" : "disabled"}');
-    debugPrint('✅ Visual→Audio modulation: ${visualToAudio ? "ENABLED" : "disabled"}');
+    debugPrint(
+        '✅ Audio→Visual modulation: ${audioToVisual ? "ENABLED" : "disabled"}');
+    debugPrint(
+        '✅ Visual→Audio modulation: ${visualToAudio ? "ENABLED" : "disabled"}');
   }
 
   static void parameterUpdate(String param, dynamic value) {
@@ -193,12 +199,14 @@ class SynthLogger {
     debugPrint('✅ VIB3+ system switched to $system');
   }
 
-  static void systemInfo(String system, {
+  static void systemInfo(
+    String system, {
     required int vertices,
     required double complexity,
     required String synthesisMode,
   }) {
-    debugPrint('   $system: vertices=$vertices, complexity=$complexity ($synthesisMode)');
+    debugPrint(
+        '   $system: vertices=$vertices, complexity=$complexity ($synthesisMode)');
   }
 
   static void geometrySwitch(int from, int to) {
@@ -277,7 +285,7 @@ class SynthLogger {
     required int healthy,
     required int unhealthy,
   }) {
-    debugPrint('\n' + '═' * 60);
+    debugPrint('\n${'═' * 60}');
     debugPrint('Summary: $healthy healthy, $unhealthy with issues\n');
   }
 
@@ -290,7 +298,8 @@ class SynthLogger {
   }
 
   static void tiltCalibrationComplete(double x, double y) {
-    debugPrint('✅ Calibration complete: X=${x.toStringAsFixed(2)}, Y=${y.toStringAsFixed(2)}');
+    debugPrint(
+        '✅ Calibration complete: X=${x.toStringAsFixed(2)}, Y=${y.toStringAsFixed(2)}');
   }
 
   static void tiltSensitivity(double sensitivity, double smoothing) {

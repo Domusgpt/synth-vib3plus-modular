@@ -1,24 +1,26 @@
-/**
- * Visualization Panel
- *
- * Panel for audio visualization and modulation indicators.
- * Provides real-time visual feedback for audio-visual coupling.
- *
- * Features:
- * - Waveform/Spectrum/Oscilloscope visualizer
- * - Active modulation indicators
- * - Mode switching
- * - Compact layout for bottom bezel
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Visualization Panel
+///
+/// Panel for audio visualization and modulation indicators.
+/// Provides real-time visual feedback for audio-visual coupling.
+///
+/// Features:
+/// - Waveform/Spectrum/Oscilloscope visualizer
+/// - Active modulation indicators
+/// - Mode switching
+/// - Compact layout for bottom bezel
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'package:flutter/material.dart';
 import '../components/audio_visualizer.dart';
 import '../components/modulation_indicator.dart';
 
 class VisualizationPanel extends StatefulWidget {
-  const VisualizationPanel({Key? key}) : super(key: key);
+  const VisualizationPanel({super.key});
 
   @override
   State<VisualizationPanel> createState() => _VisualizationPanelState();
@@ -54,8 +56,7 @@ class _VisualizationPanelState extends State<VisualizationPanel> {
           const SizedBox(height: 8),
 
           // Modulation indicators
-          if (_showModulations)
-            const CompactModulationIndicator(),
+          if (_showModulations) const CompactModulationIndicator(),
         ],
       ),
     );
@@ -67,7 +68,7 @@ class _VisualizationPanelState extends State<VisualizationPanel> {
         Text(
           'Visualizer Mode:',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             fontSize: 12,
             fontWeight: FontWeight.bold,
           ),
@@ -102,13 +103,13 @@ class _VisualizationPanelState extends State<VisualizationPanel> {
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: isSelected
-                ? Colors.cyan.withOpacity(0.3)
-                : Colors.white.withOpacity(0.1),
+                ? Colors.cyan.withValues(alpha: 0.3)
+                : Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
               color: isSelected
-                  ? Colors.cyan.withOpacity(0.6)
-                  : Colors.white.withOpacity(0.2),
+                  ? Colors.cyan.withValues(alpha: 0.6)
+                  : Colors.white.withValues(alpha: 0.2),
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -116,7 +117,7 @@ class _VisualizationPanelState extends State<VisualizationPanel> {
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: isSelected ? Colors.cyan : Colors.white.withOpacity(0.7),
+              color: isSelected ? Colors.cyan : Colors.white.withValues(alpha: 0.7),
               fontSize: 10,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
@@ -137,21 +138,21 @@ class _VisualizationPanelState extends State<VisualizationPanel> {
         children: [
           Icon(
             _showModulations ? Icons.visibility : Icons.visibility_off,
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             size: 16,
           ),
           const SizedBox(width: 8),
           Text(
             'Show Active Modulations',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               fontSize: 12,
             ),
           ),
           const Spacer(),
           Icon(
             _showModulations ? Icons.expand_less : Icons.expand_more,
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             size: 20,
           ),
         ],

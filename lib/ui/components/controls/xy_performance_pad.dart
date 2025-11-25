@@ -1,30 +1,30 @@
-/**
- * XY Performance Pad
- *
- * Enhanced multi-touch performance controller with resizable framework,
- * audio-reactive visuals, trail visualization, and scale quantization.
- *
- * Features:
- * - Resizable (1x1 to 4x4 grid units)
- * - Multi-touch support (up to 8 simultaneous touches)
- * - Trail visualization with audio reactivity
- * - Audio-reactive border glow
- * - Grid visualization (optional)
- * - Scale/root note quantization
- * - Modulation indicator overlay
- * - Touch pressure support
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 3
- *
- * A Paul Phillips Manifestation
- */
+///
+/// XY Performance Pad
+///
+/// Enhanced multi-touch performance controller with resizable framework,
+/// audio-reactive visuals, trail visualization, and scale quantization.
+///
+/// Features:
+/// - Resizable (1x1 to 4x4 grid units)
+/// - Multi-touch support (up to 8 simultaneous touches)
+/// - Trail visualization with audio reactivity
+/// - Audio-reactive border glow
+/// - Grid visualization (optional)
+/// - Scale/root note quantization
+/// - Modulation indicator overlay
+/// - Touch pressure support
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 3
+///
+/// A Paul Phillips Manifestation
+///
 
-import 'dart:math' as math;
+library;
+
 import 'package:flutter/material.dart';
+import '../../../audio/audio_analyzer.dart';
 import '../../theme/design_tokens.dart';
-import '../../effects/glassmorphic_container.dart';
 import '../../layout/flexible_layout.dart';
-import '../base/reactive_component.dart';
 
 // ============================================================================
 // XY PAD CONFIGURATION
@@ -112,13 +112,13 @@ class TouchPoint {
 
 /// What parameter to control with X/Y axes
 enum XYParameter {
-  frequency,    // Pitch
+  frequency, // Pitch
   filterCutoff, // Filter
-  oscMix,       // Oscillator mix
-  fmDepth,      // FM modulation
-  ringMod,      // Ring modulation
-  reverbMix,    // Reverb amount
-  custom,       // User-defined
+  oscMix, // Oscillator mix
+  fmDepth, // FM modulation
+  ringMod, // Ring modulation
+  reverbMix, // Reverb amount
+  custom, // User-defined
 }
 
 // ============================================================================
@@ -139,7 +139,7 @@ class XYPerformancePad extends StatefulWidget {
   final String? label;
 
   const XYPerformancePad({
-    Key? key,
+    super.key,
     this.config = XYPadConfig.performance,
     this.xParameter = XYParameter.frequency,
     this.yParameter = XYParameter.filterCutoff,
@@ -150,7 +150,7 @@ class XYPerformancePad extends StatefulWidget {
     this.size = GridUnits.unit2x2,
     this.color,
     this.label,
-  }) : super(key: key);
+  });
 
   @override
   State<XYPerformancePad> createState() => _XYPerformancePadState();
@@ -271,7 +271,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
             width: constraints.maxWidth,
             height: constraints.maxHeight,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
               border: Border.all(
                 color: effectiveColor,
@@ -280,7 +280,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
               boxShadow: glowIntensity > 0
                   ? [
                       BoxShadow(
-                        color: effectiveColor.withOpacity(glowIntensity / 10),
+                        color: effectiveColor.withValues(alpha: glowIntensity / 10),
                         blurRadius: glowIntensity,
                         spreadRadius: glowIntensity / 2,
                       ),
@@ -292,15 +292,13 @@ class _XYPerformancePadState extends State<XYPerformancePad>
               child: Stack(
                 children: [
                   // Grid overlay
-                  if (widget.config.showGrid)
-                    _buildGrid(constraints.biggest),
+                  if (widget.config.showGrid) _buildGrid(constraints.biggest),
 
                   // Touch indicators
                   ..._buildTouchIndicators(constraints.biggest),
 
                   // Label
-                  if (widget.label != null)
-                    _buildLabel(),
+                  if (widget.label != null) _buildLabel(),
 
                   // Parameter indicators
                   _buildParameterIndicators(),
@@ -321,7 +319,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     return CustomPaint(
       size: size,
       painter: _GridPainter(
-        color: widget.config.gridColor.withOpacity(widget.config.gridOpacity),
+        color: widget.config.gridColor.withValues(alpha: widget.config.gridOpacity),
         divisions: 8,
       ),
     );
@@ -333,7 +331,6 @@ class _XYPerformancePadState extends State<XYPerformancePad>
 
   List<Widget> _buildTouchIndicators(Size size) {
     return _activeTouches.values.map((touch) {
-      final normalized = touch.normalized(size);
       final color = widget.config.trailColor;
 
       return Positioned(
@@ -351,14 +348,14 @@ class _XYPerformancePadState extends State<XYPerformancePad>
                 height: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: color.withOpacity(0.3),
+                  color: color.withValues(alpha: 0.3),
                   border: Border.all(
                     color: color,
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: color.withOpacity(0.5),
+                      color: color.withValues(alpha: 0.5),
                       blurRadius: 10,
                       spreadRadius: 2,
                     ),
@@ -396,7 +393,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
           vertical: DesignTokens.spacing1,
         ),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          color: Colors.black.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
         ),
         child: Text(
@@ -435,7 +432,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
         vertical: DesignTokens.spacing1,
       ),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
       ),
       child: Text(
@@ -509,7 +506,7 @@ class _GridPainter extends CustomPainter {
 
     // Center crosshair
     final centerPaint = Paint()
-      ..color = color.withOpacity(0.5)
+      ..color = color.withValues(alpha: 0.5)
       ..strokeWidth = 2.0;
 
     canvas.drawLine(

@@ -1,26 +1,27 @@
-/**
- * Gesture Recognition System
- *
- * Advanced multi-finger gesture detection for enhanced UI interactions.
- * Recognizes complex gestures like pinch-to-zoom, two-finger rotate,
- * three-finger swipe, and custom musical gestures.
- *
- * Features:
- * - Multi-touch gesture recognition (2-5 fingers)
- * - Pinch to zoom (UI scale)
- * - Two-finger rotate (parameter control)
- * - Three-finger swipe (preset navigation)
- * - Four-finger tap (panel toggle)
- * - Custom musical gestures
- * - Gesture history and replay
- * - Conflict resolution
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Gesture Recognition System
+///
+/// Advanced multi-finger gesture detection for enhanced UI interactions.
+/// Recognizes complex gestures like pinch-to-zoom, two-finger rotate,
+/// three-finger swipe, and custom musical gestures.
+///
+/// Features:
+/// - Multi-touch gesture recognition (2-5 fingers)
+/// - Pinch to zoom (UI scale)
+/// - Two-finger rotate (parameter control)
+/// - Three-finger swipe (preset navigation)
+/// - Four-finger tap (panel toggle)
+/// - Custom musical gestures
+/// - Gesture history and replay
+/// - Conflict resolution
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../theme/design_tokens.dart';
 
 // ============================================================================
 // GESTURE TYPE
@@ -69,11 +70,11 @@ class DetectedGesture {
   final GestureType type;
   final int fingerCount;
   final Offset center;
-  final double distance;     // For pinch gestures
-  final double angle;        // For rotate gestures
-  final Offset velocity;     // For swipe gestures
-  final double pressure;     // Average pressure
-  final Duration duration;   // Gesture duration
+  final double distance; // For pinch gestures
+  final double angle; // For rotate gestures
+  final Offset velocity; // For swipe gestures
+  final double pressure; // Average pressure
+  final Duration duration; // Gesture duration
   final DateTime timestamp;
   final Map<String, dynamic> metadata;
 
@@ -104,14 +105,13 @@ class GestureRecognitionSystem {
   final Map<GestureType, void Function(DetectedGesture)> _handlers = {};
 
   // Configuration
-  double pinchThreshold = 20.0;       // Pixels
-  double rotateThreshold = 0.1;       // Radians (~5.7°)
-  double swipeThreshold = 100.0;      // Pixels per second
-  double longPressDuration = 500.0;   // Milliseconds
+  double pinchThreshold = 20.0; // Pixels
+  double rotateThreshold = 0.1; // Radians (~5.7°)
+  double swipeThreshold = 100.0; // Pixels per second
+  double longPressDuration = 500.0; // Milliseconds
   int maxSimultaneousTouches = 5;
 
   // State tracking
-  DateTime? _gestureStartTime;
   Offset? _initialCenter;
   double? _initialDistance;
   double? _initialAngle;
@@ -154,7 +154,6 @@ class GestureRecognitionSystem {
       timestamp: DateTime.now(),
     );
 
-    _gestureStartTime = DateTime.now();
     _updateGestureMetrics();
 
     _checkMultiTouchGestures();
@@ -293,7 +292,7 @@ class GestureRecognitionSystem {
         metadata: {'scale': scale},
       ));
 
-      _initialDistance = currentDistance;  // Update for next frame
+      _initialDistance = currentDistance; // Update for next frame
     }
   }
 
@@ -313,7 +312,7 @@ class GestureRecognitionSystem {
         metadata: {'totalAngle': currentAngle},
       ));
 
-      _initialAngle = currentAngle;  // Update for next frame
+      _initialAngle = currentAngle; // Update for next frame
     }
   }
 
@@ -482,7 +481,6 @@ class GestureRecognitionSystem {
   // ============================================================================
 
   void _reset() {
-    _gestureStartTime = null;
     _initialCenter = null;
     _initialDistance = null;
     _initialAngle = null;

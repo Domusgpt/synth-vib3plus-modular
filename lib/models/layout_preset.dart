@@ -1,24 +1,25 @@
-/**
- * Layout Preset Model
- *
- * Data model for saving and loading layout configurations.
- * Includes preset layouts (Performance, Production, Minimal, Desktop)
- * with JSON serialization for persistence.
- *
- * Features:
- * - Panel configuration serialization
- * - Preset layouts
- * - User custom layouts
- * - JSON import/export
- * - Device-specific configurations
- *
- * Part of the Next-Generation UI Redesign (v3.0) - Phase 2
- *
- * A Paul Phillips Manifestation
- */
+///
+/// Layout Preset Model
+///
+/// Data model for saving and loading layout configurations.
+/// Includes preset layouts (Performance, Production, Minimal, Desktop)
+/// with JSON serialization for persistence.
+///
+/// Features:
+/// - Panel configuration serialization
+/// - Preset layouts
+/// - User custom layouts
+/// - JSON import/export
+/// - Device-specific configurations
+///
+/// Part of the Next-Generation UI Redesign (v3.0) - Phase 2
+///
+/// A Paul Phillips Manifestation
+///
+
+library;
 
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import '../ui/layout/flexible_layout.dart';
 import '../ui/layout/panel_dock_system.dart';
 
@@ -34,7 +35,7 @@ class PanelLayoutData {
   final DockZone dockZone;
   final int order;
   final bool visible;
-  final Map<String, dynamic>? customData;  // Panel-specific data
+  final Map<String, dynamic>? customData; // Panel-specific data
 
   const PanelLayoutData({
     required this.id,
@@ -121,7 +122,7 @@ class LayoutPreset {
   final List<PanelLayoutData> panels;
   final GridConfig gridConfig;
   final DockConfig dockConfig;
-  final bool isFactory;  // Factory preset vs user preset
+  final bool isFactory; // Factory preset vs user preset
   final DateTime createdAt;
   final DateTime modifiedAt;
 
@@ -185,7 +186,8 @@ class LayoutPreset {
       dockConfig: DockConfig(
         snapDistance: json['dockConfig']['snapDistance'] as double,
         magneticStrength: json['dockConfig']['magneticStrength'] as double,
-        enableCollisionDetection: json['dockConfig']['enableCollisionDetection'] as bool,
+        enableCollisionDetection:
+            json['dockConfig']['enableCollisionDetection'] as bool,
         enableAutoLayout: json['dockConfig']['enableAutoLayout'] as bool,
         dockedPanelSize: json['dockConfig']['dockedPanelSize'] as double,
       ),
@@ -250,7 +252,7 @@ class FactoryPresets {
         // XY Pad (center, 2x2)
         PanelLayoutData(
           id: 'xy_pad',
-          position: GridPosition(5, 10),  // Centered
+          position: GridPosition(5, 10), // Centered
           size: GridUnits.unit2x2,
           visible: true,
         ),
@@ -377,7 +379,8 @@ class FactoryPresets {
     return LayoutPreset(
       id: 'factory_desktop',
       name: 'Desktop Mode',
-      description: 'Maximum control + visualization for tablets and large screens. '
+      description:
+          'Maximum control + visualization for tablets and large screens. '
           'Quad-split layout with all controls visible.',
       targetBreakpoint: LayoutBreakpoint.landscape,
       panels: [
