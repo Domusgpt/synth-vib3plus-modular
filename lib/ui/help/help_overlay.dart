@@ -299,7 +299,7 @@ class _HelpOverlayState extends State<HelpOverlay>
     return GlassmorphicContainer(
       width: 600,
       height: 700,
-      borderRadius: DesignTokens.radiusLarge,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
       child: Column(
         children: [
           // Header
@@ -414,7 +414,7 @@ class _HelpOverlayState extends State<HelpOverlay>
           const SizedBox(height: DesignTokens.spacing1),
           Text(
             widget.context.description,
-            style: DesignTokens.bodySmall.copyWith(
+            style: DesignTokens.bodyMedium.copyWith(
               color: Colors.white.withOpacity(0.8),
             ),
           ),
@@ -461,7 +461,7 @@ class _HelpOverlayState extends State<HelpOverlay>
     return Container(
       margin: const EdgeInsets.only(bottom: DesignTokens.spacing3),
       child: GlassmorphicContainer(
-        borderRadius: DesignTokens.radiusMedium,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
         child: Padding(
           padding: const EdgeInsets.all(DesignTokens.spacing3),
           child: Column(
@@ -649,7 +649,7 @@ class RichTooltip extends StatelessWidget {
               const SizedBox(height: DesignTokens.spacing1),
               Text(
                 message,
-                style: DesignTokens.bodySmall.copyWith(
+                style: DesignTokens.bodyMedium.copyWith(
                   color: Colors.white.withOpacity(0.8),
                 ),
               ),
@@ -764,7 +764,7 @@ class _FeatureHighlightState extends State<FeatureHighlight>
           top: widget.position.dy + widget.size.height + 20,
           child: GlassmorphicContainer(
             width: 300,
-            borderRadius: DesignTokens.radiusMedium,
+            borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
             child: Padding(
               padding: const EdgeInsets.all(DesignTokens.spacing3),
               child: Column(

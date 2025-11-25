@@ -316,14 +316,13 @@ class VisualPresetData {
   final double rotationSpeedYW;
   final double rotationSpeedZW;
 
-  // Visual parameters
+  // Visual parameters (ACTUAL VIB3+ names)
   final double morph;
   final double chaos;
   final double gridDensity;
   final double hue;
-  final double intensity;
-  final double intensity;
-  final double dimension;
+  final double intensity;  // VIB3+ intensity (brightness/glow)
+  final double dimension;  // VIB3+ dimension (projection depth)
   final double layerDepth;
 
   const VisualPresetData({
@@ -337,7 +336,6 @@ class VisualPresetData {
     this.chaos = 0.0,
     this.gridDensity = 5.0,
     this.hue = 0.0,
-    this.intensity = 1.0,
     this.intensity = 1.0,
     this.dimension = 2.0,
     this.layerDepth = 0.5,
@@ -355,7 +353,6 @@ class VisualPresetData {
         'gridDensity': gridDensity,
         'hue': hue,
         'intensity': intensity,
-        'intensity': intensity,
         'dimension': dimension,
         'layerDepth': layerDepth,
       };
@@ -372,7 +369,6 @@ class VisualPresetData {
       chaos: json['chaos'] ?? 0.0,
       gridDensity: json['gridDensity'] ?? 5.0,
       hue: json['hue'] ?? 0.0,
-      intensity: json['intensity'] ?? 1.0,
       intensity: json['intensity'] ?? 1.0,
       dimension: json['dimension'] ?? 2.0,
       layerDepth: json['layerDepth'] ?? 0.5,
