@@ -164,7 +164,8 @@ class AudioProvider with ChangeNotifier {
 
       // Generate buffer using Synthesis Branch Manager (routes to Direct/FM/Ring Mod)
       // This applies: polytope core routing + voice character + sound family
-      Float32List rawBuffer = synthesisBranchManager.generateBuffer(bufferSize, frequency);
+      // Note: Frequency was set by noteOn(), vibrato modulation handled internally
+      Float32List rawBuffer = synthesisBranchManager.generateBuffer(bufferSize);
 
       // Apply global effects from synthesis engine (filter, reverb, delay)
       // This maintains the effect chain while using the branch manager for core synthesis
@@ -207,7 +208,7 @@ class AudioProvider with ChangeNotifier {
   void playNote(int midiNote) {
     _currentNote = midiNote;
     synthesizerEngine.setNote(midiNote);
-    synthesisBranchManager.noteOn(); // Trigger envelope in branch manager
+    synthesisBranchManager.noteOn(midiNote, 1.0); // Trigger envelope in branch manager
     synthesizerEngine.filterEnvelope.noteOn(); // Trigger filter envelope
 
     if (!_isPlaying) {
