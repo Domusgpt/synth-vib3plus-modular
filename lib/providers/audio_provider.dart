@@ -23,7 +23,10 @@ import 'package:flutter_pcm_sound/flutter_pcm_sound.dart';
 import '../audio/audio_analyzer.dart';
 import '../audio/synthesizer_engine.dart';
 import '../synthesis/synthesis_branch_manager.dart';
+import '../models/visual_system.dart';
 import '../ui/theme/synth_theme.dart';
+import '../services/logging_service.dart';
+import '../config/constants.dart';
 
 class AudioProvider with ChangeNotifier {
   // Core audio systems
@@ -33,16 +36,16 @@ class AudioProvider with ChangeNotifier {
 
   // Audio buffer management
   Float32List? _currentBuffer;
-  final int bufferSize = 512;
-  final double sampleRate = 44100.0;
+  final int bufferSize = AudioConstants.bufferSize;
+  final double sampleRate = AudioConstants.sampleRate.toDouble();
 
   // Current audio features (from analysis)
   AudioFeatures? _currentFeatures;
 
   // Synthesizer state
-  int _currentNote = 60; // Middle C
+  int _currentNote = AudioConstants.midiMiddleC;
   bool _isPlaying = false;
-  double _masterVolume = 0.7;
+  double _masterVolume = AudioConstants.defaultVolume;
 
   // Performance metrics
   int _buffersGenerated = 0;
@@ -59,7 +62,7 @@ class AudioProvider with ChangeNotifier {
     );
 
     audioAnalyzer = AudioAnalyzer(
-      fftSize: 2048,
+      fftSize: AudioConstants.fftSize,
       sampleRate: sampleRate,
     );
 
@@ -70,7 +73,7 @@ class AudioProvider with ChangeNotifier {
     // Setup PCM audio output (static method)
     await FlutterPcmSound.setup(
       sampleRate: sampleRate.toInt(),
-      channelCount: 1,  // Mono
+      channelCount: AudioConstants.channels,
     );
 
     // Set feed callback to handle buffer requests
@@ -79,9 +82,14 @@ class AudioProvider with ChangeNotifier {
     });
 
     // Set threshold for callback (trigger when less than 2048 frames remain)
-    await FlutterPcmSound.setFeedThreshold(2048);
+    await FlutterPcmSound.setFeedThreshold(AudioConstants.fftSize);
 
-    debugPrint('✅ AudioProvider initialized with PCM audio output');
+    Log.info('AudioProvider', 'Initialized with PCM audio output (${sampleRate.toInt()}Hz, ${AudioConstants.channels}ch, ${bufferSize}samples)');
+
+    // Auto-start audio generation for continuous audio reactivity
+    // Even when no notes are playing, buffers are generated for FFT analysis
+    await startAudio();
+    Log.info('AudioProvider', 'Audio reactivity enabled (continuous buffer generation)');
   }
 
   // Getters
@@ -116,12 +124,14 @@ class AudioProvider with ChangeNotifier {
     FlutterPcmSound.start();
 
     notifyListeners();
-    debugPrint('▶️  Audio started');
+    Log.audio('Started', noteNumber: _currentNote);
   }
 
   /// Callback when PCM buffer needs more data
   void _feedAudioCallback(int remainingFrames) {
-    if (!_isPlaying) return;
+    // CRITICAL: Always generate buffers for audio reactivity (even when not playing notes)
+    // The synthesizer will naturally output silence when no voices are active
+    // This ensures FFT analysis continues for visual modulation
 
     // Generate multiple buffers to keep ahead of playback
     const buffersToGenerate = 4;
@@ -135,7 +145,7 @@ class AudioProvider with ChangeNotifier {
     _isPlaying = false;
     // PCM audio will stop when no more data is fed
     notifyListeners();
-    debugPrint('⏸️  Audio stopped');
+    Log.audio('Stopped');
   }
 
   /// Generate next audio buffer
@@ -192,7 +202,7 @@ class AudioProvider with ChangeNotifier {
       _buffersGenerated++;
       notifyListeners();
     } catch (e) {
-      debugPrint('❌ Error generating audio buffer: $e');
+      Log.error('AudioProvider', 'Error generating audio buffer', error: e);
     }
   }
 
@@ -227,29 +237,16 @@ class AudioProvider with ChangeNotifier {
   /// Set geometry (0-23) for synthesis
   void setGeometry(int geometry) {
     synthesisBranchManager.setGeometry(geometry);
-    debugPrint('🎵 Geometry set to: $geometry (${synthesisBranchManager.configString})');
+    Log.info('AudioProvider', 'Geometry set to $geometry', data: synthesisBranchManager.configString);
     notifyListeners();
   }
 
   /// Set visual system (updates sound family)
   void setVisualSystem(String systemName) {
-    VisualSystem system;
-    switch (systemName.toLowerCase()) {
-      case 'quantum':
-        system = VisualSystem.quantum;
-        break;
-      case 'faceted':
-        system = VisualSystem.faceted;
-        break;
-      case 'holographic':
-        system = VisualSystem.holographic;
-        break;
-      default:
-        system = VisualSystem.quantum;
-    }
+    final system = VisualSystemExtension.fromString(systemName);
     _currentVisualSystem = system;
     synthesisBranchManager.setVisualSystem(system);
-    debugPrint('🎨 Visual system set to: ${system.name}');
+    Log.visual('System changed', system: system.displayName);
     notifyListeners();
   }
 
@@ -325,7 +322,7 @@ class AudioProvider with ChangeNotifier {
     // TODO: Implement microphone input
     // This requires platform-specific audio input API
     // Will use flutter_sound or audio_session for microphone capture
-    debugPrint('🎤 Microphone input not yet implemented');
+    Log.warn('AudioProvider', 'Microphone input not yet implemented');
   }
 
   void stopMicrophoneInput() {

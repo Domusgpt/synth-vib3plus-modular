@@ -7,12 +7,14 @@
  * A Paul Phillips Manifestation
  */
 
+import 'visual_system.dart';
+
 class VisualState {
   final String name;
   final String description;
 
   // System selection
-  final String system; // 'quantum', 'holographic', 'faceted'
+  final VisualSystem system;
 
   // Rotation parameters
   final double rotationSpeedXW;
@@ -57,7 +59,7 @@ class VisualState {
     return const VisualState(
       name: 'Default',
       description: 'Balanced quantum visualization',
-      system: 'quantum',
+      system: VisualSystem.quantum,
       rotationSpeedXW: 0.5,
       rotationSpeedYW: 0.7,
       rotationSpeedZW: 0.3,
@@ -78,7 +80,7 @@ class VisualState {
     return const VisualState(
       name: 'Intense',
       description: 'High-energy holographic visualization',
-      system: 'holographic',
+      system: VisualSystem.holographic,
       rotationSpeedXW: 2.0,
       rotationSpeedYW: 1.5,
       rotationSpeedZW: 1.0,
@@ -99,7 +101,7 @@ class VisualState {
     return const VisualState(
       name: 'Ambient',
       description: 'Slow, smooth visualization',
-      system: 'quantum',
+      system: VisualSystem.quantum,
       rotationSpeedXW: 0.2,
       rotationSpeedYW: 0.15,
       rotationSpeedZW: 0.1,
@@ -120,7 +122,7 @@ class VisualState {
     return {
       'name': name,
       'description': description,
-      'system': system,
+      'system': system.displayName,
       'rotationSpeedXW': rotationSpeedXW,
       'rotationSpeedYW': rotationSpeedYW,
       'rotationSpeedZW': rotationSpeedZW,
@@ -141,7 +143,7 @@ class VisualState {
     return VisualState(
       name: json['name'] as String,
       description: json['description'] as String,
-      system: json['system'] as String,
+      system: VisualSystemExtension.fromString(json['system'] as String),
       rotationSpeedXW: (json['rotationSpeedXW'] as num).toDouble(),
       rotationSpeedYW: (json['rotationSpeedYW'] as num).toDouble(),
       rotationSpeedZW: (json['rotationSpeedZW'] as num).toDouble(),
@@ -159,6 +161,6 @@ class VisualState {
 
   @override
   String toString() {
-    return 'VisualState($name: $system)';
+    return 'VisualState($name: ${system.displayName})';
   }
 }
