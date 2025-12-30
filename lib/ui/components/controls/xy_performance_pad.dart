@@ -20,6 +20,7 @@
  */
 
 import 'dart:math' as math;
+import '../../../audio/audio_analyzer.dart';
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
@@ -251,7 +252,7 @@ class _XYPerformancePadState extends State<XYPerformancePad>
     final effectiveColor = widget.color ?? DesignTokens.stateActive;
 
     // Calculate audio-reactive glow
-    final glowIntensity = widget.audioFeatures != null
+    final intensity = widget.audioFeatures != null
         ? DesignTokens.transientToGlow(widget.audioFeatures!.transient)
         : 0.0;
 
@@ -277,12 +278,12 @@ class _XYPerformancePadState extends State<XYPerformancePad>
                 color: effectiveColor,
                 width: borderWidth,
               ),
-              boxShadow: glowIntensity > 0
+              boxShadow: intensity > 0
                   ? [
                       BoxShadow(
-                        color: effectiveColor.withOpacity(glowIntensity / 10),
-                        blurRadius: glowIntensity,
-                        spreadRadius: glowIntensity / 2,
+                        color: effectiveColor.withOpacity(intensity / 10),
+                        blurRadius: intensity,
+                        spreadRadius: intensity / 2,
                       ),
                     ]
                   : null,

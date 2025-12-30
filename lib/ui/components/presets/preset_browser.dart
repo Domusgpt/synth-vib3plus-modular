@@ -330,7 +330,7 @@ class _PresetBrowserState extends State<PresetBrowser> {
     return GlassmorphicContainer(
       width: widget.width,
       height: widget.height,
-      borderRadius: DesignTokens.radiusMedium,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
       child: Column(
         children: [
           // Header with search

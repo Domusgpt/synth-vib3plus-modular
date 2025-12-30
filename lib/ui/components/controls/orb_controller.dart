@@ -20,6 +20,7 @@
  */
 
 import 'dart:math' as math;
+import '../../../audio/audio_analyzer.dart';
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
@@ -255,7 +256,7 @@ class _OrbControllerState extends State<OrbController>
     final diameter = widget.config.size.diameter;
 
     // Calculate audio-reactive glow
-    final glowIntensity = widget.audioFeatures != null
+    final intensity = widget.audioFeatures != null
         ? DesignTokens.transientToGlow(widget.audioFeatures!.transient) * 2
         : 0.0;
 
@@ -288,7 +289,7 @@ class _OrbControllerState extends State<OrbController>
                 position: _position,
                 isDragging: _isDragging,
                 color: effectiveColor,
-                glowIntensity: glowIntensity,
+                intensity: intensity,
                 audioFeatures: widget.audioFeatures,
                 showCrosshairs: widget.config.showCrosshairs,
                 showConnectionLine: widget.config.showConnectionLine,
@@ -348,7 +349,7 @@ class _OrbPainter extends CustomPainter {
   final Offset position;  // -1 to 1
   final bool isDragging;
   final Color color;
-  final double glowIntensity;
+  final double intensity;
   final AudioFeatures? audioFeatures;
   final bool showCrosshairs;
   final bool showConnectionLine;
@@ -358,7 +359,7 @@ class _OrbPainter extends CustomPainter {
     required this.position,
     required this.isDragging,
     required this.color,
-    required this.glowIntensity,
+    required this.intensity,
     this.audioFeatures,
     required this.showCrosshairs,
     required this.showConnectionLine,
@@ -387,7 +388,7 @@ class _OrbPainter extends CustomPainter {
     }
 
     // Draw outer glow (audio-reactive)
-    if (glowIntensity > 0 || audioFeatures != null) {
+    if (intensity > 0 || audioFeatures != null) {
       _drawGlow(canvas, orbPosition, radius / 3);
     }
 
@@ -433,7 +434,7 @@ class _OrbPainter extends CustomPainter {
 
   void _drawGlow(Canvas canvas, Offset position, double radius) {
     final audioIntensity = audioFeatures?.rms ?? 0.0;
-    final totalGlow = glowIntensity + (audioIntensity * 10);
+    final totalGlow = intensity + (audioIntensity * 10);
 
     final glowPaint = Paint()
       ..shader = RadialGradient(
@@ -454,14 +455,14 @@ class _OrbPainter extends CustomPainter {
 
   void _drawHolographicSphere(Canvas canvas, Offset position, double radius) {
     // Audio-reactive hue shift
-    final hueShift = audioFeatures != null
+    final hue = audioFeatures != null
         ? DesignTokens.dominantFreqToHueShift(audioFeatures!.dominantFreq)
         : 0.0;
 
     // Holographic gradient
     final gradient = DesignTokens.holographicGradient(
       audioIntensity: audioFeatures?.rms ?? 0.0,
-      baseHue: HSLColor.fromColor(color).hue + hueShift,
+      baseHue: HSLColor.fromColor(color).hue + hue,
     );
 
     final paint = Paint()
@@ -540,7 +541,7 @@ class _OrbPainter extends CustomPainter {
   bool shouldRepaint(_OrbPainter oldDelegate) {
     return oldDelegate.position != position ||
            oldDelegate.isDragging != isDragging ||
-           oldDelegate.glowIntensity != glowIntensity ||
+           oldDelegate.intensity != intensity ||
            oldDelegate.audioFeatures != audioFeatures;
   }
 }

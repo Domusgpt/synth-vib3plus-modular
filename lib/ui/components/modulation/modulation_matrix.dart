@@ -21,6 +21,7 @@
  */
 
 import 'dart:math' as math;
+import '../../../audio/audio_analyzer.dart';
 import 'package:flutter/material.dart';
 import '../../theme/design_tokens.dart';
 import '../../effects/glassmorphic_container.dart';
@@ -317,7 +318,7 @@ class _ModulationMatrixState extends State<ModulationMatrix>
     return GlassmorphicContainer(
       width: widget.width,
       height: widget.height,
-      borderRadius: DesignTokens.radiusMedium,
+      borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
       child: Column(
         children: [
           // Header

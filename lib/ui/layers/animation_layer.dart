@@ -61,7 +61,7 @@ class AnimationLayerConfig {
     intensity: 0.7,
     maxParticles: 200,
     trailLength: 30,
-    trailFadeTime = 1.5,
+    trailFadeTime: 1.5,
   );
 
   /// Full quality mode

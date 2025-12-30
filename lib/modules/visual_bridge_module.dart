@@ -108,25 +108,25 @@ class VisualBridgeModule extends SynthModule {
       case 'rotationSpeed':
         provider.setRotationSpeed(value);
         break;
-      case 'tessellationDensity':
+      case 'gridDensity':
         provider.setTessellationDensity(value.toInt());
         break;
-      case 'vertexBrightness':
+      case 'intensity':
         provider.setVertexBrightness(value);
         break;
-      case 'hueShift':
+      case 'hue':
         provider.setHueShift(value);
         break;
-      case 'glowIntensity':
+      case 'intensity':
         provider.setGlowIntensity(value);
         break;
-      case 'morphParameter':
+      case 'morphFactor':
         provider.setMorphParameter(value);
         break;
-      case 'projectionDistance':
+      case 'dimension':
         provider.setProjectionDistance(value);
         break;
-      case 'layerSeparation':
+      case 'dimension':
         provider.setLayerSeparation(value);
         break;
       case 'scale':
@@ -163,19 +163,19 @@ class VisualBridgeModule extends SynthModule {
   }
 
   /// Switch geometry (0-23) (with logging)
-  Future<void> switchGeometry(int geometryIndex) async {
+  Future<void> switchGeometry(int geometry) async {
     if (!_isInitialized) return;
 
-    if (geometryIndex < 0 || geometryIndex > 23) {
-      SynthLogger.warning('VisualBridge', 'Invalid geometry index: $geometryIndex');
+    if (geometry < 0 || geometry > 23) {
+      SynthLogger.warning('VisualBridge', 'Invalid geometry index: $geometry');
       return;
     }
 
     final oldGeometry = provider.currentGeometry;
-    provider.setGeometry(geometryIndex);
+    provider.setGeometry(geometry);
     _geometrySwitchCount++;
 
-    SynthLogger.geometrySwitch(oldGeometry, geometryIndex);
+    SynthLogger.geometrySwitch(oldGeometry, geometry);
   }
 
   /// Get current visual state for audio modulation
@@ -191,7 +191,7 @@ class VisualBridgeModule extends SynthModule {
       'rotationXY': provider.rotationXY,
       'rotationXZ': provider.rotationXZ,
       'rotationYZ': provider.rotationYZ,
-      'morphParameter': provider.morphParameter,
+      'morphFactor': provider.morphFactor,
       'rotationSpeed': provider.rotationSpeed,
     };
   }
@@ -239,7 +239,7 @@ class VisualBridgeModule extends SynthModule {
       'rotationXY': 0.0,
       'rotationXZ': 0.0,
       'rotationYZ': 0.0,
-      'morphParameter': 0.0,
+      'morphFactor': 0.0,
       'rotationSpeed': 1.0,
     };
   }

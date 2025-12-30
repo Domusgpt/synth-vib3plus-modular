@@ -21,6 +21,7 @@
 
 import 'dart:math' as math;
 import 'dart:typed_data';
+import '../core/geometry_library.dart' as geo;
 
 /// Visual system types (from VIB3+)
 enum VisualSystem {
@@ -250,20 +251,22 @@ class SynthesisBranchManager {
 
     _currentGeometry = geometry;
 
-    // Calculate core and base geometry
-    final coreIndex = geometry ~/ 8;  // Integer division
-    final baseIndex = geometry % 8;   // Modulo
+    // Use GeometryLibrary for proper decoding
+    final decoded = geo.GeometryLibrary.decodeGeometryIndex(geometry);
+    final metadata = geo.GeometryLibrary.describeGeometry(geometry);
 
     // Update core (determines synthesis branch)
-    _currentCore = PolytopeCor.values[coreIndex];
+    _currentCore = PolytopeCor.values[decoded.core];
 
     // Update base geometry (determines voice character)
-    _currentBaseGeometry = BaseGeometry.values[baseIndex];
+    _currentBaseGeometry = BaseGeometry.values[decoded.base];
 
     // Update voice character
     _currentVoiceCharacter = _getVoiceCharacter(_currentBaseGeometry);
 
-    print('🎵 Geometry $geometry: ${_currentCore.name} core, ${_currentBaseGeometry.name} geometry');
+    print('🎵 Geometry $geometry: ${metadata.fullName}');
+    print('   Core: ${_currentCore.name}, Base: ${_currentBaseGeometry.name}');
+    print('   Synthesis: ${geo.GeometryLibrary.getSynthesisBranch(geometry)}');
   }
 
   /// Set visual system (updates sound family)

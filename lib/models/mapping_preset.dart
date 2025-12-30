@@ -41,30 +41,30 @@ class MappingPreset {
           maxRange: 2.5,
           curve: MappingCurve.linear,
         ),
-        'midEnergy_to_tessellationDensity': ParameterMapping(
+        'midEnergy_to_gridDensity': ParameterMapping(
           sourceParam: 'midEnergy',
-          targetParam: 'tessellationDensity',
+          targetParam: 'gridDensity',
           minRange: 3.0,
           maxRange: 8.0,
           curve: MappingCurve.exponential,
         ),
-        'highEnergy_to_vertexBrightness': ParameterMapping(
+        'highEnergy_to_intensity': ParameterMapping(
           sourceParam: 'highEnergy',
-          targetParam: 'vertexBrightness',
+          targetParam: 'intensity',
           minRange: 0.5,
           maxRange: 1.0,
           curve: MappingCurve.linear,
         ),
-        'spectralCentroid_to_hueShift': ParameterMapping(
+        'spectralCentroid_to_hue': ParameterMapping(
           sourceParam: 'spectralCentroid',
-          targetParam: 'hueShift',
+          targetParam: 'hue',
           minRange: 0.0,
           maxRange: 360.0,
           curve: MappingCurve.linear,
         ),
-        'rms_to_glowIntensity': ParameterMapping(
+        'rms_to_intensity': ParameterMapping(
           sourceParam: 'rms',
-          targetParam: 'glowIntensity',
+          targetParam: 'intensity',
           minRange: 0.0,
           maxRange: 3.0,
           curve: MappingCurve.exponential,
@@ -111,16 +111,16 @@ class MappingPreset {
           maxRange: 5.0,
           curve: MappingCurve.exponential,
         ),
-        'bassEnergy_to_glowIntensity': ParameterMapping(
+        'bassEnergy_to_intensity': ParameterMapping(
           sourceParam: 'bassEnergy',
-          targetParam: 'glowIntensity',
+          targetParam: 'intensity',
           minRange: 1.0,
           maxRange: 8.0,
           curve: MappingCurve.exponential,
         ),
         'midEnergy_to_rgbSplit': ParameterMapping(
           sourceParam: 'midEnergy',
-          targetParam: 'rgbSplitAmount',
+          targetParam: 'chaos',
           minRange: 0.0,
           maxRange: 10.0,
           curve: MappingCurve.linear,
@@ -138,24 +138,24 @@ class MappingPreset {
       audioReactiveEnabled: true,
       visualReactiveEnabled: true,
       audioToVisualMappings: {
-        'spectralCentroid_to_hueShift': ParameterMapping(
+        'spectralCentroid_to_hue': ParameterMapping(
           sourceParam: 'spectralCentroid',
-          targetParam: 'hueShift',
+          targetParam: 'hue',
           minRange: 0.0,
           maxRange: 360.0,
           curve: MappingCurve.logarithmic,
         ),
         'rms_to_layerDepth': ParameterMapping(
           sourceParam: 'rms',
-          targetParam: 'layerSeparation',
+          targetParam: 'dimension',
           minRange: 0.0,
           maxRange: 5.0,
           curve: MappingCurve.exponential,
         ),
       },
       visualToAudioMappings: {
-        'projectionDistance_to_reverb': ParameterMapping(
-          sourceParam: 'projectionDistance',
+        'dimension_to_reverb': ParameterMapping(
+          sourceParam: 'dimension',
           targetParam: 'reverbMix',
           minRange: 0.0,
           maxRange: 1.0,

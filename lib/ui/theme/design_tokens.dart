@@ -126,6 +126,11 @@ class DesignTokens {
     height: 1.4,
   );
 
+  // Aliases for backward compatibility
+  static const TextStyle headingLarge = headlineLarge;
+  static const TextStyle headingMedium = headlineMedium;
+  static const TextStyle headingSmall = displaySmall;
+
   /// Body - Standard text
   static const TextStyle bodyLarge = TextStyle(
     fontSize: 14,

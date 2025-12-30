@@ -196,42 +196,49 @@ class _ModulationIndicatorState extends State<ModulationIndicator>
   ) {
     final state = visualProvider.visualState;
 
+    final rotationXW = (state['rotationXW'] as double?) ?? 0.0;
+    final rotationYW = (state['rotationYW'] as double?) ?? 0.0;
+    final rotationZW = (state['rotationZW'] as double?) ?? 0.0;
+    final morph = (state['morphFactor'] as double?) ?? 0.0;
+    final projection = (state['dimension'] as double?) ?? 0.0;
+    final layerSep = (state['dimension'] as double?) ?? 0.0;
+
     return Column(
       children: [
         _buildModulationMeter(
           'XW Rotation → Osc1 Freq',
-          (state.rotationXW.abs() / math.pi).clamp(0.0, 1.0),
-          '${(state.rotationXW / math.pi * 2).toStringAsFixed(2)} st',
+          (rotationXW.abs() / math.pi).clamp(0.0, 1.0),
+          '${(rotationXW / math.pi * 2).toStringAsFixed(2)} st',
           Colors.purple,
         ),
         _buildModulationMeter(
           'YW Rotation → Osc2 Freq',
-          (state.rotationYW.abs() / math.pi).clamp(0.0, 1.0),
-          '${(state.rotationYW / math.pi * 2).toStringAsFixed(2)} st',
+          (rotationYW.abs() / math.pi).clamp(0.0, 1.0),
+          '${(rotationYW / math.pi * 2).toStringAsFixed(2)} st',
           Colors.pink,
         ),
         _buildModulationMeter(
           'ZW Rotation → Filter Cutoff',
-          (state.rotationZW.abs() / math.pi).clamp(0.0, 1.0),
-          '${(state.rotationZW / math.pi * 40).toStringAsFixed(0)}%',
+          (rotationZW.abs() / math.pi).clamp(0.0, 1.0),
+          '${(rotationZW / math.pi * 40).toStringAsFixed(0)}%',
           Colors.blue,
         ),
         _buildModulationMeter(
           'Morph → Wavetable',
-          state.morph,
-          '${(state.morph * 100).toStringAsFixed(0)}%',
+          morph,
+          '${(morph * 100).toStringAsFixed(0)}%',
           Colors.teal,
         ),
         _buildModulationMeter(
           'Projection → Reverb',
-          state.projectionDistance.clamp(0.0, 1.0),
-          '${(state.projectionDistance * 100).toStringAsFixed(0)}%',
+          projection.clamp(0.0, 1.0),
+          '${(projection * 100).toStringAsFixed(0)}%',
           Colors.indigo,
         ),
         _buildModulationMeter(
           'Layer Depth → Delay',
-          state.layerDepth.clamp(0.0, 1.0),
-          '${(state.layerDepth * 500).toStringAsFixed(0)} ms',
+          layerSep.clamp(0.0, 1.0),
+          '${(layerSep * 500).toStringAsFixed(0)} ms',
           Colors.deepPurple,
         ),
       ],

@@ -30,6 +30,7 @@ import '../../providers/audio_provider.dart';
 import '../../providers/tilt_sensor_provider.dart';
 import '../../visual/vib34d_widget.dart';
 import '../../core/synth_app_initializer.dart';
+import '../debug/webview_console_overlay.dart';
 
 class SynthMainScreen extends StatefulWidget {
   final SynthModules modules;
@@ -87,8 +88,13 @@ class _SynthMainContentState extends State<_SynthMainContent> {
   // Parameter coupling is now handled by ParameterCouplingModule
   // No need to create ParameterBridge here - it's already running at 60 FPS
 
+  // Debug console state
+  final GlobalKey<WebViewConsoleOverlayState> _consoleKey = GlobalKey();
+  final ValueNotifier<String> _systemStateNotifier = ValueNotifier<String>('Unknown');
+
   @override
   void dispose() {
+    _systemStateNotifier.dispose();
     super.dispose();
   }
 
@@ -111,6 +117,10 @@ class _SynthMainContentState extends State<_SynthMainContent> {
               backgroundVisualization: VIB34DWidget(
                 visualProvider: visualProvider,
                 audioProvider: Provider.of<AudioProvider>(context, listen: false),
+                onConsoleMessage: (message, type) {
+                  _consoleKey.currentState?.addMessage(message, type);
+                },
+                systemStateNotifier: _systemStateNotifier,
               ),
             ),
           ),
@@ -144,6 +154,19 @@ class _SynthMainContentState extends State<_SynthMainContent> {
           // Layer 7: Debug overlay (development only)
           if (_shouldShowDebugOverlay(context))
             _buildDebugOverlay(context, uiState, visualProvider),
+
+          // Layer 8: WebView Debug Console (positioned above bottom bezel)
+          Positioned(
+            bottom: SynthTheme.panelCollapsedHeight, // Position above collapsed bezel
+            left: 0,
+            right: 0,
+            top: 0,
+            child: WebViewConsoleOverlay(
+              key: _consoleKey,
+              systemStateNotifier: _systemStateNotifier,
+              child: const SizedBox.expand(), // Transparent child
+            ),
+          ),
         ],
       ),
     );
@@ -157,6 +180,10 @@ class _SynthMainContentState extends State<_SynthMainContent> {
       child: VIB34DWidget(
         visualProvider: visualProvider,
         audioProvider: audioProvider,
+        onConsoleMessage: (message, type) {
+          _consoleKey.currentState?.addMessage(message, type);
+        },
+        systemStateNotifier: _systemStateNotifier,
       ),
     );
   }

@@ -52,30 +52,30 @@ class AudioToVisualModulator {
         maxRange: 2.5,
         curve: MappingCurve.linear,
       ),
-      'midEnergy_to_tessellationDensity': ParameterMapping(
+      'midEnergy_to_gridDensity': ParameterMapping(
         sourceParam: 'midEnergy',
-        targetParam: 'tessellationDensity',
+        targetParam: 'gridDensity',
         minRange: 3.0,
         maxRange: 8.0,
         curve: MappingCurve.exponential,
       ),
-      'highEnergy_to_vertexBrightness': ParameterMapping(
+      'highEnergy_to_intensity': ParameterMapping(
         sourceParam: 'highEnergy',
-        targetParam: 'vertexBrightness',
+        targetParam: 'intensity',
         minRange: 0.5,
         maxRange: 1.0,
         curve: MappingCurve.linear,
       ),
-      'spectralCentroid_to_hueShift': ParameterMapping(
+      'spectralCentroid_to_hue': ParameterMapping(
         sourceParam: 'spectralCentroid',
-        targetParam: 'hueShift',
+        targetParam: 'hue',
         minRange: 0.0,
         maxRange: 360.0,
         curve: MappingCurve.linear,
       ),
-      'rms_to_glowIntensity': ParameterMapping(
+      'rms_to_intensity': ParameterMapping(
         sourceParam: 'rms',
-        targetParam: 'glowIntensity',
+        targetParam: 'intensity',
         minRange: 0.0,
         maxRange: 3.0,
         curve: MappingCurve.exponential,
@@ -136,10 +136,10 @@ class AudioToVisualModulator {
 
     // Get mapped visual values
     final rotSpeed = _mappings['bassEnergy_to_rotationSpeed']?.map(bass) ?? 0.0;
-    final tessellation = _mappings['midEnergy_to_tessellationDensity']?.map(mid) ?? 0.0;
-    final brightness = _mappings['highEnergy_to_vertexBrightness']?.map(high) ?? 0.0;
-    final hue = _mappings['spectralCentroid_to_hueShift']?.map(centroid) ?? 0.0;
-    final glow = _mappings['rms_to_glowIntensity']?.map(rms) ?? 0.0;
+    final tessellation = _mappings['midEnergy_to_gridDensity']?.map(mid) ?? 0.0;
+    final brightness = _mappings['highEnergy_to_intensity']?.map(high) ?? 0.0;
+    final hue = _mappings['spectralCentroid_to_hue']?.map(centroid) ?? 0.0;
+    final glow = _mappings['rms_to_intensity']?.map(rms) ?? 0.0;
 
     debugPrint('🎨 Audio→Visual: '
       'bass=${(bass * 100).toStringAsFixed(0)}%→speed=${rotSpeed.toStringAsFixed(2)}x | '
@@ -158,19 +158,19 @@ class AudioToVisualModulator {
       case 'rotationSpeed':
         visualProvider.setRotationSpeed(value);
         break;
-      case 'tessellationDensity':
+      case 'gridDensity':
         visualProvider.setTessellationDensity(value.round());
         break;
-      case 'vertexBrightness':
+      case 'intensity':
         visualProvider.setVertexBrightness(value);
         break;
-      case 'hueShift':
+      case 'hue':
         visualProvider.setHueShift(value);
         break;
-      case 'glowIntensity':
+      case 'intensity':
         visualProvider.setGlowIntensity(value);
         break;
-      case 'rgbSplitAmount':
+      case 'chaos':
         visualProvider.setRGBSplitAmount(value);
         break;
     }

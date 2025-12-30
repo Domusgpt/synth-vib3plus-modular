@@ -13,6 +13,12 @@
 
 import 'dart:math' as math;
 
+/// Hyperbolic tangent function (not in dart:math)
+double _tanh(double x) {
+  final e2x = math.exp(2 * x);
+  return (e2x - 1) / (e2x + 1);
+}
+
 /// Enhanced mapping curve types
 enum MappingCurve {
   linear,
@@ -103,7 +109,7 @@ class EnhancedMapping {
       case MappingCurve.scurve:
         // Smooth S-curve using tanh
         final scaled = (input - 0.5) * 6.0; // Scale to ±3
-        return (math.tanh(scaled) + 1.0) / 2.0;
+        return (_tanh(scaled) + 1.0) / 2.0;
 
       case MappingCurve.quadratic:
         return input * input;
@@ -276,7 +282,7 @@ class VelocityCurve {
         break;
       case MappingCurve.scurve:
         // Soft at extremes, responsive in middle
-        curved = (math.tanh((curved - 0.5) * 4) + 1) / 2;
+        curved = (_tanh((curved - 0.5) * 4) + 1) / 2;
         break;
       default:
         break;
@@ -326,7 +332,7 @@ class PressureCurve {
       case MappingCurve.logarithmic:
         return math.sqrt(curved);
       case MappingCurve.scurve:
-        return (math.tanh((curved - 0.5) * 4) + 1) / 2;
+        return (_tanh((curved - 0.5) * 4) + 1) / 2;
       default:
         return curved;
     }
